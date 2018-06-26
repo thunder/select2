@@ -41,11 +41,10 @@ class Select2Widget extends OptionsSelectWidget {
   /**
    * {@inheritdoc}
    *
-   * Complete copy of parent class. Only changed the search value for
-   * array_search.
+   * Complete copy of parent class. Only change is '_none' was replaced by ''.
    */
   public static function validateElement(array $element, FormStateInterface $form_state) {
-    if ($element['#required'] && $element['#value'] == '_none') {
+    if ($element['#required'] && $element['#value'] == '') {
       $form_state->setError($element, t('@name field is required.', ['@name' => $element['#title']]));
     }
 
@@ -53,7 +52,6 @@ class Select2Widget extends OptionsSelectWidget {
     // Drupal\Core\Field\WidgetBase::submit() expects values as
     // an array of values keyed by delta first, then by column, while our
     // widgets return the opposite.
-
     if (is_array($element['#value'])) {
       $values = array_values($element['#value']);
     }

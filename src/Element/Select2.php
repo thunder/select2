@@ -33,12 +33,8 @@ class Select2 extends Select {
       $element['#attributes']['multiple'] = 'multiple';
       $element['#attributes']['name'] = $element['#name'] . '[]';
     }
-
-    // A non-#multiple select needs special handling to prevent user agents from
-    // preselecting the first option without intention. #multiple select lists
-    // do not get an empty option, as it would not make sense, user
-    // interface-wise.
     else {
+      // Adding an empty option in order make the placeholder working.
       $empty_option = ['' => ''];
       $element['#options'] = $empty_option + $element['#options'];
     }

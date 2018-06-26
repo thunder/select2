@@ -4,6 +4,7 @@ namespace Drupal\select2\Element;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element\Select;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Provides a form element for a simple select2 select box.
@@ -22,7 +23,7 @@ class Select2 extends Select {
     // Defining the select2 configuration.
     $settings = [
       'multiple' => $multiple,
-      'placeholder' => $required ? t('- Select -') : t('- None -'),
+      'placeholder' => $required ? new TranslatableMarkup('- Select -') : new TranslatableMarkup('- None -'),
       'allowClear' => !$multiple && !$required ? TRUE : FALSE,
       'dir' => \Drupal::languageManager()->getCurrentLanguage()->getDirection(),
       'language' => \Drupal::languageManager()->getCurrentLanguage()->getId(),

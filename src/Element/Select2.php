@@ -40,11 +40,19 @@ class Select2 extends Select {
       $element['#options'] = $empty_option + $element['#options'];
     }
 
-    // Adding the select2 library.
-    $element['#attached']['library'][] = 'select2/select2';
-
     $selector = $element['#attributes']['data-drupal-selector'];
     $element['#attached']['drupalSettings']['select2'][$selector] = $settings;
+    return $element;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function preRenderSelect($element) {
+    $element = parent::preRenderSelect($element);
+
+    // Adding the select2 library.
+    $element['#attached']['library'][] = 'select2/select2';
     return $element;
   }
 

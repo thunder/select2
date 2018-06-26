@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\select2\Unit;
+namespace Drupal\Tests\select2\Unit\Element;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\Form\FormStateInterface;

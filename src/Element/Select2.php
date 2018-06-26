@@ -27,7 +27,7 @@ class Select2 extends Select {
       'allowClear' => !$multiple && !$required ? TRUE : FALSE,
       'dir' => \Drupal::languageManager()->getCurrentLanguage()->getDirection(),
       'language' => \Drupal::languageManager()->getCurrentLanguage()->getId(),
-      'width' => 'style',
+      'width' => $multiple ? 'element' : 'style',
     ];
 
     if ($multiple) {

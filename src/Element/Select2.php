@@ -24,24 +24,23 @@ class Select2 extends Select {
       'multiple' => $multiple,
       'placeholder' => $required ? t('- Select -') : t('- None -'),
       'allowClear' => !$multiple && !$required ? TRUE : FALSE,
+      'dir' => \Drupal::languageManager()->getCurrentLanguage()->getDirection(),
+      'language' => \Drupal::languageManager()->getCurrentLanguage()->getId(),
+      'width' => 'style',
     ];
 
     if ($multiple) {
       $element['#attributes']['multiple'] = 'multiple';
       $element['#attributes']['name'] = $element['#name'] . '[]';
     }
+
     // A non-#multiple select needs special handling to prevent user agents from
     // preselecting the first option without intention. #multiple select lists
     // do not get an empty option, as it would not make sense, user
     // interface-wise.
     else {
-      if (!isset($element['#default_value'])) {
-        // The empty option is prepended to #options and purposively not merged
-        // to prevent another option in #options mistakenly using the same value
-        // as #empty_value.
-        $empty_option = ['' => ''];
-        $element['#options'] = $empty_option + $element['#options'];
-      }
+      $empty_option = ['' => ''];
+      $element['#options'] = $empty_option + $element['#options'];
     }
 
     // Adding the select2 library.

@@ -41,6 +41,7 @@ class Select2 extends Select {
     }
 
     $selector = $element['#attributes']['data-drupal-selector'];
+    $element['#attributes']['class'][] = 'select2-widget';
     $element['#attached']['drupalSettings']['select2'][$selector] = $settings;
     return $element;
   }

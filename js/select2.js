@@ -2,15 +2,15 @@
  * @file
  * Select2 integration.
  */
-(function ($) {
+(function ($, drupalSettings) {
   'use strict';
 
   Drupal.behaviors.select2 = {
     attach: function (context) {
-      $.each(drupalSettings.select2, function(selector, settings) {
-        $('[data-drupal-selector=' + selector + ']').select2(settings);
-      });
+      $('.select2-widget', context).once('select2-init').each(function () {
+        $(this).select2(drupalSettings.select2[$(this).attr('data-drupal-selector')]);
+      })
     }
   };
 
-})(jQuery);
+})(jQuery, drupalSettings);

@@ -66,9 +66,8 @@ class Select2 extends Select {
   public static function preRenderSelect($element) {
     $element = parent::preRenderSelect($element);
 
-    // For remote data kill all options.
+    // Set only the default values to the options.
     if ($element['#autocomplete'] && $element['#target_type']) {
-      // Set only the default values to the options.
       $element['#options'] = !empty($element['#default_value']) ? array_intersect_key($element['#options'], array_flip($element['#default_value'])) : [];
     }
     // Adding an empty option in order make the placeholder working.

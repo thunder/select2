@@ -47,7 +47,7 @@ class EntityAutocompleteMatcher {
    *
    * @see \Drupal\system\Controller\EntityAutocompleteController
    */
-  public function getMatches($target_type, $selection_handler, $selection_settings, $string = '') {
+  public function getMatches($target_type, $selection_handler, array $selection_settings, $string = '') {
     $matches = [];
 
     $options = $selection_settings + [

@@ -122,7 +122,6 @@ class Select2Test extends UnitTestCase {
       ],
     ];
 
-
     return $data;
   }
 

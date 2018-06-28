@@ -54,11 +54,6 @@ class Select2 extends Select {
       $element['#attributes']['multiple'] = 'multiple';
       $element['#attributes']['name'] = $element['#name'] . '[]';
     }
-    else {
-      // Adding an empty option in order make the placeholder working.
-      $empty_option = ['' => ''];
-      $element['#options'] = $empty_option + $element['#options'];
-    }
 
     $selector = $element['#attributes']['data-drupal-selector'];
     $element['#attributes']['class'][] = 'select2-widget';
@@ -74,7 +69,13 @@ class Select2 extends Select {
 
     // For remote data kill all options.
     if ($element['#autocomplete'] && $element['#target_type']) {
-      #$element['#options'] = [];
+      // Set only the default values to the options.
+      $element['#options'] = !empty($element['#default_value']) ? array_intersect_key($element['#options'], array_flip($element['#default_value'])) : [];
+    }
+    // Adding an empty option in order make the placeholder working.
+    if (!$element['#multiple']) {
+      $empty_option = ['' => ''];
+      $element['#options'] = $empty_option + $element['#options'];
     }
 
     // Adding the select2 library.
@@ -123,8 +124,11 @@ class Select2 extends Select {
 
       // Provide a data attribute for the JavaScript behavior to bind to.
       $selector = $element['#attributes']['data-drupal-selector'];
-      $element['#attached']['drupalSettings']['select2'][$selector]['ajax'] = [
-        'url' => $url->getGeneratedUrl(),
+      $element['#attached']['drupalSettings']['select2'][$selector] += [
+        'minimumInputLength' => 1,
+        'ajax' => [
+          'url' => $url->getGeneratedUrl(),
+        ],
       ];
     }
     return $element;

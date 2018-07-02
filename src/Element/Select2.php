@@ -28,7 +28,7 @@ class Select2 extends Select {
     $info['#selection_handler'] = 'default';
     $info['#selection_settings'] = [];
     $info['#autocomplete'] = FALSE;
-    $info['#process'][] = [$class, 'processAutocomplete'];
+    $info['#pre_render'][] = [$class, 'preRenderAutocomplete'];
 
     return $info;
   }
@@ -37,8 +37,34 @@ class Select2 extends Select {
    * {@inheritdoc}
    */
   public static function processSelect(&$element, FormStateInterface $form_state, &$complete_form) {
+    if ($element['#multiple']) {
+      $element['#attributes']['multiple'] = 'multiple';
+      $element['#attributes']['name'] = $element['#name'] . '[]';
+    }
+    else {
+      $empty_option = ['' => ''];
+      $element['#options'] = $empty_option + $element['#options'];
+    }
+
+    return $element;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function preRenderSelect($element) {
+    $element = parent::preRenderSelect($element);
     $required = isset($element['#states']['required']) ? TRUE : $element['#required'];
     $multiple = $element['#multiple'];
+
+    // Set only the default values to the options.
+    if ($element['#autocomplete'] && $element['#target_type']) {
+      $element['#options'] = !empty($element['#default_value']) ? array_intersect_key($element['#options'], array_flip($element['#default_value'])) : [];
+      if (!$multiple) {
+        $empty_option = ['' => ''];
+        $element['#options'] = $empty_option + $element['#options'];
+      }
+    }
 
     // Defining the select2 configuration.
     $settings = [
@@ -49,32 +75,9 @@ class Select2 extends Select {
       'language' => \Drupal::languageManager()->getCurrentLanguage()->getId(),
     ];
 
-    if ($multiple) {
-      $element['#attributes']['multiple'] = 'multiple';
-      $element['#attributes']['name'] = $element['#name'] . '[]';
-    }
-
     $selector = $element['#attributes']['data-drupal-selector'];
     $element['#attributes']['class'][] = 'select2-widget';
     $element['#attached']['drupalSettings']['select2'][$selector] = $settings;
-    return $element;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function preRenderSelect($element) {
-    $element = parent::preRenderSelect($element);
-
-    // Set only the default values to the options.
-    if ($element['#autocomplete'] && $element['#target_type']) {
-      $element['#options'] = !empty($element['#default_value']) ? array_intersect_key($element['#options'], array_flip($element['#default_value'])) : [];
-    }
-    // Adding an empty option in order make the placeholder working.
-    if (!$element['#multiple']) {
-      $empty_option = ['' => ''];
-      $element['#options'] = $empty_option + $element['#options'];
-    }
 
     // Adding the select2 library.
     $element['#attached']['library'][] = 'select2/select2';
@@ -84,7 +87,7 @@ class Select2 extends Select {
   /**
    * {@inheritdoc}
    */
-  public static function processAutocomplete(&$element, FormStateInterface $form_state, &$complete_form) {
+  public static function preRenderAutocomplete($element) {
     if (!$element['#autocomplete']) {
       return $element;
     }

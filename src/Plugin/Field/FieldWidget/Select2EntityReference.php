@@ -50,11 +50,13 @@ class Select2EntityReference extends Select2Widget {
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $element = parent::formElement($items, $delta, $element, $form, $form_state);
 
+    $element['#target_type'] = $this->getFieldSetting('target_type');
+    $element['#selection_handler'] = $this->getFieldSetting('handler');
+    $element['#selection_settings'] = $this->getFieldSetting('handler_settings') + ['match_operator' => 'CONTAINS'];
+    $element['#autocreate'] = isset($this->getFieldSetting('handler_settings')['auto_create']) ? $this->getFieldSetting('handler_settings')['auto_create'] : FALSE;
+
     if ($this->getSetting('autocomplete')) {
       $element['#autocomplete'] = TRUE;
-      $element['#target_type'] = $this->getFieldSetting('target_type');
-      $element['#selection_handler'] = $this->getFieldSetting('handler');
-      $element['#selection_settings'] = $this->getFieldSetting('handler_settings') + ['match_operator' => 'CONTAINS'];
     }
 
     return $element;

@@ -10,7 +10,7 @@
  */
 function select2_library_info_alter(&$libraries, $extension) {
   if ($extension === 'select2' && function_exists('libraries_get_path')) {
-    $libraries['select2.min']['js'] = ['/' . libraries_get_path('select2') . '/dist/js/select2.min.js' => ['weight' => -3]];
+    $libraries['select2.min']['js'] = ['/' . libraries_get_path('select2') . '/dist/js/select2.min.js' => ['minified' => TRUE]];
     $libraries['select2.min']['css']['component'] = ['/' . libraries_get_path('select2') . '/dist/css/select2.min.css' => []];
   }
 }

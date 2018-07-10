@@ -48,16 +48,15 @@ class Select2 extends Select {
       $element['#options'] = $empty_option + $element['#options'];
     }
 
-    $options = $element['#selection_settings'] + [
-      'target_type' => $element['#target_type'],
-      'handler' => $element['#selection_handler'],
-    ];
-    /** @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface $handler */
-    $handler = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($options);
-
-    if ($element['#autocreate'] && $handler instanceof SelectionWithAutocreateInterface) {
+    if ($element['#autocreate'] && $element['#target_type']) {
+      $options = $element['#selection_settings'] + [
+        'target_type' => $element['#target_type'],
+        'handler' => $element['#selection_handler'],
+      ];
+      /** @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface $handler */
+      $handler = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($options);
       foreach ($element['#value'] as $id) {
-        if (!isset($element['#options'][$id])) {
+        if (!isset($element['#options'][$id]) && $handler instanceof SelectionWithAutocreateInterface) {
           $label = substr($id, 4);
           $bundle = reset($element['#selection_settings']['target_bundles']);
           $entity = $handler->createNewEntity($element['#target_type'], $bundle, $label, \Drupal::currentUser()->id());

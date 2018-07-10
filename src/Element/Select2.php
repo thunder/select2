@@ -79,9 +79,15 @@ class Select2 extends Select {
     $required = isset($element['#states']['required']) ? TRUE : $element['#required'];
     $multiple = $element['#multiple'];
 
-    // Set only the default values to the options.
     if ($element['#autocomplete'] && $element['#target_type']) {
-      $element['#options'] = !empty($element['#default_value']) ? array_intersect_key($element['#options'], array_flip($element['#default_value'])) : [];
+      // Reduce options to the preselected ones and bring them in the correct
+      // order.
+      $options = [];
+      foreach ($element['#default_value'] as $value) {
+        $options[$value] = $element['#options'][$value];
+      }
+      $element['#options'] = $options;
+
       if (!$multiple) {
         $empty_option = ['' => ''];
         $element['#options'] = $empty_option + $element['#options'];

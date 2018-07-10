@@ -55,8 +55,11 @@ class Select2 extends Select {
       ];
       /** @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface $handler */
       $handler = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($options);
+      if (!$handler instanceof SelectionWithAutocreateInterface) {
+        return $element;
+      }
       foreach ($element['#value'] as $id) {
-        if (!isset($element['#options'][$id]) && $handler instanceof SelectionWithAutocreateInterface) {
+        if (!isset($element['#options'][$id])) {
           $label = substr($id, 4);
           $bundle = reset($element['#selection_settings']['target_bundles']);
           $entity = $handler->createNewEntity($element['#target_type'], $bundle, $label, \Drupal::currentUser()->id());

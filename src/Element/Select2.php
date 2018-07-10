@@ -61,11 +61,12 @@ class Select2 extends Select {
       // Set only the default values to the options.
       $element['#options'] = !empty($element['#default_value']) ? array_intersect_key($element['#options'], array_flip($element['#default_value'])) : [];
 
-      $order = $element['#default_value'];
       // Bring options in order of default values.
-      uksort($element['#options'], function ($a, $b) use ($order) {
-        return array_search($a, $order) > array_search($b, $order) ? 1 : -1;
-      });
+      $options = [];
+      foreach ($element['#default_value'] as $value) {
+        $options[$value] = $element['#options'][$value];
+      }
+      $element['#options'] = $options;
 
       if (!$multiple) {
         $empty_option = ['' => ''];

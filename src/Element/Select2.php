@@ -60,6 +60,18 @@ class Select2 extends Select {
     // Set only the default values to the options.
     if ($element['#autocomplete'] && $element['#target_type']) {
       $element['#options'] = !empty($element['#default_value']) ? array_intersect_key($element['#options'], array_flip($element['#default_value'])) : [];
+
+      $order = $element['#default_value'];
+      $options = $element['#options'];
+      // Move selected values to the beginning.
+      uksort($options, function ($a, $b) use ($order, $options) {
+        return array_search($a, $order) > array_search($b, $order) ? 1 : -1;
+
+      });
+
+      $element['#options'] = $options;
+
+
       if (!$multiple) {
         $empty_option = ['' => ''];
         $element['#options'] = $empty_option + $element['#options'];

@@ -58,10 +58,8 @@ class Select2 extends Select {
     $multiple = $element['#multiple'];
 
     if ($element['#autocomplete'] && $element['#target_type']) {
-      // Set only the default values to the options.
-      $element['#options'] = !empty($element['#default_value']) ? array_intersect_key($element['#options'], array_flip($element['#default_value'])) : [];
-
-      // Bring options in order of default values.
+      // Reduce options to the preselected ones and bring them in the correct
+      // order.
       $options = [];
       foreach ($element['#default_value'] as $value) {
         $options[$value] = $element['#options'][$value];

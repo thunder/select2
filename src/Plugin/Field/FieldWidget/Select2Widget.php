@@ -2,6 +2,7 @@
 
 namespace Drupal\select2\Plugin\Field\FieldWidget;
 
+use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\Plugin\Field\FieldWidget\OptionsSelectWidget;
 use Drupal\Core\Form\FormStateInterface;
@@ -80,6 +81,36 @@ class Select2Widget extends OptionsSelectWidget {
       $items[] = [$element['#key_column'] => $value];
     }
     $form_state->setValueForElement($element, $items);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function getOptions(FieldableEntityInterface $entity) {
+    $options = parent::getOptions($entity);
+    $default_value = $entity->get($this->fieldDefinition->getName())->getValue();
+
+    $order = [];
+    foreach ($default_value as $value) {
+      $order[] = $value['target_id'];
+    }
+
+    // Move selected values to the beginning.
+    uksort($options, function ($a, $b) use ($order, $options) {
+      $a_in_array = in_array($a, $order);
+      $b_in_array = in_array($b, $order);
+
+      if (!$a_in_array && !$b_in_array) {
+        return strcmp($options[$a], $options[$b]);
+      }
+      elseif ($a_in_array && $b_in_array) {
+        return array_search($a, $order) > array_search($b, $order) ? 1 : -1;
+      }
+      return ($a_in_array) ? -1 : 1;
+    });
+
+    $this->options = $options;
+    return $this->options;
   }
 
 }

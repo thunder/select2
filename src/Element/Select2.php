@@ -81,20 +81,28 @@ class Select2 extends Select {
     $required = isset($element['#states']['required']) ? TRUE : $element['#required'];
     $multiple = $element['#multiple'];
 
+    $options = [];
+    foreach ($element['#options'] as $id => $label) {
+      $options[$id] = [
+        'id' => $id,
+        'text' => $label,
+        'selected' => in_array($id, $element['#default_value']),
+        'published' => TRUE,
+      ];
+    }
+
+    // Set only the default values to the options.
     if ($element['#autocomplete'] && $element['#target_type']) {
       // Reduce options to the preselected ones and bring them in the correct
       // order.
-      $options = [];
+      $default_values = [];
       foreach ($element['#default_value'] as $value) {
-        $options[$value] = $element['#options'][$value];
+        $default_values[$value] = $options[$value];
       }
-      $element['#options'] = $options;
-
-      if (!$multiple) {
-        $empty_option = ['' => ''];
-        $element['#options'] = $empty_option + $element['#options'];
-      }
+      $options = $default_values;
     }
+
+    $element['#options'] = [];
 
     // Defining the select2 configuration.
     $settings = [
@@ -104,6 +112,7 @@ class Select2 extends Select {
       'dir' => \Drupal::languageManager()->getCurrentLanguage()->getDirection(),
       'language' => \Drupal::languageManager()->getCurrentLanguage()->getId(),
       'tags' => $element['#autocreate'],
+      'items' => $options,
     ];
 
     $selector = $element['#attributes']['data-drupal-selector'];

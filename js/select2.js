@@ -16,7 +16,26 @@
             text: entity
           }
         };
+        config.templateSelection = function (state) {
+          var published = true;
+          if(state.hasOwnProperty('published')){
+            published = state.published;
+          } else if (config.items[state.id] && config.items[state.id].hasOwnProperty('published')) {
+            published = config.items[state.id].published;
+          }
+
+          var classes = published ? 'published' : 'unpublished';
+          return $('<span class="' + classes + '">' + state.text + '</span>');
+        };
+
         $(this).css('width', '100%').select2(config);
+
+        var that = $(this);
+        $.each(config.items, function(index, data) {
+          var newOption = new Option(data.text, data.id, data.selected, data.selected);
+          // Append it to the select
+          that.append(newOption).trigger('change');
+        });
       })
     }
   };

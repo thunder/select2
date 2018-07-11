@@ -2,7 +2,9 @@
 
 namespace Drupal\select2;
 
+use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Entity\EntityReferenceSelection\SelectionPluginManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
  * Matcher class to get autocompletion results for entity reference.
@@ -17,13 +19,23 @@ class EntityAutocompleteMatcher {
   protected $selectionManager;
 
   /**
+   * The entity type manager service.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * Constructs a EntityAutocompleteMatcher object.
    *
    * @param \Drupal\Core\Entity\EntityReferenceSelection\SelectionPluginManagerInterface $selection_manager
    *   The entity reference selection handler plugin manager.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager service.
    */
-  public function __construct(SelectionPluginManagerInterface $selection_manager) {
+  public function __construct(SelectionPluginManagerInterface $selection_manager, EntityTypeManagerInterface $entity_type_manager) {
     $this->selectionManager = $selection_manager;
+    $this->entityTypeManager = $entity_type_manager;
   }
 
   /**
@@ -40,10 +52,13 @@ class EntityAutocompleteMatcher {
    *
    * @return array
    *   An array of matched entity labels, in the format required by the AJAX
-   *   autocomplete API (e.g. array('value' => $value, 'label' => $label)).
+   *   autocomplete API
+   *   (e.g. array('id' => $id, 'text' => $label, 'published' => TRUE)).
    *
    * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
    *   Thrown when the current user doesn't have access to the specified entity.
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    *
    * @see \Drupal\system\Controller\EntityAutocompleteController
    */
@@ -54,6 +69,7 @@ class EntityAutocompleteMatcher {
       'target_type' => $target_type,
       'handler' => $selection_handler,
     ];
+    /** @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface $handler */
     $handler = $this->selectionManager->getInstance($options);
 
     if (isset($string)) {
@@ -64,7 +80,12 @@ class EntityAutocompleteMatcher {
       // Loop through the entities and convert them into autocomplete output.
       foreach ($entity_labels as $values) {
         foreach ($values as $entity_id => $label) {
-          $matches[] = ['id' => $entity_id, 'text' => $label];
+          $entity = $this->entityTypeManager->getStorage($target_type)->load($entity_id);
+          $matches[] = [
+            'id' => $entity_id,
+            'text' => $label,
+            'published' => ($entity instanceof EntityPublishedInterface && $entity->isPublished()) || !($entity instanceof EntityPublishedInterface),
+          ];
         }
       }
     }

@@ -87,9 +87,12 @@ class Select2 extends Select {
         'id' => $id,
         'text' => $label,
         'selected' => in_array($id, $element['#default_value']),
+        //TODO: Need to load the entity.
         'published' => TRUE,
       ];
     }
+    // Clear rendered options, we add them with JS.
+    $element['#options'] = [];
 
     // Set only the default values to the options.
     if ($element['#autocomplete'] && $element['#target_type']) {
@@ -101,8 +104,6 @@ class Select2 extends Select {
       }
       $options = $default_values;
     }
-
-    $element['#options'] = [];
 
     // Defining the select2 configuration.
     $settings = [

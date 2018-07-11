@@ -10,31 +10,32 @@
       $('.select2-widget', context).once('select2-init').each(function () {
         var config = drupalSettings.select2[$(this).attr('data-drupal-selector')];
         config.createTag = function (params) {
-          //TODO: Need to add the default status
-          console.log(params);
-          var entity = $.trim(params.term);
+          var term = $.trim(params.term);
+          if (term === '') {
+            return null;
+          }
           return {
-            id: "$ID:" + entity,
-            text: entity
+            id: "$ID:" + term,
+            text: term,
+            published: config.autocreate_status
           }
         };
         config.templateSelection = function (option) {
-          var published = true;
-          if(option.hasOwnProperty('published')){
-            published = option.published;
-          } else if (config.items[option.id] && config.items[option.id].hasOwnProperty('published')) {
-            published = config.items[option.id].published;
-          }
-
+          var published = option.published === true || $(option.element).attr('data-published') === true;
           var classes = published ? 'published' : 'unpublished';
           return $('<span class="' + classes + '">' + option.text + '</span>');
         };
 
         $(this).css('width', '100%').select2(config);
 
+        // We have to initialize the options on our own, because if ajax is used
+        // the data property doesn't work and we need a way to add custom
+        // properties.
         var that = $(this);
         $.each(config.items, function(index, data) {
-          that.append(new Option(data.text, data.id, data.selected, data.selected));
+          var option = new Option(data.text, data.id, data.selected, data.selected);
+          $(option).attr('data-published', data.published);
+          that.append(option);
         });
       })
     }

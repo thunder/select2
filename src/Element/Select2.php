@@ -30,6 +30,7 @@ class Select2 extends Select {
     $info['#selection_settings'] = [];
     $info['#autocomplete'] = FALSE;
     $info['#autocreate'] = FALSE;
+    $info['#additional_properties'] = [];
     $info['#pre_render'][] = [$class, 'preRenderAutocomplete'];
 
     return $info;
@@ -62,7 +63,7 @@ class Select2 extends Select {
         if (!isset($element['#options'][$id])) {
           $label = substr($id, 4);
           $bundle = reset($element['#selection_settings']['target_bundles']);
-          $entity = $handler->createNewEntity($element['#target_type'], $bundle, $label, \Drupal::currentUser()->id());
+          $entity = $handler->createNewEntity($element['#target_type'], $bundle, $label, $element['#autocreate']['#uid']);
           $entity->save();
           $element['#options'][$entity->id()] = $label;
           unset($element['#value'][$id]);
@@ -87,9 +88,10 @@ class Select2 extends Select {
         'id' => $id,
         'text' => $label,
         'selected' => in_array($id, $element['#default_value']),
-        //TODO: Need to load the entity.
-        'published' => TRUE,
       ];
+      if (!empty($element['#additional_properties'][$id])) {
+        $options[$id] = array_merge($options[$id], $element['#additional_properties'][$id]);
+      }
     }
     // Clear rendered options, we add them with JS.
     $element['#options'] = [];
@@ -113,7 +115,8 @@ class Select2 extends Select {
       'dir' => \Drupal::languageManager()->getCurrentLanguage()->getDirection(),
       'language' => \Drupal::languageManager()->getCurrentLanguage()->getId(),
       'tags' => $element['#autocreate'],
-      'items' => $options,
+      'items' => array_values($options),
+      'autocreate_status' => $element['#autocreate'] ? $element['#autocreate']['#status'] : TRUE,
     ];
 
     $selector = $element['#attributes']['data-drupal-selector'];

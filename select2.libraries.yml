@@ -1,6 +1,9 @@
 select2:
   js:
     js/select2.js: {}
+  css:
+    component:
+      css/select2.css: {}
   dependencies:
     - select2/select2.min
 

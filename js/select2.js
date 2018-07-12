@@ -20,10 +20,17 @@
             published: config.autocreate_status
           }
         };
-        config.templateSelection = function (option) {
-          var published = option.published === true || $(option.element).attr('data-published') === true;
-          var classes = published ? 'published' : 'unpublished';
-          return $('<span class="' + classes + '">' + option.text + '</span>');
+        config.templateSelection = function (option, item) {
+          if (item) {
+            var published = option.published === true || $(option.element).attr('data-published') === 'true';
+            $(item[0]).addClass(published ? 'published' : 'unpublished');
+          }
+          return option.text;
+        };
+        config.templateResult = function(option, item){
+          var published = option.published === true || $(option.element).attr('data-published') === 'true';
+          $(item).addClass(published ? 'published' : 'unpublished');
+          return option.text;
         };
 
         $(this).css('width', '100%').select2(config);

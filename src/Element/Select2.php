@@ -104,6 +104,7 @@ class Select2 extends Select {
       'dir' => \Drupal::languageManager()->getCurrentLanguage()->getDirection(),
       'language' => \Drupal::languageManager()->getCurrentLanguage()->getId(),
       'tags' => $element['#autocreate'],
+      'theme' => 'seven',
     ];
 
     $selector = $element['#attributes']['data-drupal-selector'];

@@ -1,4 +1,4 @@
-.select2-container--default .select2-results__option.unpublished,
-.select2-container--default .select2-selection__choice.unpublished {
+.select2-container .select2-results__option.unpublished,
+.select2-container .select2-selection__choice.unpublished {
   background-color: #e62600;
 }

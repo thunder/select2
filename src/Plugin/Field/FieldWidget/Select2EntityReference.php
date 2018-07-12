@@ -126,11 +126,11 @@ class Select2EntityReference extends Select2Widget implements ContainerFactoryPl
         '#uid' => $this->currentUser->id(),
         '#status' => $status,
       ];
+    }
 
-      $entities = $this->entityTypeManager->getStorage($element['#target_type'])->loadMultiple(array_keys($this->getOptions($items->getEntity())));
-      foreach ($entities as $id => $entity) {
-        $element['#additional_properties'][$id] = ['published' => ($entity instanceof EntityPublishedInterface ? $entity->isPublished() : TRUE)];
-      }
+    $entities = $this->entityTypeManager->getStorage($element['#target_type'])->loadMultiple(array_keys($this->getOptions($items->getEntity())));
+    foreach ($entities as $id => $entity) {
+      $element['#additional_properties'][$id] = ['published' => ($entity instanceof EntityPublishedInterface ? $entity->isPublished() : TRUE)];
     }
 
     if ($this->getSetting('autocomplete')) {

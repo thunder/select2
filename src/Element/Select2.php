@@ -115,6 +115,7 @@ class Select2 extends Select {
       'dir' => \Drupal::languageManager()->getCurrentLanguage()->getDirection(),
       'language' => \Drupal::languageManager()->getCurrentLanguage()->getId(),
       'tags' => $element['#autocreate'],
+      'theme' => 'seven',
       'items' => array_values($options),
       'autocreate_status' => $element['#autocreate'] ? $element['#autocreate']['#status'] : TRUE,
     ];

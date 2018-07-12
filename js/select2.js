@@ -20,16 +20,10 @@
             published: config.autocreate_status
           }
         };
-        config.templateSelection = function (option, item) {
+        config.templateSelection = config.templateResult= function (option, item) {
           if (item) {
-            var published = option.published === true || $(option.element).attr('data-published') === 'true';
-            $(item[0]).addClass(published ? 'published' : 'unpublished');
+            $(item).addClass(isPublished(option) ? 'published' : 'unpublished');
           }
-          return option.text;
-        };
-        config.templateResult = function(option, item){
-          var published = option.published === true || $(option.element).attr('data-published') === 'true';
-          $(item).addClass(published ? 'published' : 'unpublished');
           return option.text;
         };
 
@@ -44,7 +38,16 @@
           $(option).attr('data-published', data.published);
           that.append(option);
         });
-      })
+      });
+
+      function isPublished(option) {
+        var published = $(option.element).attr('data-published');
+        if (option.hasOwnProperty('published') || (typeof published !== typeof undefined && published !== false)) {
+          return option.published === true || published === 'true'
+        }
+        return true;
+      }
+
     }
   };
 

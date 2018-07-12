@@ -117,9 +117,9 @@ class Select2EntityReference extends Select2Widget implements ContainerFactoryPl
       $definition = $this->entityTypeManager->getDefinition($element['#target_type']);
       if ($definition->entityClassImplements(EntityPublishedInterface::class)) {
         $bundle = reset($element['#selection_settings']['target_bundles']);
-        $field_name = $definition->getKey('published');
+        /** @var \Drupal\Core\Entity\EntityPublishedInterface $entity */
         $entity = $this->entityTypeManager->getStorage($element['#target_type'])->create([$definition->getKey('bundle') => $bundle]);
-        $status = $entity->{$field_name}->value;
+        $status = $entity->isPublished();
       }
 
       $element['#autocreate'] = [

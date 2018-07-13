@@ -51,6 +51,7 @@ class Select2Test extends UnitTestCase {
       '#attributes' => ['data-drupal-selector' => 'field-foo'],
       '#autocreate' => FALSE,
       '#autocomplete' => FALSE,
+      '#cardinality' => 0,
     ];
     $form_state = $this->prophesize(FormStateInterface::class)->reveal();
     $complete_form = [];
@@ -104,7 +105,7 @@ class Select2Test extends UnitTestCase {
             'select2' => [
               'field-foo' => [
                 'multiple' => TRUE,
-                'allowClear' => FALSE,
+                'allowClear' => TRUE,
               ],
             ],
           ],

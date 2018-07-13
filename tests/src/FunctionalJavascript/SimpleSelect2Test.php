@@ -9,6 +9,8 @@ class SimpleSelect2Test extends Select2JavascriptTestBase {
 
   /**
    * Test single field selection.
+   *
+   * @group select2
    */
   public function testSingleSelect() {
     $this->createField('select2', 'node', 'test', 'list_string', [

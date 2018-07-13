@@ -6,6 +6,8 @@ use Drupal\entity_test\Entity\EntityTestMulRevPub;
 
 /**
  * Tests select2 entity reference widget.
+ *
+ * @group select2
  */
 class EntityReferenceSelect2Test extends Select2JavascriptTestBase {
 

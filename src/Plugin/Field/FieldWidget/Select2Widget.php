@@ -37,6 +37,7 @@ class Select2Widget extends OptionsSelectWidget {
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $element = parent::formElement($items, $delta, $element, $form, $form_state);
     $element['#type'] = 'select2';
+    $element['#cardinality'] = $this->fieldDefinition->getFieldStorageDefinition()->getCardinality();
 
     return $element;
   }

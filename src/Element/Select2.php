@@ -30,6 +30,7 @@ class Select2 extends Select {
     $info['#selection_settings'] = [];
     $info['#autocomplete'] = FALSE;
     $info['#autocreate'] = FALSE;
+    $info['#cardinality'] = 0;
     $info['#pre_render'][] = [$class, 'preRenderAutocomplete'];
 
     return $info;
@@ -100,11 +101,12 @@ class Select2 extends Select {
     $settings = [
       'multiple' => $multiple,
       'placeholder' => $required ? new TranslatableMarkup('- Select -') : new TranslatableMarkup('- None -'),
-      'allowClear' => !$multiple && !$required ? TRUE : FALSE,
+      'allowClear' => !$required,
       'dir' => \Drupal::languageManager()->getCurrentLanguage()->getDirection(),
       'language' => \Drupal::languageManager()->getCurrentLanguage()->getId(),
       'tags' => $element['#autocreate'],
       'theme' => 'seven',
+      'maximumSelectionLength' => $multiple ? $element['#cardinality'] : 0,
     ];
 
     $selector = $element['#attributes']['data-drupal-selector'];

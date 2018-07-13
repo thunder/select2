@@ -67,8 +67,8 @@ abstract class Select2JavascriptTestBase extends WebDriverTestBase {
    * @param $field
    * @param $key
    */
-  protected function selectOption($field, $key) {
-    $this->getSession()->executeScript("jQuery('#$field').val('$key')");
+  protected function selectOption($field, array $keys) {
+    $this->getSession()->executeScript("jQuery('#$field').val(['" . implode("', '", $keys) . "'])");
     $this->getSession()->executeScript("jQuery('#$field').trigger('change')");
   }
 

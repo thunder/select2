@@ -11,7 +11,7 @@ use Drupal\Core\Form\FormStateInterface;
  *
  * @FieldWidget(
  *   id = "select2",
- *   label = @Translation("Select2 (simple select)"),
+ *   label = @Translation("Select2"),
  *   field_types = {
  *     "list_integer",
  *     "list_float",
@@ -21,15 +21,6 @@ use Drupal\Core\Form\FormStateInterface;
  * )
  */
 class Select2Widget extends OptionsSelectWidget {
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function defaultSettings() {
-    return [
-      'autocomplete' => FALSE,
-    ] + parent::defaultSettings();
-  }
 
   /**
    * {@inheritdoc}

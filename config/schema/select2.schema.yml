@@ -1,11 +1,11 @@
 field.widget.settings.select2:
   type: field.widget.settings.options_select
   label: 'Select2 simple widget'
-  mapping:
-    autocomplete:
-      type: boolean
-      label: 'Autocomplete'
 
 field.widget.settings.select2_entity_reference:
   type: field.widget.settings.select2
   label: 'Select2 entity reference widget'
+  mapping:
+    autocomplete:
+      type: boolean
+      label: 'Autocomplete'

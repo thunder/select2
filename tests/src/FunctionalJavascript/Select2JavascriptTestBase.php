@@ -14,6 +14,28 @@ use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 abstract class Select2JavascriptTestBase extends WebDriverTestBase {
 
   /**
+   * {@inheritdoc}
+   */
+  protected static $modules = ['node', 'select2', 'options'];
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp() {
+    parent::setUp();
+
+    $this->drupalCreateContentType(['type' => 'test']);
+
+    $user = $this->drupalCreateUser([
+      'access content',
+      'edit own test content',
+      'create test content',
+    ]);
+
+    $this->drupalLogin($user);
+  }
+
+  /**
    * Creates a new file field.
    *
    * @param string $name

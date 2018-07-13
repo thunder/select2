@@ -8,28 +8,6 @@ namespace Drupal\Tests\select2\FunctionalJavascript;
 class SimpleSelect2Test extends Select2JavascriptTestBase {
 
   /**
-   * {@inheritdoc}
-   */
-  protected static $modules = ['node', 'select2', 'options'];
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setUp() {
-    parent::setUp();
-
-    $this->drupalCreateContentType(['type' => 'test']);
-
-    $user = $this->drupalCreateUser([
-      'access content',
-      'edit own test content',
-      'create test content',
-    ]);
-
-    $this->drupalLogin($user);
-  }
-
-  /**
    * Test single field selection.
    */
   public function testSingleSelect() {

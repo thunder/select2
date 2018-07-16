@@ -12,12 +12,12 @@
         config.createTag = function (params) {
           var entity = $.trim(params.term);
           return {
-            id: "$ID:" + entity,
+            id: '$ID:' + entity,
             text: entity
-          }
+          };
         };
         $(this).css('width', '100%').select2(config);
-      })
+      });
     }
   };
 

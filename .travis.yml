@@ -85,10 +85,7 @@ env:
     # This needs to match your .coveralls.yml file.
     - DRUPAL_TI_COVERAGE_FILE="build/logs/clover.xml"
 
-
     - MINK_DRIVER_ARGS_WEBDRIVER='["chrome", null, "http://localhost:4444/wd/hub"]'
-    - SIMPLETEST_BASE_URL="http://127.0.0.1:8080"
-    - SIMPLETEST_DB="sqlite://localhost/sites/default/files/.ht.sqlite"
 
     # Debug options
     #- DRUPAL_TI_DEBUG="-x -v"
@@ -128,9 +125,13 @@ install:
 before_script:
   - drupal-ti before_script
   # Update from PHPUnit 4.x to 6.x as required by Drupal 8.6.x.
-  - composer run-script drupal-phpunit-upgrade --working-dir=/home/travis/build/thunder/drupal-8/drupal --no-interaction
-  #- drupal-ti --include scripts/travis/before/runners/phpunit-core/before_script.sh
-
+  - cd /home/travis/build/thunder/drupal-8/drupal
+  - composer run-script drupal-phpunit-upgrade --no-interaction
+  - docker run -d -p 4444:4444 -v /dev/shm:/dev/shm --net=host selenium/standalone-chrome
+  - mkdir libraries
+  - wget https://github.com/select2/select2/archive/master.zip
+  - unzip  master.zip -d libraries
+  - mv libraries/select2-master libraries/select2
 
 script:
   - drupal-ti script

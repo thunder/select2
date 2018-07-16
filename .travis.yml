@@ -124,6 +124,7 @@ before_script:
   - drupal-ti before_script
 
 script:
+  - composer run-script drupal-phpunit-upgrade
   - drupal-ti script
 
 after_script:

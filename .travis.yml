@@ -11,7 +11,7 @@ cache:
   - "$HOME/.drush/cache"
   - "$HOME/travis-phantomjs"
 
-sudo: false
+sudo: required
 
 php:
   - 7.1

@@ -125,8 +125,9 @@ before_script:
 
 script:
   - pwd
-  - cd $DRUPAL_TI_DRUPAL_DIR
+  - cd "$DRUPAL_TI_DRUPAL_DIR"
   - pwd
+  - ls -al
   - composer run-script drupal-phpunit-upgrade
   - cd -
   - drupal-ti script

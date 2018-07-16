@@ -68,13 +68,13 @@ env:
     # This is used to setup Xvfb.
     - DRUPAL_TI_BEHAT_SCREENSIZE_COLOR="1280x1024x16"
     # The version of selenium that should be used.
-    - DRUPAL_TI_BEHAT_SELENIUM_VERSION="2.48.2"
+    - DRUPAL_TI_BEHAT_SELENIUM_VERSION="3.13.0"
     # Set DRUPAL_TI_BEHAT_DRIVER to "selenium" to use "firefox" or "chrome" here.
     - DRUPAL_TI_BEHAT_DRIVER="selenium"
     - DRUPAL_TI_BEHAT_BROWSER="chrome"
 
     # PHPUnit specific commandline arguments.
-    - DRUPAL_TI_PHPUNIT_ARGS="--verbose --debug"
+    - DRUPAL_TI_PHPUNIT_ARGS="--verbose --debug --stop-on-failure"
     # Specifying the phpunit-core src/ directory is useful when e.g. a vendor/
     # directory is present in the module directory, which phpunit would then
     # try to find tests in. This option is relative to $TRAVIS_BUILD_DIR.

@@ -121,10 +121,11 @@ install:
   - drupal-ti install
 
 before_script:
-  - echo "$DRUPAL_TI_DRUPAL_DIR"
   - drupal-ti before_script
   # Update from PHPUnit 4.x to 6.x as required by Drupal 8.6.x.
   - composer run-script drupal-phpunit-upgrade --working-dir=/home/travis/build/thunder/drupal-8/drupal --no-interaction
+  - drupal_ti_ensure_xvfb
+  - drupal_ti_ensure_webdriver
 
 script:
   - drupal-ti script

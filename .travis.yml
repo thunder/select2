@@ -87,6 +87,8 @@ env:
 
 
     - MINK_DRIVER_ARGS_WEBDRIVER='["chrome", null, "http://localhost:4444/wd/hub"]'
+    - SIMPLETEST_BASE_URL="http://127.0.0.1:8080"
+    - SIMPLETEST_DB="sqlite://localhost/sites/default/files/.ht.sqlite"
 
     # Debug options
     #- DRUPAL_TI_DEBUG="-x -v"

@@ -86,8 +86,12 @@ abstract class Select2JavascriptTestBase extends WebDriverTestBase {
   }
 
   /**
-   * @param $field
-   * @param $key
+   * Selects an option in a select2 widget.
+   *
+   * @param string $field
+   *   Name of the field.
+   * @param array $keys
+   *   Values for the field.
    */
   protected function selectOption($field, array $keys) {
     $this->getSession()->executeScript("jQuery('#$field').val(['" . implode("', '", $keys) . "'])");

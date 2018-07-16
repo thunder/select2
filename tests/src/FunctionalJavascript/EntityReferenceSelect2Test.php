@@ -27,9 +27,8 @@ class EntityReferenceSelect2Test extends Select2JavascriptTestBase {
       'handler_settings' => [
         'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
         'auto_create' => FALSE,
-      ]
+      ],
     ], 'select2_entity_reference', ['autocomplete' => TRUE]);
-
 
     EntityTestMulRevPub::create(['name' => 'foo'])->save();
     EntityTestMulRevPub::create(['name' => 'bar'])->save();
@@ -57,15 +56,14 @@ class EntityReferenceSelect2Test extends Select2JavascriptTestBase {
   public function testMultipleAutocomplete() {
     $this->createField('select2', 'node', 'test', 'entity_reference', [
       'target_type' => 'entity_test_mulrevpub',
-      'cardinality' => -1
+      'cardinality' => -1,
     ], [
       'handler' => 'default:entity_test_mulrevpub',
       'handler_settings' => [
         'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
         'auto_create' => FALSE,
-      ]
+      ],
     ], 'select2_entity_reference', ['autocomplete' => TRUE]);
-
 
     EntityTestMulRevPub::create(['name' => 'foo'])->save();
     EntityTestMulRevPub::create(['name' => 'bar'])->save();
@@ -99,13 +97,13 @@ class EntityReferenceSelect2Test extends Select2JavascriptTestBase {
   public function testSingleAutocreation() {
     $this->createField('select2', 'node', 'test', 'entity_reference', [
       'target_type' => 'entity_test_mulrevpub',
-      'cardinality' => 1
+      'cardinality' => 1,
     ], [
       'handler' => 'default:entity_test_mulrevpub',
       'handler_settings' => [
         'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
         'auto_create' => TRUE,
-      ]
+      ],
     ], 'select2_entity_reference');
 
     $page = $this->getSession()->getPage();
@@ -129,13 +127,13 @@ class EntityReferenceSelect2Test extends Select2JavascriptTestBase {
   public function testMultipleAutocreation() {
     $this->createField('select2', 'node', 'test', 'entity_reference', [
       'target_type' => 'entity_test_mulrevpub',
-      'cardinality' => -1
+      'cardinality' => -1,
     ], [
       'handler' => 'default:entity_test_mulrevpub',
       'handler_settings' => [
         'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
         'auto_create' => TRUE,
-      ]
+      ],
     ], 'select2_entity_reference');
 
     $page = $this->getSession()->getPage();

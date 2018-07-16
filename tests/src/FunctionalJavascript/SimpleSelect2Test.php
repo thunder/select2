@@ -86,7 +86,7 @@ class SimpleSelect2Test extends Select2JavascriptTestBase {
         'bar' => 'Bar',
         'gaga' => 'Gaga',
       ],
-      'cardinality' => -1
+      'cardinality' => -1,
     ], [], 'select2', []);
 
     $page = $this->getSession()->getPage();
@@ -125,7 +125,7 @@ class SimpleSelect2Test extends Select2JavascriptTestBase {
         'bar' => 'Bar',
         'gaga' => 'Gaga',
       ],
-      'cardinality' => 2
+      'cardinality' => 2,
     ], [], 'select2', []);
 
     $page = $this->getSession()->getPage();

@@ -64,6 +64,7 @@ class Select2EntityReference extends Select2Widget {
     $element['#selection_settings'] = $this->getFieldSetting('handler_settings') + ['match_operator' => 'CONTAINS'];
     $element['#autocreate'] = isset($this->getFieldSetting('handler_settings')['auto_create']) ? $this->getFieldSetting('handler_settings')['auto_create'] : FALSE;
     $element['#autocomplete'] = $this->getSetting('autocomplete');
+    $element['#multiple'] = $this->multiple && (count($this->options) > 1 || $element['#autocreate']);
 
     return $element;
   }

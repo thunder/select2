@@ -93,4 +93,69 @@ class EntityReferenceSelect2Test extends Select2JavascriptTestBase {
     $this->assertArraySubset([['target_id' => 1], ['target_id' => 3]], $node->select2->getValue());
   }
 
+  /**
+   * Test autocreation for a single value field.
+   */
+  public function testSingleAutocreation() {
+    $this->createField('select2', 'node', 'test', 'entity_reference', [
+      'target_type' => 'entity_test_mulrevpub',
+      'cardinality' => 1
+    ], [
+      'handler' => 'default:entity_test_mulrevpub',
+      'handler_settings' => [
+        'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
+        'auto_create' => TRUE,
+      ]
+    ], 'select2_entity_reference');
+
+    $page = $this->getSession()->getPage();
+
+    $this->drupalGet('/node/add/test');
+    $page->fillField('title[0][value]', 'Test node');
+
+    $this->click('.form-item-select2 .select2-selection.select2-selection--single');
+    $page->find('css', '.select2-search__field')->setValue('New value');
+    $page->find('css', '.select2-results__option--highlighted')->click();
+    $page->pressButton('Save');
+
+    $node = $this->getNodeByTitle('Test node', TRUE);
+    $this->assertArraySubset([['target_id' => 1]], $node->select2->getValue());
+    $this->assertNotEmpty(EntityTestMulRevPub::load(1));
+  }
+
+  /**
+   * Test autocreation for a multi value field.
+   */
+  public function testMultipleAutocreation() {
+    $this->createField('select2', 'node', 'test', 'entity_reference', [
+      'target_type' => 'entity_test_mulrevpub',
+      'cardinality' => -1
+    ], [
+      'handler' => 'default:entity_test_mulrevpub',
+      'handler_settings' => [
+        'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
+        'auto_create' => TRUE,
+      ]
+    ], 'select2_entity_reference');
+
+    $page = $this->getSession()->getPage();
+
+    $this->drupalGet('/node/add/test');
+    $page->fillField('title[0][value]', 'Test node');
+    $this->click('.form-item-select2 .select2-selection.select2-selection--multiple');
+    $page->find('css', '.select2-search__field')->setValue('New value 1');
+    $page->find('css', '.select2-results__option--highlighted')->click();
+
+    $this->click('.form-item-select2 .select2-selection.select2-selection--multiple');
+    $page->find('css', '.select2-search__field')->setValue('New value 2');
+    $page->find('css', '.select2-results__option--highlighted')->click();
+
+    $page->pressButton('Save');
+
+    $node = $this->getNodeByTitle('Test node', TRUE);
+    $this->assertArraySubset([['target_id' => 1], ['target_id' => 2]], $node->select2->getValue());
+    $this->assertNotEmpty(EntityTestMulRevPub::load(1));
+    $this->assertNotEmpty(EntityTestMulRevPub::load(2));
+  }
+
 }

@@ -30,6 +30,7 @@ class Select2 extends Select {
     $info['#selection_settings'] = [];
     $info['#autocomplete'] = FALSE;
     $info['#autocreate'] = FALSE;
+    $info['#cardinality'] = 0;
     $info['#pre_render'][] = [$class, 'preRenderAutocomplete'];
 
     return $info;
@@ -49,28 +50,57 @@ class Select2 extends Select {
     }
 
     if ($element['#autocreate'] && $element['#target_type']) {
-      $options = $element['#selection_settings'] + [
-        'target_type' => $element['#target_type'],
-        'handler' => $element['#selection_handler'],
-      ];
-      /** @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface $handler */
-      $handler = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($options);
-      if (!$handler instanceof SelectionWithAutocreateInterface) {
-        return $element;
+      if (!is_array($element['#value'])) {
+        if (!isset($element['#options'][$element['#value']])) {
+          list ($entity_id, $label) = static::createNewEntity($element, $element['#value']);
+          $element['#options'][$entity_id] = $label;
+          $element['#value'] = $entity_id;
+        }
       }
-      foreach ($element['#value'] as $id) {
-        if (!isset($element['#options'][$id])) {
-          $label = substr($id, 4);
-          $bundle = reset($element['#selection_settings']['target_bundles']);
-          $entity = $handler->createNewEntity($element['#target_type'], $bundle, $label, \Drupal::currentUser()->id());
-          $entity->save();
-          $element['#options'][$entity->id()] = $label;
-          unset($element['#value'][$id]);
-          $element['#value'][$entity->id()] = $entity->id();
+      else {
+        foreach ($element['#value'] as $id) {
+          if (!isset($element['#options'][$id])) {
+            list ($entity_id, $label) = static::createNewEntity($element, $id);
+            $element['#options'][$entity_id] = $label;
+            unset($element['#value'][$id]);
+            $element['#value'][$entity_id] = $entity_id;
+          }
         }
       }
     }
     return $element;
+  }
+
+  /**
+   * Create a new entity.
+   *
+   * @param array $element
+   *   The form element.
+   * @param string $input
+   *   The input for the new entity.
+   *
+   * @return array
+   *   New id and label.
+   *
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   */
+  protected static function createNewEntity(array $element, $input) {
+    $options = $element['#selection_settings'] + [
+      'target_type' => $element['#target_type'],
+      'handler' => $element['#selection_handler'],
+    ];
+    /** @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface $handler */
+    $handler = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($options);
+    if (!$handler instanceof SelectionWithAutocreateInterface) {
+      return $element;
+    }
+
+    $label = substr($input, 4);
+    $bundle = reset($element['#selection_settings']['target_bundles']);
+    $entity = $handler->createNewEntity($element['#target_type'], $bundle, $label, \Drupal::currentUser()->id());
+    $entity->save();
+
+    return [$entity->id(), $label];
   }
 
   /**
@@ -100,10 +130,12 @@ class Select2 extends Select {
     $settings = [
       'multiple' => $multiple,
       'placeholder' => $required ? new TranslatableMarkup('- Select -') : new TranslatableMarkup('- None -'),
-      'allowClear' => !$multiple && !$required ? TRUE : FALSE,
+      'allowClear' => !$required,
       'dir' => \Drupal::languageManager()->getCurrentLanguage()->getDirection(),
       'language' => \Drupal::languageManager()->getCurrentLanguage()->getId(),
       'tags' => $element['#autocreate'],
+      'theme' => 'seven',
+      'maximumSelectionLength' => $multiple ? $element['#cardinality'] : 0,
     ];
 
     $selector = $element['#attributes']['data-drupal-selector'];

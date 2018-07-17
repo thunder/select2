@@ -43,7 +43,7 @@ env:
     - DRUPAL_TI_CORE_BRANCH="8.6.x"
 
     # The drush version to use, by default: drush/drush:8.0.*
-    # - DRUPAL_TI_DRUSH_VERSION="drush/drush:~9.0"
+    - DRUPAL_TI_DRUSH_VERSION="drush/drush:8.1.*"
 
     # The installation profile to use:
     #- DRUPAL_TI_INSTALL_PROFILE="testing"

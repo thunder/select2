@@ -9,3 +9,6 @@ field.widget.settings.select2_entity_reference:
     autocomplete:
       type: boolean
       label: 'Autocomplete'
+    show_publish_status:
+      type: boolean
+      label: 'Show publish status'

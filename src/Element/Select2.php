@@ -31,6 +31,7 @@ class Select2 extends Select {
     $info['#autocomplete'] = FALSE;
     $info['#autocreate'] = FALSE;
     $info['#additional_properties'] = [];
+    $info['#features'] = [];
     $info['#cardinality'] = 0;
     $info['#pre_render'][] = [$class, 'preRenderAutocomplete'];
 
@@ -147,9 +148,15 @@ class Select2 extends Select {
       'tags' => $element['#autocreate'],
       'theme' => 'seven',
       'items' => array_values($options),
-      'autocreate_status' => $element['#autocreate'] ? $element['#autocreate']['#status'] : TRUE,
       'maximumSelectionLength' => $multiple ? $element['#cardinality'] : 0,
+      'features' => $element['#features'] ? array_flip($element['#features']) : [],
     ];
+
+    if (isset($element['#autocreate']['#status'])) {
+      $settings['features']['show_publish_status'] = [
+        'autocreate_status' => $element['#autocreate']['#status'],
+      ];
+    }
 
     $selector = $element['#attributes']['data-drupal-selector'];
     $element['#attributes']['class'][] = 'select2-widget';

@@ -39,6 +39,8 @@ class Select2EntityReference extends Select2Widget implements ContainerFactoryPl
    */
   protected $entityTypeManager;
 
+  protected $entityDefinition;
+
   /**
    * Constructs a new Select2EntityReference object.
    *
@@ -61,6 +63,7 @@ class Select2EntityReference extends Select2Widget implements ContainerFactoryPl
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
     $this->currentUser = $current_user;
     $this->entityTypeManager = $entity_type_manager;
+    $this->entityDefinition = $this->entityTypeManager->getDefinition($this->fieldDefinition->getSetting('target_type'));
   }
 
   /**
@@ -84,6 +87,7 @@ class Select2EntityReference extends Select2Widget implements ContainerFactoryPl
   public static function defaultSettings() {
     return [
       'autocomplete' => FALSE,
+      'show_publish_status' => FALSE,
     ] + parent::defaultSettings();
   }
 
@@ -99,6 +103,14 @@ class Select2EntityReference extends Select2Widget implements ContainerFactoryPl
       '#description' => t('Options will be lazy loaded. This is recommended for lists with a lot of values.'),
     ];
 
+    $element['show_publish_status'] = [
+      '#type' => 'checkbox',
+      '#title' => t('Show publish status'),
+      '#default_value' => $this->getSetting('show_publish_status'),
+      '#description' => t('Add HTML classes to the option element to indicate if the referenced entity is published/unpublished.'),
+      '#access' => $this->entityDefinition->entityClassImplements(EntityPublishedInterface::class),
+    ];
+
     return $element;
   }
 
@@ -107,8 +119,8 @@ class Select2EntityReference extends Select2Widget implements ContainerFactoryPl
    */
   public function settingsSummary() {
     $summary = parent::settingsSummary();
-    $autocomplete = $this->getSetting('autocomplete');
-    $summary[] = t('Autocomplete: @autocomplete', ['@autocomplete' => $autocomplete ? $this->t('On') : $this->t('Off')]);
+    $summary[] = t('Autocomplete: @autocomplete', ['@autocomplete' => $this->getSetting('autocomplete') ? $this->t('On') : $this->t('Off')]);
+    $summary[] = t('Show publish status: @show_publish_status', ['@show_publish_status' => $this->getSetting('show_publish_status') ? $this->t('On') : $this->t('Off')]);
     return $summary;
   }
 
@@ -121,29 +133,31 @@ class Select2EntityReference extends Select2Widget implements ContainerFactoryPl
     $element['#target_type'] = $this->getFieldSetting('target_type');
     $element['#selection_handler'] = $this->getFieldSetting('handler');
     $element['#selection_settings'] = $this->getFieldSetting('handler_settings') + ['match_operator' => 'CONTAINS'];
-    $element['#autocreate'] = isset($this->getFieldSetting('handler_settings')['auto_create']) ? $this->getFieldSetting('handler_settings')['auto_create'] : FALSE;
+    $element['#autocreate'] = $this->getFieldSetting('handler_settings')['auto_create'] ? ['#uid' => $this->currentUser->id()] : FALSE;
     $element['#autocomplete'] = $this->getSetting('autocomplete');
     $element['#multiple'] = $this->multiple && (count($this->options) > 1 || $element['#autocreate']);
 
-    if ($element['#autocreate']['auto_create']) {
-      $status = TRUE;
-      $definition = $this->entityTypeManager->getDefinition($element['#target_type']);
-      if ($definition->entityClassImplements(EntityPublishedInterface::class)) {
-        $bundle = reset($element['#selection_settings']['target_bundles']);
-        /** @var \Drupal\Core\Entity\EntityPublishedInterface $entity */
-        $entity = $this->entityTypeManager->getStorage($element['#target_type'])->create([$definition->getKey('bundle') => $bundle]);
-        $status = $entity->isPublished();
-      }
+    // Prevent loading entities when additional properties are not needed.
+    if (!$this->getSetting('show_publish_status')) {
+      return $element;
+    }
 
-      $element['#autocreate'] = [
-        '#uid' => $this->currentUser->id(),
-        '#status' => $status,
-      ];
+    $element['#features'][] = 'show_publish_status';
+
+    if ($element['#autocreate'] && $this->getSetting('show_publish_status')) {
+      $bundle = reset($element['#selection_settings']['target_bundles']);
+      /** @var \Drupal\Core\Entity\EntityPublishedInterface $entity */
+      $entity = $this->entityTypeManager->getStorage($element['#target_type'])->create([$this->entityDefinition->getKey('bundle') => $bundle]);
+      $element['#autocreate']['status'] = $entity->isPublished();
     }
 
     $entities = $this->entityTypeManager->getStorage($element['#target_type'])->loadMultiple(array_keys($this->getOptions($items->getEntity())));
     foreach ($entities as $id => $entity) {
-      $element['#additional_properties'][$id] = ['published' => ($entity instanceof EntityPublishedInterface ? $entity->isPublished() : TRUE)];
+      $properties = [];
+      if ($entity instanceof EntityPublishedInterface && $this->getSetting('show_publish_status')) {
+        $properties['published'] = $entity->isPublished();
+      }
+      $element['#additional_properties'][$id] = $properties;
     }
 
     return $element;

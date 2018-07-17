@@ -14,15 +14,24 @@
           if (term === '') {
             return null;
           }
-          return {
+
+          var tag = {
             id: '$ID:' + term,
-            text: term,
-            published: config.autocreate_status
+            text: term
           };
+
+          if (config.features.hasOwnProperty('show_publish_status')) {
+            tag.published = config.features.show_publish_status.autocreate_status;
+          }
+
+          return tag;
         };
         config.templateSelection = config.templateResult = function (option, item) {
           if (item) {
-            $(item).addClass(isPublished(option) ? 'published' : 'unpublished');
+            if (config.features.hasOwnProperty('show_publish_status')) {
+              $(item).addClass(isPublished(option) ? 'published' : 'unpublished');
+            }
+
           }
           return option.text;
         };
@@ -35,17 +44,15 @@
         var that = $(this);
         $.each(config.items, function (index, data) {
           var option = new Option(data.text, data.id, data.selected, data.selected);
-          $(option).attr('data-published', data.published);
+          if (config.features.hasOwnProperty('show_publish_status')) {
+            $(option).attr('data-published', data.published);
+          }
           that.append(option);
         });
       });
 
       function isPublished(option) {
-        var published = $(option.element).attr('data-published');
-        if (option.hasOwnProperty('published') || (typeof published !== 'undefined' && published !== false)) {
-          return option.published === true || published === 'true';
-        }
-        return true;
+        return option.published === true || $(option.element).attr('data-published') === 'true';
       }
 
     }

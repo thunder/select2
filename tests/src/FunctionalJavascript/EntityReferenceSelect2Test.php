@@ -30,7 +30,7 @@ class EntityReferenceSelect2Test extends Select2JavascriptTestBase {
       ],
     ], 'select2_entity_reference', ['autocomplete' => TRUE]);
 
-    EntityTestMulRevPub::create(['name' => 'foo'])->save();
+    EntityTestMulRevPub::create(['name' => 'foo'])->setPublished()->save();
     EntityTestMulRevPub::create(['name' => 'bar'])->save();
     EntityTestMulRevPub::create(['name' => 'gaga'])->save();
 
@@ -42,8 +42,8 @@ class EntityReferenceSelect2Test extends Select2JavascriptTestBase {
     $this->click('.form-item-select2 .select2-selection.select2-selection--single');
 
     $page->find('css', '.select2-search__field')->setValue('fo');
-    $assert_session->waitForElement('xpath', '//li[@class="select2-results__option select2-results__option--highlighted" and text()="foo"]');
-    $page->find('xpath', '//li[@class="select2-results__option select2-results__option--highlighted" and text()="foo"]')->click();
+    $assert_session->waitForElement('xpath', '//li[@class="select2-results__option published select2-results__option--highlighted" and text()="foo"]');
+    $page->find('xpath', '//li[@class="select2-results__option published select2-results__option--highlighted" and text()="foo"]')->click();
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node', TRUE);
@@ -65,9 +65,9 @@ class EntityReferenceSelect2Test extends Select2JavascriptTestBase {
       ],
     ], 'select2_entity_reference', ['autocomplete' => TRUE]);
 
-    EntityTestMulRevPub::create(['name' => 'foo'])->save();
+    EntityTestMulRevPub::create(['name' => 'foo'])->setPublished()->save();
     EntityTestMulRevPub::create(['name' => 'bar'])->save();
-    EntityTestMulRevPub::create(['name' => 'gaga'])->save();
+    EntityTestMulRevPub::create(['name' => 'gaga'])->setUnpublished()->save();
 
     $page = $this->getSession()->getPage();
     $assert_session = $this->assertSession();
@@ -77,13 +77,13 @@ class EntityReferenceSelect2Test extends Select2JavascriptTestBase {
 
     $this->click('.form-item-select2 .select2-selection.select2-selection--multiple');
     $page->find('css', '.select2-search__field')->setValue('fo');
-    $assert_session->waitForElement('xpath', '//li[@class="select2-results__option select2-results__option--highlighted" and text()="foo"]');
-    $page->find('xpath', '//li[@class="select2-results__option select2-results__option--highlighted" and text()="foo"]')->click();
+    $assert_session->waitForElement('xpath', '//li[@class="select2-results__option published select2-results__option--highlighted" and text()="foo"]');
+    $page->find('xpath', '//li[@class="select2-results__option published select2-results__option--highlighted" and text()="foo"]')->click();
 
     $this->click('.form-item-select2 .select2-selection.select2-selection--multiple');
     $page->find('css', '.select2-search__field')->setValue('ga');
-    $assert_session->waitForElement('xpath', '//li[@class="select2-results__option select2-results__option--highlighted" and text()="gaga"]');
-    $page->find('xpath', '//li[@class="select2-results__option select2-results__option--highlighted" and text()="gaga"]')->click();
+    $assert_session->waitForElement('xpath', '//li[@class="select2-results__option unpublished select2-results__option--highlighted" and text()="gaga"]');
+    $page->find('xpath', '//li[@class="select2-results__option unpublished select2-results__option--highlighted" and text()="gaga"]')->click();
 
     $page->pressButton('Save');
 

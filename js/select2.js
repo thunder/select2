@@ -15,12 +15,12 @@
             return null;
           }
           return {
-            id: "$ID:" + term,
+            id: '$ID:' + term,
             text: term,
             published: config.autocreate_status
-          }
+          };
         };
-        config.templateSelection = config.templateResult= function (option, item) {
+        config.templateSelection = config.templateResult = function (option, item) {
           if (item) {
             $(item).addClass(isPublished(option) ? 'published' : 'unpublished');
           }
@@ -33,7 +33,7 @@
         // the data property doesn't work and we need a way to add custom
         // properties.
         var that = $(this);
-        $.each(config.items, function(index, data) {
+        $.each(config.items, function (index, data) {
           var option = new Option(data.text, data.id, data.selected, data.selected);
           $(option).attr('data-published', data.published);
           that.append(option);
@@ -42,8 +42,8 @@
 
       function isPublished(option) {
         var published = $(option.element).attr('data-published');
-        if (option.hasOwnProperty('published') || (typeof published !== typeof undefined && published !== false)) {
-          return option.published === true || published === 'true'
+        if (option.hasOwnProperty('published') || (typeof published !== 'undefined' && published !== false)) {
+          return option.published === true || published === 'true';
         }
         return true;
       }

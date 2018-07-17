@@ -11,7 +11,7 @@ use Drupal\Core\Form\FormStateInterface;
  *
  * @FieldWidget(
  *   id = "select2",
- *   label = @Translation("Select2 (simple select)"),
+ *   label = @Translation("Select2"),
  *   field_types = {
  *     "list_integer",
  *     "list_float",
@@ -25,18 +25,10 @@ class Select2Widget extends OptionsSelectWidget {
   /**
    * {@inheritdoc}
    */
-  public static function defaultSettings() {
-    return [
-      'autocomplete' => FALSE,
-    ] + parent::defaultSettings();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $element = parent::formElement($items, $delta, $element, $form, $form_state);
     $element['#type'] = 'select2';
+    $element['#cardinality'] = $this->fieldDefinition->getFieldStorageDefinition()->getCardinality();
 
     return $element;
   }

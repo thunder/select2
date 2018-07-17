@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @FieldWidget(
  *   id = "select2_entity_reference",
- *   label = @Translation("Select2 (simple select)"),
+ *   label = @Translation("Select2"),
  *   field_types = {
  *     "entity_reference",
  *   },
@@ -81,6 +81,15 @@ class Select2EntityReference extends Select2Widget implements ContainerFactoryPl
   /**
    * {@inheritdoc}
    */
+  public static function defaultSettings() {
+    return [
+      'autocomplete' => FALSE,
+    ] + parent::defaultSettings();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function settingsForm(array $form, FormStateInterface $form_state) {
     $element = parent::settingsForm($form, $form_state);
     $element['autocomplete'] = [
@@ -112,7 +121,11 @@ class Select2EntityReference extends Select2Widget implements ContainerFactoryPl
     $element['#target_type'] = $this->getFieldSetting('target_type');
     $element['#selection_handler'] = $this->getFieldSetting('handler');
     $element['#selection_settings'] = $this->getFieldSetting('handler_settings') + ['match_operator' => 'CONTAINS'];
-    if ($this->getFieldSetting('handler_settings')['auto_create']) {
+    $element['#autocreate'] = isset($this->getFieldSetting('handler_settings')['auto_create']) ? $this->getFieldSetting('handler_settings')['auto_create'] : FALSE;
+    $element['#autocomplete'] = $this->getSetting('autocomplete');
+    $element['#multiple'] = $this->multiple && (count($this->options) > 1 || $element['#autocreate']);
+
+    if ($element['#autocreate']['auto_create']) {
       $status = TRUE;
       $definition = $this->entityTypeManager->getDefinition($element['#target_type']);
       if ($definition->entityClassImplements(EntityPublishedInterface::class)) {
@@ -131,10 +144,6 @@ class Select2EntityReference extends Select2Widget implements ContainerFactoryPl
     $entities = $this->entityTypeManager->getStorage($element['#target_type'])->loadMultiple(array_keys($this->getOptions($items->getEntity())));
     foreach ($entities as $id => $entity) {
       $element['#additional_properties'][$id] = ['published' => ($entity instanceof EntityPublishedInterface ? $entity->isPublished() : TRUE)];
-    }
-
-    if ($this->getSetting('autocomplete')) {
-      $element['#autocomplete'] = TRUE;
     }
 
     return $element;

@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * @file
+ * This is the Select2 module.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function select2_requirements($phase) {
+  $requirements = [];
+
+  if ($phase == 'runtime') {
+    /** @var \Drupal\Core\Asset\LibraryDiscovery $lib */
+    $lib = \Drupal::service('library.discovery');
+    if ((function_exists('libraries_get_path') && libraries_get_path('select2')) || (file_exists($lib->getLibraryByName('select2', 'select2.min')['js'][0]['data']))) {
+      $requirements['select2'] = [
+        'title' => 'select2',
+        'value' => t('Select2 library found'),
+        'severity' => REQUIREMENT_OK,
+      ];
+    }
+    else {
+      $requirements['select2'] = [
+        'title' => 'select2',
+        'value' => t("Select2 library doesn't exists"),
+        'description' => t('Make sure that the select2 lib is placed in the library folder. You can download the release of your choice from <a href=":link" target="_blank">GitHub</a>.', [':link' => 'https://github.com/select2/select2/tags']),
+        'severity' => REQUIREMENT_ERROR,
+      ];
+    }
+  }
+  return $requirements;
+}

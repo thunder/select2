@@ -42,8 +42,8 @@ class EntityReferenceSelect2Test extends Select2JavascriptTestBase {
     $this->click('.form-item-select2 .select2-selection.select2-selection--single');
 
     $page->find('css', '.select2-search__field')->setValue('fo');
-    $assert_session->waitForElement('xpath', '//li[@class="select2-results__option published select2-results__option--highlighted" and text()="foo"]');
-    $page->find('xpath', '//li[@class="select2-results__option published select2-results__option--highlighted" and text()="foo"]')->click();
+    $assert_session->waitForElement('xpath', '//li[@class="select2-results__option select2-results__option--highlighted" and text()="foo"]');
+    $page->find('xpath', '//li[@class="select2-results__option select2-results__option--highlighted" and text()="foo"]')->click();
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node', TRUE);
@@ -63,7 +63,7 @@ class EntityReferenceSelect2Test extends Select2JavascriptTestBase {
         'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
         'auto_create' => FALSE,
       ],
-    ], 'select2_entity_reference', ['autocomplete' => TRUE]);
+    ], 'select2_entity_reference', ['autocomplete' => TRUE, 'show_publish_status' => TRUE]);
 
     EntityTestMulRevPub::create(['name' => 'foo'])->setPublished()->save();
     EntityTestMulRevPub::create(['name' => 'bar'])->save();

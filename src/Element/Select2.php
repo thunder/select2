@@ -113,31 +113,6 @@ class Select2 extends Select {
     $required = isset($element['#states']['required']) ? TRUE : $element['#required'];
     $multiple = $element['#multiple'];
 
-    $options = [];
-    foreach ($element['#options'] as $id => $label) {
-      $options[$id] = [
-        'id' => $id,
-        'text' => $label,
-        'selected' => in_array($id, $element['#default_value']),
-      ];
-      if (!empty($element['#additional_properties'][$id])) {
-        $options[$id] = array_merge($options[$id], $element['#additional_properties'][$id]);
-      }
-    }
-    // Clear rendered options, we add them with JS.
-    $element['#options'] = [];
-
-    // Set only the default values to the options.
-    if ($element['#autocomplete'] && $element['#target_type']) {
-      // Reduce options to the preselected ones and bring them in the correct
-      // order.
-      $default_values = [];
-      foreach ($element['#default_value'] as $value) {
-        $default_values[$value] = $options[$value];
-      }
-      $options = $default_values;
-    }
-
     // Defining the select2 configuration.
     $settings = [
       'multiple' => $multiple,
@@ -147,7 +122,7 @@ class Select2 extends Select {
       'language' => \Drupal::languageManager()->getCurrentLanguage()->getId(),
       'tags' => $element['#autocreate'],
       'theme' => 'seven',
-      'items' => array_values($options),
+      'items' => array_values(static::getOptions($element)),
       'maximumSelectionLength' => $multiple ? $element['#cardinality'] : 0,
       'features' => $element['#features'] ? array_flip($element['#features']) : [],
     ];
@@ -162,9 +137,48 @@ class Select2 extends Select {
     $element['#attributes']['class'][] = 'select2-widget';
     $element['#attached']['drupalSettings']['select2'][$selector] = $settings;
 
+    // Clear rendered options, we add them with JS.
+    $element['#options'] = [];
+
     // Adding the select2 library.
     $element['#attached']['library'][] = 'select2/select2';
     return $element;
+  }
+
+  /**
+   * Get options array prepared for Select2.
+   *
+   * @param array $element
+   *   The render element.
+   *
+   * @return array
+   *   Array of options.
+   */
+  protected static function getOptions(array $element) {
+    $options = [];
+    foreach ($element['#options'] as $id => $label) {
+      $options[$id] = [
+        'id' => $id,
+        'text' => $label,
+        'selected' => in_array($id, $element['#default_value']),
+      ];
+      if (!empty($element['#additional_properties'][$id])) {
+        $options[$id] = array_merge($options[$id], $element['#additional_properties'][$id]);
+      }
+    }
+
+    // Set only the default values to the options.
+    if ($element['#autocomplete'] && $element['#target_type']) {
+      // Reduce options to the preselected ones and bring them in the correct
+      // order.
+      $default_values = [];
+      foreach ($element['#default_value'] as $value) {
+        $default_values[$value] = $options[$value];
+      }
+      $options = $default_values;
+    }
+
+    return $options;
   }
 
   /**

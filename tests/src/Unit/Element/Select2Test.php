@@ -53,6 +53,7 @@ class Select2Test extends UnitTestCase {
       '#autocomplete' => FALSE,
       '#cardinality' => 0,
       '#default_value' => [],
+      '#features' => [],
     ];
     $form_state = $this->prophesize(FormStateInterface::class)->reveal();
     $complete_form = [];

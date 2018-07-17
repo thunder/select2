@@ -23,7 +23,6 @@
           if (config.features.hasOwnProperty('show_publish_status')) {
             tag.published = config.features.show_publish_status.autocreate_status;
           }
-
           return tag;
         };
         config.templateSelection = config.templateResult = function (option, item) {
@@ -31,7 +30,6 @@
             if (config.features.hasOwnProperty('show_publish_status')) {
               $(item).addClass(isPublished(option) ? 'published' : 'unpublished');
             }
-
           }
           return option.text;
         };

@@ -120,7 +120,9 @@ class Select2EntityReference extends Select2Widget implements ContainerFactoryPl
   public function settingsSummary() {
     $summary = parent::settingsSummary();
     $summary[] = t('Autocomplete: @autocomplete', ['@autocomplete' => $this->getSetting('autocomplete') ? $this->t('On') : $this->t('Off')]);
-    $summary[] = t('Show publish status: @show_publish_status', ['@show_publish_status' => $this->getSetting('show_publish_status') ? $this->t('On') : $this->t('Off')]);
+    if ($this->entityDefinition->entityClassImplements(EntityPublishedInterface::class)) {
+      $summary[] = t('Show publish status: @show_publish_status', ['@show_publish_status' => $this->getSetting('show_publish_status') ? $this->t('On') : $this->t('Off')]);
+    }
     return $summary;
   }
 
@@ -144,7 +146,7 @@ class Select2EntityReference extends Select2Widget implements ContainerFactoryPl
 
     $element['#features'][] = 'show_publish_status';
 
-    if ($element['#autocreate'] && $this->getSetting('show_publish_status')) {
+    if ($element['#autocreate']) {
       $bundle = reset($element['#selection_settings']['target_bundles']);
       /** @var \Drupal\Core\Entity\EntityPublishedInterface $entity */
       $entity = $this->entityTypeManager->getStorage($element['#target_type'])->create([$this->entityDefinition->getKey('bundle') => $bundle]);
@@ -154,7 +156,7 @@ class Select2EntityReference extends Select2Widget implements ContainerFactoryPl
     $entities = $this->entityTypeManager->getStorage($element['#target_type'])->loadMultiple(array_keys($this->getOptions($items->getEntity())));
     foreach ($entities as $id => $entity) {
       $properties = [];
-      if ($entity instanceof EntityPublishedInterface && $this->getSetting('show_publish_status')) {
+      if ($entity instanceof EntityPublishedInterface) {
         $properties['published'] = $entity->isPublished();
       }
       $element['#additional_properties'][$id] = $properties;

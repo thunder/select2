@@ -9,7 +9,6 @@ cache:
   directories:
   - "$HOME/.composer/cache"
   - "$HOME/.drush/cache"
-  - "$HOME/travis-phantomjs"
 
 sudo: required
 

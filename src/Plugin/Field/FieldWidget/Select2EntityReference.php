@@ -10,7 +10,7 @@ use Drupal\Core\Form\FormStateInterface;
  *
  * @FieldWidget(
  *   id = "select2_entity_reference",
- *   label = @Translation("Select2 (simple select)"),
+ *   label = @Translation("Select2"),
  *   field_types = {
  *     "entity_reference",
  *   },
@@ -18,6 +18,15 @@ use Drupal\Core\Form\FormStateInterface;
  * )
  */
 class Select2EntityReference extends Select2Widget {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function defaultSettings() {
+    return [
+      'autocomplete' => FALSE,
+    ] + parent::defaultSettings();
+  }
 
   /**
    * {@inheritdoc}
@@ -54,10 +63,8 @@ class Select2EntityReference extends Select2Widget {
     $element['#selection_handler'] = $this->getFieldSetting('handler');
     $element['#selection_settings'] = $this->getFieldSetting('handler_settings') + ['match_operator' => 'CONTAINS'];
     $element['#autocreate'] = isset($this->getFieldSetting('handler_settings')['auto_create']) ? $this->getFieldSetting('handler_settings')['auto_create'] : FALSE;
-
-    if ($this->getSetting('autocomplete')) {
-      $element['#autocomplete'] = TRUE;
-    }
+    $element['#autocomplete'] = $this->getSetting('autocomplete');
+    $element['#multiple'] = $this->multiple && (count($this->options) > 1 || $element['#autocreate']);
 
     return $element;
   }

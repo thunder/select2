@@ -81,11 +81,14 @@ class EntityAutocompleteMatcher {
       foreach ($entity_labels as $values) {
         foreach ($values as $entity_id => $label) {
           $entity = $this->entityTypeManager->getStorage($target_type)->load($entity_id);
-          $matches[] = [
+          $match = [
             'id' => $entity_id,
             'text' => $label,
-            'published' => ($entity instanceof EntityPublishedInterface && $entity->isPublished()) || !($entity instanceof EntityPublishedInterface),
           ];
+          if ($entity instanceof EntityPublishedInterface) {
+            $match['published'] = $entity->isPublished();
+          }
+          $matches[] = $match;
         }
       }
     }

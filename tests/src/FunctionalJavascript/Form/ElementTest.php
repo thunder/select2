@@ -2,14 +2,14 @@
 
 namespace Drupal\Tests\select2\FunctionalJavascript\Form;
 
-use Drupal\Tests\select2\FunctionalJavascript\Select2JavascriptTestBase;
+use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 
 /**
  * Tests the select2 element.
  *
  * @group select2
  */
-class ElementTest extends Select2JavascriptTestBase {
+class ElementTest extends WebDriverTestBase {
 
   /**
    * {@inheritdoc}

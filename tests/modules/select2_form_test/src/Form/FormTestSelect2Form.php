@@ -7,7 +7,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
- * Form constructor to test expansion of #type checkboxes and radios.
+ * Test form to test the select2 element.
  *
  * @internal
  */

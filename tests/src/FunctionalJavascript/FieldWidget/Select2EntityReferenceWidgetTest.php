@@ -10,7 +10,7 @@ use Drupal\Tests\select2\FunctionalJavascript\Select2JavascriptTestBase;
  *
  * @group select2
  */
-class Select2EntityReferenceTest extends Select2JavascriptTestBase {
+class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
 
   /**
    * {@inheritdoc}

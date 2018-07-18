@@ -1,11 +1,13 @@
 <?php
 
-namespace Drupal\Tests\select2\FunctionalJavascript;
+namespace Drupal\Tests\select2\FunctionalJavascript\FieldWidget;
+
+use Drupal\Tests\select2\FunctionalJavascript\Select2JavascriptTestBase;
 
 /**
  * Tests select2 simple widget.
  */
-class SimpleSelect2Test extends Select2JavascriptTestBase {
+class Select2WidgetTest extends Select2JavascriptTestBase {
 
   /**
    * Test single field selection.

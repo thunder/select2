@@ -17,7 +17,7 @@ use Drupal\Core\Form\FormStateInterface;
  *   multiple_values = TRUE
  * )
  */
-class Select2EntityReference extends Select2Widget {
+class Select2EntityReferenceWidget extends Select2Widget {
 
   /**
    * {@inheritdoc}

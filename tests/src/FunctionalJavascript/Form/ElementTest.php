@@ -14,7 +14,7 @@ class ElementTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = ['select2_form_test', 'entity_test'];
+  protected static $modules = ['select2_form_test'];
 
   /**
    * Tests select2 optgroups.

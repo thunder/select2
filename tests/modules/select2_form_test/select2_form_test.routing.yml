@@ -4,4 +4,5 @@ select2_form_test.select2:
     _form: '\Drupal\select2_form_test\Form\FormTestSelect2Form'
     _title: 'Select2 form test'
   requirements:
+    # Only for tests used.
     _access: 'TRUE'

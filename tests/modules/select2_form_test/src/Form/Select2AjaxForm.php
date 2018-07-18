@@ -24,12 +24,10 @@ class Select2AjaxForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $customize = FALSE) {
-
     $form['container'] = [
       '#type'       => 'container',
       '#attributes' => ['id' => 'my-container'],
     ];
-
 
     $form['select2_ajax'] = [
       '#type' => 'select2',
@@ -45,22 +43,7 @@ class Select2AjaxForm extends FormBase {
       '#autocreate' => TRUE,
       '#multiple' => TRUE,
     ];
-/*
-    $form['entity'] = [
-      '#type' => 'entity_autocomplete',
-      '#title' => 'Ajax',
-      '#options' => [],
-      '#target_type' => 'entity_test_mulrevpub',
-      '#selection_handler' => 'default:entity_test_mulrevpub',
-      '#selection_settings' => [
-        'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
-        'auto_create' => TRUE,
-        'auto_create_bundle' => 'entity_test_mulrevpub',
-      ],
-      '#autocreate' => ['bundle' => 'entity_test_mulrevpub'],
-      '#multiple' => TRUE,
-    ];
-*/
+
     $form['call_ajax'] = [
       '#type'   => 'submit',
       '#value'  => $this->t('Call ajax'),

@@ -1,0 +1,8 @@
+name: 'Select2 form test'
+type: module
+description: 'Support module for select2 form tests.'
+package: Testing
+version: VERSION
+core: 8.x
+dependencies:
+  - select2

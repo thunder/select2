@@ -1,0 +1,7 @@
+select2_form_test.select2:
+  path: '/form-test-select2'
+  defaults:
+    _form: '\Drupal\select2_form_test\Form\FormTestSelect2Form'
+    _title: 'Select2 form test'
+  requirements:
+    _access: 'TRUE'

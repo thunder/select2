@@ -24,6 +24,8 @@ class ElementTest extends WebDriverTestBase {
 
     $this->click('.form-item-select2-optgroups .select2-selection.select2-selection--single');
 
+    $this->assertNotEmpty($this->assertSession()->waitForElementVisible('css', '.select2-results__group'));
+
     $this->assertSession()->elementTextContains('css', '.select2-results__group', 'Baba');
     $this->assertSession()->elementTextContains('css', 'ul.select2-results__options li.select2-results__option ul.select2-results__options--nested li.select2-results__option', 'Nana');
   }

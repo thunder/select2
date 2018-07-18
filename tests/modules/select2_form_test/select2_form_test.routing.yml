@@ -1,8 +1,8 @@
-select2_form_test.select2:
-  path: '/form-test-select2'
+select2_form_test.optgroup:
+  path: '/select2-optgroup-form'
   defaults:
-    _form: '\Drupal\select2_form_test\Form\FormTestSelect2Form'
-    _title: 'Select2 form test'
+    _form: '\Drupal\select2_form_test\Form\Select2OptgroupForm'
+    _title: 'Select2 optgroup test'
   requirements:
     # Only for tests used.
     _access: 'TRUE'

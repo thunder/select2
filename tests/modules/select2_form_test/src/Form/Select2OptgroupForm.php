@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  *
  * @internal
  */
-class FormTestSelect2Form extends FormBase {
+class Select2OptgroupForm extends FormBase {
 
   /**
    * {@inheritdoc}

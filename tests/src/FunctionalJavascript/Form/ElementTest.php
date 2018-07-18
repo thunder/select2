@@ -14,13 +14,13 @@ class ElementTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = ['select2_form_test'];
+  protected static $modules = ['select2_form_test', 'entity_test'];
 
   /**
    * Tests select2 optgroups.
    */
   public function testOptgroups() {
-    $this->drupalGet('form-test-select2');
+    $this->drupalGet('/select2-optgroup-form');
 
     $this->click('.form-item-select2-optgroups .select2-selection.select2-selection--single');
 

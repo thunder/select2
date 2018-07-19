@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   multiple_values = TRUE
  * )
  */
-class Select2EntityReference extends Select2Widget implements ContainerFactoryPluginInterface {
+class Select2EntityReferenceWidget extends Select2Widget implements ContainerFactoryPluginInterface {
 
   /**
    * Current user service.

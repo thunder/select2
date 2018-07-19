@@ -1,15 +1,16 @@
 <?php
 
-namespace Drupal\Tests\select2\FunctionalJavascript;
+namespace Drupal\Tests\select2\FunctionalJavascript\FieldWidget;
 
 use Drupal\entity_test\Entity\EntityTestMulRevPub;
+use Drupal\Tests\select2\FunctionalJavascript\Select2JavascriptTestBase;
 
 /**
  * Tests select2 entity reference widget.
  *
  * @group select2
  */
-class EntityReferenceSelect2Test extends Select2JavascriptTestBase {
+class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
 
   /**
    * {@inheritdoc}

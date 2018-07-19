@@ -17,7 +17,7 @@ class Select2OptgroupForm extends FormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'form_test_select2';
+    return 'form_test_select2_optgroup';
   }
 
   /**

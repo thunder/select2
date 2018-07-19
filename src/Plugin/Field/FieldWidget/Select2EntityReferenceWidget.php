@@ -157,9 +157,9 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
     foreach ($entities as $id => $entity) {
       $properties = [];
       if ($entity instanceof EntityPublishedInterface) {
-        $properties['published'] = $entity->isPublished();
+        $properties['data-published'] = $entity->isPublished() ? 'true' : 'false';
       }
-      $element['#additional_properties'][$id] = $properties;
+      $element['#options_attributes'][$id] = $properties;
     }
 
     return $element;

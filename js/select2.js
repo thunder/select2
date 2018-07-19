@@ -35,18 +35,6 @@
         };
 
         $(this).css('width', '100%').select2(config);
-
-        // We have to initialize the options on our own, because if ajax is used
-        // the data property doesn't work and we need a way to add custom
-        // properties.
-        var that = $(this);
-        $.each(config.items, function (index, data) {
-          var option = new Option(data.text, data.id, data.selected, data.selected);
-          if (config.features.hasOwnProperty('show_publish_status')) {
-            $(option).attr('data-published', data.published);
-          }
-          that.append(option);
-        });
       });
 
       function isPublished(option) {

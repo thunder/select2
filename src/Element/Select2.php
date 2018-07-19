@@ -67,8 +67,8 @@ class Select2 extends Select {
    * @param string $input
    *   The input for the new entity.
    *
-   * @return array
-   *   New id and label.
+   * @return \Drupal\Core\Entity\EntityInterface
+   *   A new unsaved entity.
    *
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
@@ -80,7 +80,7 @@ class Select2 extends Select {
     /** @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface $handler */
     $handler = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($options);
     if (!$handler instanceof SelectionWithAutocreateInterface) {
-      return $element;
+      return NULL;
     }
 
     $label = substr($input, 4);
@@ -135,7 +135,7 @@ class Select2 extends Select {
   }
 
   /**
-   * {@inheritdoc}
+   * Attach autocomplete behavior to the render element.
    */
   public static function preRenderAutocomplete($element) {
     if (!$element['#autocomplete']) {
@@ -186,7 +186,7 @@ class Select2 extends Select {
   }
 
   /**
-   * {@inheritdoc}
+   * Validates the select2 element.
    *
    * More or less a copy of OptionsWidgetBase::validateElement(). Changes are
    * '_none' was replaced by '' and we create new entities for non-existing

@@ -32,7 +32,7 @@ class Select2 extends Select {
     $info['#autocreate'] = FALSE;
     $info['#cardinality'] = 0;
     $info['#pre_render'][] = [$class, 'preRenderAutocomplete'];
-    $info['#element_validate'][] = [get_class($this), 'validateElement'];
+    $info['#element_validate'][] = [$class, 'validateElement'];
 
     return $info;
   }
@@ -51,7 +51,8 @@ class Select2 extends Select {
     }
 
     // We need to disable form validation, because with autocreation the options
-    // could contain non existing references.
+    // could contain non existing references. We still have validation in the
+    // entity reference field.
     if ($element['#autocreate'] && $element['#target_type']) {
       unset($element['#needs_validation']);
     }

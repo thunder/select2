@@ -86,7 +86,6 @@ class Select2 extends Select {
 
     $label = substr($input, 4);
     $bundle = reset($element['#selection_settings']['target_bundles']);
-
     // We are not saving created entities, because that's part of
     // Drupal\Core\Field\Plugin\Field\FieldType\EntityReferenceItem::preSave().
     return $handler->createNewEntity($element['#target_type'], $bundle, $label, $element['#autocreate']['#uid']);

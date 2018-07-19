@@ -4,4 +4,4 @@ description: Makes entity reference fields more user-friendly using <a href="htt
 package: User interface
 core: '8.x'
 dependencies:
-  - form_options_attributes
+  - form_options_attributes:form_options_attributes

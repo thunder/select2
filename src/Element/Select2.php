@@ -34,6 +34,7 @@ class Select2 extends Select {
     $info['#features'] = [];
     $info['#cardinality'] = 0;
     $info['#pre_render'][] = [$class, 'preRenderAutocomplete'];
+    $info['#element_validate'][] = [$class, 'validateElement'];
 
     return $info;
   }
@@ -51,24 +52,11 @@ class Select2 extends Select {
       $element['#options'] = $empty_option + $element['#options'];
     }
 
+    // We need to disable form validation, because with autocreation the options
+    // could contain non existing references. We still have validation in the
+    // entity reference field.
     if ($element['#autocreate'] && $element['#target_type']) {
-      if (!is_array($element['#value'])) {
-        if (!isset($element['#options'][$element['#value']])) {
-          list ($entity_id, $label) = static::createNewEntity($element, $element['#value']);
-          $element['#options'][$entity_id] = $label;
-          $element['#value'] = $entity_id;
-        }
-      }
-      else {
-        foreach ($element['#value'] as $id) {
-          if (!isset($element['#options'][$id])) {
-            list ($entity_id, $label) = static::createNewEntity($element, $id);
-            $element['#options'][$entity_id] = $label;
-            unset($element['#value'][$id]);
-            $element['#value'][$entity_id] = $entity_id;
-          }
-        }
-      }
+      unset($element['#needs_validation']);
     }
     return $element;
   }
@@ -81,8 +69,8 @@ class Select2 extends Select {
    * @param string $input
    *   The input for the new entity.
    *
-   * @return array
-   *   New id and label.
+   * @return \Drupal\Core\Entity\EntityInterface
+   *   A new unsaved entity.
    *
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
@@ -94,15 +82,15 @@ class Select2 extends Select {
     /** @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface $handler */
     $handler = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($options);
     if (!$handler instanceof SelectionWithAutocreateInterface) {
-      return $element;
+      return NULL;
     }
 
     $label = substr($input, 4);
     $bundle = reset($element['#selection_settings']['target_bundles']);
-    $entity = $handler->createNewEntity($element['#target_type'], $bundle, $label, $element['#autocreate']['#uid']);
-    $entity->save();
 
-    return [$entity->id(), $label];
+    // We are not saving created entities, because that's part of
+    // Drupal\Core\Field\Plugin\Field\FieldType\EntityReferenceItem::preSave().
+    return $handler->createNewEntity($element['#target_type'], $bundle, $label, $element['#autocreate']['#uid']);
   }
 
   /**
@@ -182,7 +170,7 @@ class Select2 extends Select {
   }
 
   /**
-   * {@inheritdoc}
+   * Attach autocomplete behavior to the render element.
    */
   public static function preRenderAutocomplete($element) {
     if (!$element['#autocomplete']) {
@@ -230,6 +218,49 @@ class Select2 extends Select {
       ];
     }
     return $element;
+  }
+
+  /**
+   * Validates the select2 element.
+   *
+   * More or less a copy of OptionsWidgetBase::validateElement(). Changes are
+   * '_none' was replaced by '' and we create new entities for non-existing
+   * options.
+   */
+  public static function validateElement(array $element, FormStateInterface $form_state) {
+    if ($element['#required'] && $element['#value'] == '') {
+      $form_state->setError($element, t('@name field is required.', ['@name' => $element['#title']]));
+    }
+
+    // Massage submitted form values.
+    // Drupal\Core\Field\WidgetBase::submit() expects values as
+    // an array of values keyed by delta first, then by column, while our
+    // widgets return the opposite.
+    if (is_array($element['#value'])) {
+      $values = array_values($element['#value']);
+    }
+    else {
+      $values = [$element['#value']];
+    }
+
+    // Filter out the '' option. Use a strict comparison, because
+    // 0 == 'any string'.
+    $index = array_search('', $values, TRUE);
+    if ($index !== FALSE) {
+      unset($values[$index]);
+    }
+
+    // Transpose selections from field => delta to delta => field.
+    $items = [];
+    foreach ($values as $value) {
+      if (!isset($element['#options'][$value])) {
+        $items[] = ['entity' => static::createNewEntity($element, $value)];
+      }
+      else {
+        $items[] = [$element['#key_column'] => $value];
+      }
+    }
+    $form_state->setValueForElement($element, $items);
   }
 
 }

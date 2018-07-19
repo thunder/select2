@@ -39,6 +39,11 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
    */
   protected $entityTypeManager;
 
+  /**
+   * The entity definition.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeInterface
+   */
   protected $entityDefinition;
 
   /**
@@ -58,6 +63,8 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
    *   Current user service.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   Entity type manager.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, AccountInterface $current_user, EntityTypeManagerInterface $entity_type_manager) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
@@ -143,7 +150,6 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
     if (!$this->getSetting('show_publish_status')) {
       return $element;
     }
-
     $element['#features'][] = 'show_publish_status';
 
     if ($element['#autocreate']) {
@@ -161,7 +167,6 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
       }
       $element['#options_attributes'][$id] = $properties;
     }
-
     return $element;
   }
 

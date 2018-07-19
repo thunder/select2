@@ -14,12 +14,10 @@
           if (term === '') {
             return null;
           }
-
           var tag = {
             id: '$ID:' + term,
             text: term
           };
-
           if (config.features.hasOwnProperty('show_publish_status')) {
             tag.published = config.features.show_publish_status.autocreate_status;
           }
@@ -28,19 +26,14 @@
         config.templateSelection = config.templateResult = function (option, item) {
           if (item) {
             if (config.features.hasOwnProperty('show_publish_status')) {
-              $(item).addClass(isPublished(option) ? 'published' : 'unpublished');
+              var published = (option.published === true || $(option.element).attr('data-published') === 'true');
+              $(item).addClass(published ? 'published' : 'unpublished');
             }
           }
           return option.text;
         };
-
         $(this).css('width', '100%').select2(config);
       });
-
-      function isPublished(option) {
-        return option.published === true || $(option.element).attr('data-published') === 'true';
-      }
-
     }
   };
 

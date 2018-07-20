@@ -5,6 +5,7 @@ namespace Drupal\select2\Element;
 use Drupal\Component\Utility\Crypt;
 use Drupal\Core\Entity\EntityReferenceSelection\SelectionWithAutocreateInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Form\OptGroup;
 use Drupal\Core\Render\Element\Select;
 use Drupal\Core\Site\Settings;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
@@ -51,11 +52,10 @@ class Select2 extends Select {
     }
 
     // We need to disable form validation, because with autocreation the options
-    // could contain non existing references. We still have validation in the
-    // entity reference field.
-    if ($element['#autocreate'] && $element['#target_type']) {
-      unset($element['#needs_validation']);
-    }
+    // could contain non existing references. Without autocreation we validate
+    // the options on our own.
+    // We still have validation in the entity reference field.
+    unset($element['#needs_validation']);
     return $element;
   }
 
@@ -69,8 +69,6 @@ class Select2 extends Select {
    *
    * @return \Drupal\Core\Entity\EntityInterface
    *   A new unsaved entity.
-   *
-   * @throws \Drupal\Core\Entity\EntityStorageException
    */
   protected static function createNewEntity(array $element, $input) {
     $options = $element['#selection_settings'] + [
@@ -217,12 +215,21 @@ class Select2 extends Select {
 
     // Transpose selections from field => delta to delta => field.
     $items = [];
+    // Options might be nested ("optgroups"), flatten the list.
+    $options = OptGroup::flattenOptions($element['#options']);
     foreach ($values as $value) {
-      if (!isset($element['#options'][$value])) {
-        $items[] = ['entity' => static::createNewEntity($element, $value)];
+      if (isset($options[$value])) {
+        $items[] = [$element['#key_column'] => $value];
       }
       else {
-        $items[] = [$element['#key_column'] => $value];
+        if ($element['#autocreate']) {
+          $items[] = ['entity' => static::createNewEntity($element, $value)];
+        }
+        else {
+          $form_state->setError($element, new TranslatableMarkup('An illegal choice has been detected. Please contact the site administrator.'));
+          \Drupal::logger('select2')->error('Illegal choice %choice in %name element.', ['%choice' => $value, '%name' => empty($element['#title']) ? $element['#parents'][0] : $element['#title']]);
+        }
+
       }
     }
     $form_state->setValueForElement($element, $items);

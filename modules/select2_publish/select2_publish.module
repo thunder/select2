@@ -1,0 +1,16 @@
+<?php
+/**
+ * @file
+ * Contains
+ */
+
+use Drupal\select2_publish\Publish;
+
+/**
+ * Implements hook_element_info_alter().
+ */
+function select2_publish_element_info_alter(array &$info) {
+  if (!empty($info['select2'])) {
+    $info['select2']['#pre_render'][] = [Publish::class, 'preRenderPublish'];
+  }
+}

@@ -105,7 +105,7 @@ class Select2Test extends UnitTestCase {
             'select2' => [
               'field-foo' => [
                 'multiple' => TRUE,
-                'allowClear' => TRUE,
+                'allowClear' => FALSE,
               ],
             ],
           ],

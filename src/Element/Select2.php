@@ -123,7 +123,8 @@ class Select2 extends Select {
     $settings = [
       'multiple' => $multiple,
       'placeholder' => $required ? new TranslatableMarkup('- Select -') : new TranslatableMarkup('- None -'),
-      'allowClear' => !$required,
+      // @TODO: Enable allowClear for multiple fields. https://github.com/select2/select2/issues/3335.
+      'allowClear' => !$multiple && !$required,
       'dir' => $current_language->getDirection(),
       'language' => $current_language->getId(),
       'tags' => $element['#autocreate'],

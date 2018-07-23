@@ -45,6 +45,8 @@ class Select2 extends Select {
     if ($element['#multiple']) {
       $element['#attributes']['multiple'] = 'multiple';
       $element['#attributes']['name'] = $element['#name'] . '[]';
+      // Ensure that we don't have an empty value for multiple selection.
+      unset($element['#options']['']);
     }
     else {
       $empty_option = ['' => ''];

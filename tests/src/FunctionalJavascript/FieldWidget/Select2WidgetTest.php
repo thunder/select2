@@ -104,8 +104,7 @@ class Select2WidgetTest extends Select2JavascriptTestBase {
     $this->assertArraySubset([['value' => 'foo'], ['value' => 'gaga']], $node->select2->getValue());
 
     $this->drupalGet($node->toUrl('edit-form'));
-    $this->assertSession()->elementExists('css', '.form-item-select2 .select2-selection__clear');
-    $this->click('.form-item-select2 .select2-selection__clear');
+    $this->selectOption('edit-select2', []);
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node', TRUE);

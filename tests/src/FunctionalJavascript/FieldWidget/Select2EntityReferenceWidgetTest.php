@@ -2,7 +2,9 @@
 
 namespace Drupal\Tests\select2\FunctionalJavascript\FieldWidget;
 
+use Drupal\entity_test\Entity\EntityTestBundle;
 use Drupal\entity_test\Entity\EntityTestMulRevPub;
+use Drupal\entity_test\Entity\EntityTestWithBundle;
 use Drupal\Tests\select2\FunctionalJavascript\Select2JavascriptTestBase;
 
 /**
@@ -155,6 +157,57 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
     $this->assertArraySubset([['target_id' => 1], ['target_id' => 2]], $node->select2->getValue());
     $this->assertNotEmpty(EntityTestMulRevPub::load(1));
     $this->assertNotEmpty(EntityTestMulRevPub::load(2));
+  }
+
+  /**
+   * Test selecting options of different bundles.
+   */
+  public function testMultipleBundleSelection() {
+
+    EntityTestBundle::create([
+      'id' => 'test1',
+      'label' => 'Test1 label',
+      'description' => 'My test description',
+    ])->save();
+
+    EntityTestBundle::create([
+      'id' => 'test2',
+      'label' => 'Test2 label',
+      'description' => 'My test description',
+    ])->save();
+
+    $this->createField('select2', 'node', 'test', 'entity_reference', [
+      'target_type' => 'entity_test_with_bundle',
+      'cardinality' => -1,
+    ], [
+      'handler' => 'default:entity_test_with_bundle',
+      'handler_settings' => [
+        'target_bundles' => ['test1' => 'test1', 'test2' => 'test2'],
+        'auto_create' => FALSE,
+      ],
+    ], 'select2_entity_reference');
+
+    EntityTestWithBundle::create(['name' => 'foo', 'type' => 'test1'])->save();
+    EntityTestWithBundle::create(['name' => 'bar', 'type' => 'test2'])->save();
+    EntityTestWithBundle::create(['name' => 'gaga', 'type' => 'test1'])->save();
+
+    $page = $this->getSession()->getPage();
+
+    $this->drupalGet('/node/add/test');
+    $page->fillField('title[0][value]', 'Test node');
+
+    $this->click('.form-item-select2 .select2-selection.select2-selection--multiple');
+    $page->find('css', '.select2-search__field')->setValue('foo');
+    $page->find('css', '.select2-results__option--highlighted')->click();
+
+    $this->click('.form-item-select2 .select2-selection.select2-selection--multiple');
+    $page->find('css', '.select2-search__field')->setValue('bar');
+    $page->find('css', '.select2-results__option--highlighted')->click();
+
+    $page->pressButton('Save');
+
+    $node = $this->getNodeByTitle('Test node', TRUE);
+    $this->assertArraySubset([['target_id' => 1], ['target_id' => 2]], $node->select2->getValue());
   }
 
 }

@@ -6,6 +6,8 @@ use Drupal\Tests\select2\FunctionalJavascript\Select2JavascriptTestBase;
 
 /**
  * Tests select2 simple widget.
+ *
+ * @group select2
  */
 class Select2WidgetTest extends Select2JavascriptTestBase {
 

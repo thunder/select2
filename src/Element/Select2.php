@@ -116,13 +116,14 @@ class Select2 extends Select {
       }
     }
 
+    $current_language = \Drupal::languageManager()->getCurrentLanguage();
     // Defining the select2 configuration.
     $settings = [
       'multiple' => $multiple,
       'placeholder' => $required ? new TranslatableMarkup('- Select -') : new TranslatableMarkup('- None -'),
       'allowClear' => !$required,
-      'dir' => \Drupal::languageManager()->getCurrentLanguage()->getDirection(),
-      'language' => \Drupal::languageManager()->getCurrentLanguage()->getId(),
+      'dir' => $current_language->getDirection(),
+      'language' => $current_language->getId(),
       'tags' => $element['#autocreate'],
       'theme' => 'seven',
       'maximumSelectionLength' => $multiple ? $element['#cardinality'] : 0,
@@ -134,6 +135,7 @@ class Select2 extends Select {
 
     // Adding the select2 library.
     $element['#attached']['library'][] = 'select2/select2';
+    $element['#attached']['library'][] = 'select2/select2.i18n.' . $current_language->getId();
     return $element;
   }
 

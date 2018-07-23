@@ -25,10 +25,10 @@ env:
     - DISTRIBUTION=drupal
   global:
     - PATH="$PATH:$HOME/.composer/vendor/bin"
-    - THUNDER_TRAVIS_TEST_GROUP="routing"
 
 before_install:
   - phpenv config-rm xdebug.ini
+  - composer require drupal/libraries --no-update
   - composer global require thunder/travis:dev-feature/split-into-stages
   - mkdir libraries
   - wget https://github.com/select2/select2/archive/master.zip

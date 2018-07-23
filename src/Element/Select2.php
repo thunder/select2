@@ -52,10 +52,15 @@ class Select2 extends Select {
     }
 
     // We need to disable form validation, because with autocreation the options
-    // could contain non existing references. Without autocreation we validate
-    // the options on our own.
-    // We still have validation in the entity reference field.
-    unset($element['#needs_validation']);
+    // could contain non existing references. We still have validation in the
+    // entity reference field.
+    if ($element['#autocreate'] && $element['#target_type']) {
+      unset($element['#needs_validation']);
+    }
+
+    // Set the type from select2 to select to get proper form validation.
+    $element['#type'] = 'select';
+
     return $element;
   }
 
@@ -222,14 +227,7 @@ class Select2 extends Select {
         $items[] = [$element['#key_column'] => $value];
       }
       else {
-        if ($element['#autocreate']) {
-          $items[] = ['entity' => static::createNewEntity($element, $value)];
-        }
-        else {
-          $form_state->setError($element, new TranslatableMarkup('An illegal choice has been detected. Please contact the site administrator.'));
-          \Drupal::logger('select2')->error('Illegal choice %choice in %name element.', ['%choice' => $value, '%name' => empty($element['#title']) ? $element['#parents'][0] : $element['#title']]);
-        }
-
+        $items[] = ['entity' => static::createNewEntity($element, $value)];
       }
     }
     $form_state->setValueForElement($element, $items);

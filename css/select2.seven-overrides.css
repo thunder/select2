@@ -33,3 +33,7 @@
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05), 0 0 8px #40b6ff;
   background-color: #fff;
 }
+
+.select2-container--seven .select2-selection--multiple .select2-selection__choice {
+  white-space: normal;
+}

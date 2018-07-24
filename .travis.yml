@@ -28,6 +28,7 @@ env:
 
 before_install:
   - phpenv config-rm xdebug.ini
+  - composer config repositories.drupal '{"type": "composer", "url": "https://packages.drupal.org/8"}'
   - composer require drupal/libraries --no-update
   - composer global require thunder/travis:dev-feature/split-into-stages
   - mkdir libraries

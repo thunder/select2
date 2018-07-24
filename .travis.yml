@@ -36,6 +36,7 @@ install:
   - install-project
 
 script:
+  - keep-travis-running
   - test-module
 
 notifications:

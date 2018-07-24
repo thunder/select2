@@ -28,15 +28,8 @@ env:
 
 before_install:
   - phpenv config-rm xdebug.ini
-  - composer config repositories.drupal '{"type": "composer", "url": "https://packages.drupal.org/8"}'
-  - composer require drupal/libraries:~3.0 --no-update
-  - composer global require thunder/travis:dev-feature/split-into-stages
-  - mkdir libraries
-  - wget https://github.com/select2/select2/archive/master.zip
-  - unzip  master.zip -d libraries
-  - mv libraries/select2-master libraries/select2
   - create-project
-
+  - bash scripts/travis/download-library.sh
 install:
   - install-project
 

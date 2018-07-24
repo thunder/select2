@@ -28,8 +28,10 @@ env:
 
 before_install:
   - phpenv config-rm xdebug.ini
+  - composer global require thunder/travis:dev-feature/split-into-stages
   - create-project
   - bash scripts/travis/download-library.sh
+
 install:
   - install-project
 

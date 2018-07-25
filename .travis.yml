@@ -1,9 +1,6 @@
 language: php
 sudo: required
 
-services:
-  - docker
-
 cache:
   apt: true
   directories:
@@ -28,15 +25,13 @@ env:
 
 before_install:
   - phpenv config-rm xdebug.ini
-  - composer global require thunder/travis:dev-feature/split-into-stages
+  - composer global require thunder/travis:dev-master
   - create-project
-  - bash scripts/travis/download-library.sh
 
 install:
   - install-project
 
 script:
-  - keep-travis-running
   - test-module
 
 notifications:

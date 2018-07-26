@@ -21,10 +21,11 @@ env:
     - DISTRIBUTION=drupal
   global:
     - PATH="$PATH:$HOME/.composer/vendor/bin"
+    - THUNDER_TRAVIS_SELENIUM_CHROME_VERSION="3.8.1-aluminum"
 
 before_install:
   - phpenv config-rm xdebug.ini
-  - composer global require thunder/travis:dev-master
+  - composer global require thunder/travis:dev-fix/drupal-5.6
   - create-project
 
 install:

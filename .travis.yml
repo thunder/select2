@@ -21,7 +21,7 @@ env:
     - DISTRIBUTION=drupal
   global:
     - PATH="$PATH:$HOME/.composer/vendor/bin"
-    - MINK_DRIVER_ARGS_WEBDRIVER='["chrome", null, "http://localhost:4444/wd/hub"]'
+    - MINK_DRIVER_ARGS_WEBDRIVER='["chrome", null, "http://localhost:4444"]'
 
 before_install:
   - phpenv config-rm xdebug.ini

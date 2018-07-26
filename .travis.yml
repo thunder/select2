@@ -21,7 +21,7 @@ env:
     - DISTRIBUTION=drupal
   global:
     - PATH="$PATH:$HOME/.composer/vendor/bin"
-    - THUNDER_TRAVIS_SELENIUM_CHROME_VERSION="3.8.1-aluminum"
+    - MINK_DRIVER_ARGS_WEBDRIVER='["chrome", null, "http://localhost:4444/wd/hub"]'
 
 before_install:
   - phpenv config-rm xdebug.ini

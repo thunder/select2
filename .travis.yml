@@ -25,7 +25,7 @@ env:
 
 before_install:
   - phpenv config-rm xdebug.ini
-  - composer global require thunder/travis:dev-fix/drupal-5.6
+  - composer global require thunder/travis:fix/drupal-5.6-dev
   - create-project
 
 install:

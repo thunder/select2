@@ -47,7 +47,26 @@ class ElementTest extends WebDriverTestBase {
     $page->pressButton('Call ajax');
 
     $this->assertEmpty(EntityTestMulRevPub::loadMultiple());
+  }
 
+  /**
+   * Test loading of seven theme style.
+   */
+  public function testSevenTheme() {
+    $this->container->get('theme_installer')->install(['seven']);
+    $this->config('system.theme')
+      ->set('default', 'seven')
+      ->set('admin', 'seven')
+      ->save();
+
+    $this->drupalGet('/select2-optgroup-form');
+
+    $this->assertSession()->elementExists('css', '.select2-container--seven');
+
+    $select2_js = $this->xpath("//script[contains(@src, 'select2/js/select2.js')]");
+    $this->assertEquals(1, count($select2_js));
+    $select2_js = $this->xpath("//script[contains(@src, 'select2/dist/js/select2.min.js')]");
+    $this->assertEquals(1, count($select2_js));
   }
 
 }

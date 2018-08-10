@@ -120,7 +120,7 @@ class Select2 extends Select {
 
     $current_language = \Drupal::languageManager()->getCurrentLanguage();
     $current_theme = \Drupal::theme()->getActiveTheme()->getName();
-    $select2_theme_exists = \Drupal::service('library.discovery')->getLibraryByName('select2', 'select2.theme.' . $current_theme);
+    $select2_theme_exists = \Drupal::service('library.discovery')->getLibraryByName($current_theme, 'select2.theme');
     // Defining the select2 configuration.
     $settings = [
       'multiple' => $multiple,
@@ -144,7 +144,7 @@ class Select2 extends Select {
     $element['#attached']['library'][] = 'select2/select2';
     $element['#attached']['library'][] = 'select2/select2.i18n.' . $current_language->getId();
     if ($select2_theme_exists) {
-      $element['#attached']['library'][] = 'select2/select2.theme.' . $current_theme;
+      $element['#attached']['library'][] = $current_theme . '/select2.theme';
     }
     return $element;
   }

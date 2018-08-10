@@ -18,9 +18,3 @@ select2.min:
   dependencies:
     - core/jquery.once
     - core/drupal
-
-select2.theme.seven:
-  css:
-    component:
-      css/select2.seven.css: {}
-      css/select2.seven-overrides.css: {}

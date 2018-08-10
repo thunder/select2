@@ -31,8 +31,25 @@ class Select2Test extends UnitTestCase {
       ->method('getCurrentLanguage')
       ->will($this->returnValue($language));
 
+    $theme = $this->createMock('Drupal\Core\Theme\ActiveTheme');
+    $theme->expects($this->any())
+      ->method('getName')
+      ->will($this->returnValue('seven'));
+
+    $theme_manager = $this->createMock('Drupal\Core\Theme\ThemeManagerInterface');
+    $theme_manager->expects($this->any())
+      ->method('getActiveTheme')
+      ->will($this->returnValue($theme));
+
+    $library_discovery = $this->createMock('Drupal\Core\Asset\LibraryDiscoveryInterface');
+    $library_discovery->expects($this->any())
+      ->method('getLibraryByName')
+      ->will($this->returnValue(TRUE));
+
     $container = new ContainerBuilder();
     $container->set('language_manager', $language_manager);
+    $container->set('theme.manager', $theme_manager);
+    $container->set('library.discovery', $library_discovery);
 
     \Drupal::setContainer($container);
   }

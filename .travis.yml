@@ -31,7 +31,7 @@ before_install:
   - create-project
   - mkdir $THUNDER_TRAVIS_DRUPAL_INSTALLATION_DIRECTORY/web/libraries/libraries
   - wget https://github.com/select2/select2/archive/master.zip
-  - unzip  master.zip -d $THUNDER_TRAVIS_DRUPAL_INSTALLATION_DIRECTORY/web/libraries/libraries
+  - unzip  master.zip -d $THUNDER_TRAVIS_DRUPAL_INSTALLATION_DIRECTORY/web/libraries
   - mv $THUNDER_TRAVIS_DRUPAL_INSTALLATION_DIRECTORY/web/libraries/select2-master $THUNDER_TRAVIS_DRUPAL_INSTALLATION_DIRECTORY/web/libraries/select2
 
 install:

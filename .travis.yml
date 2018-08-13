@@ -23,11 +23,16 @@ env:
     - PATH="$PATH:$HOME/.composer/vendor/bin"
     - THUNDER_TRAVIS_TEST_RUNNER="run-tests"
     - MINK_DRIVER_ARGS_WEBDRIVER='["chrome", null, "http://localhost:4444/wd/hub"]'
+    - THUNDER_TRAVIS_DRUPAL_INSTALLATION_DIRECTORY=/tmp/test-install
 
 before_install:
   - phpenv config-rm xdebug.ini
   - composer global require thunder/travis:fix/drupal-5.6-dev
   - create-project
+  - mkdir $THUNDER_TRAVIS_DRUPAL_INSTALLATION_DIRECTORY/web/libraries/libraries
+  - wget https://github.com/select2/select2/archive/master.zip
+  - unzip  master.zip -d $THUNDER_TRAVIS_DRUPAL_INSTALLATION_DIRECTORY/web/libraries/libraries
+  - mv $THUNDER_TRAVIS_DRUPAL_INSTALLATION_DIRECTORY/web/libraries/select2-master $THUNDER_TRAVIS_DRUPAL_INSTALLATION_DIRECTORY/web/libraries/select2
 
 install:
   - install-project

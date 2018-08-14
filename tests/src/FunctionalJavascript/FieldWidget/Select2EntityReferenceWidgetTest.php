@@ -10,7 +10,7 @@ use Drupal\Tests\select2\FunctionalJavascript\Select2JavascriptTestBase;
 /**
  * Tests select2 entity reference widget.
  *
- * @group select3
+ * @group select2
  */
 class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
 

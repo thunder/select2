@@ -28,7 +28,7 @@ env:
 before_install:
   - phpenv config-rm xdebug.ini
   - composer global require thunder/travis:fix/drupal-5.6-dev
-  - keep-travis-running
+  - keep-travis-running &
   - create-project
   - mkdir $THUNDER_TRAVIS_DRUPAL_INSTALLATION_DIRECTORY/web/libraries
   - wget https://github.com/select2/select2/archive/master.zip

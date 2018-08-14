@@ -23,13 +23,13 @@ env:
 before_install:
   - phpenv config-rm xdebug.ini
   - composer global require thunder/travis:fix/drupal-5.6-dev
-  - create-project
+  - project-create
 
 install:
-  - install-project
+  - project-install
 
 script:
-  - test-module
+  - project-test
 
 notifications:
   email: false

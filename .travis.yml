@@ -21,7 +21,7 @@ env:
     - PATH="$PATH:$HOME/.composer/vendor/bin"
 
 before_install:
-  - composer global require thunder/travis:fix/drupal-5.6-dev
+  - composer global require thunder/travis
   - project-create
 
 install:

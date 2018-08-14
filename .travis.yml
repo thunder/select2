@@ -21,7 +21,6 @@ env:
     - PATH="$PATH:$HOME/.composer/vendor/bin"
 
 before_install:
-  - phpenv config-rm xdebug.ini
   - composer global require thunder/travis:fix/drupal-5.6-dev
   - project-create
 

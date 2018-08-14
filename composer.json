@@ -10,5 +10,6 @@
         }
     ],
     "require": {
+        "bower-asset/select2": "~4.0"
     }
 }

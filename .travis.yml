@@ -21,7 +21,7 @@ env:
     - PATH="$PATH:$HOME/.composer/vendor/bin"
 
 before_install:
-  - composer global require thunder/travis @beta
+  - composer global require thunder/travis:dev-feature/remove-distro-watch
 
 script:
   - test-drupal-module

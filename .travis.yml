@@ -26,6 +26,9 @@ env:
     - PATH="$PATH:$HOME/.composer/vendor/bin"
 
 matrix:
+  exclude:
+    - php: 5.7
+      env SYMFONY_DEPRECATIONS_HELPER=0
   allow_failures:
     - env: SYMFONY_DEPRECATIONS_HELPER=0
 

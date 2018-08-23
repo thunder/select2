@@ -28,7 +28,7 @@ env:
 matrix:
   exclude:
     - php: 5.6
-      env SYMFONY_DEPRECATIONS_HELPER=0
+      env: SYMFONY_DEPRECATIONS_HELPER=0
   allow_failures:
     - env: SYMFONY_DEPRECATIONS_HELPER=0
 

@@ -20,10 +20,13 @@ env:
     # Add a test matrix where tests are running once with deprecations failing and once without.
     # The test with deprecation warnings is allowed to fail.
     - SYMFONY_DEPRECATIONS_HELPER=weak
-    allow_failures:
-      - SYMFONY_DEPRECATIONS_HELPER=0
+    - SYMFONY_DEPRECATIONS_HELPER=0
   global:
     - PATH="$PATH:$HOME/.composer/vendor/bin"
+
+matrix:
+  allow_failures:
+    - env: SYMFONY_DEPRECATIONS_HELPER=0
 
 before_install:
   - composer global require thunder/travis @beta

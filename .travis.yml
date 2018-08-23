@@ -10,7 +10,7 @@ cache:
 
 php:
   - 7.2
-  - 5.7
+  - 5.6
 
 branches:
   only:
@@ -27,7 +27,7 @@ env:
 
 matrix:
   exclude:
-    - php: 5.7
+    - php: 5.6
       env SYMFONY_DEPRECATIONS_HELPER=0
   allow_failures:
     - env: SYMFONY_DEPRECATIONS_HELPER=0

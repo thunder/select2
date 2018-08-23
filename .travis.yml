@@ -21,7 +21,7 @@ env:
     # The test with deprecation warnings is allowed to fail.
     - SYMFONY_DEPRECATIONS_HELPER=weak
     allow_failures:
-    - SYMFONY_DEPRECATIONS_HELPER=0
+      - SYMFONY_DEPRECATIONS_HELPER=0
   global:
     - PATH="$PATH:$HOME/.composer/vendor/bin"
 

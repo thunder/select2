@@ -41,7 +41,7 @@ install:
   - composer require bower-asset/select2:~4.0 --working-dir=/tmp/test/select2/install
 
 script:
-  - test-drupal-module run-tests
+  - test-drupal-module run_tests
 
 notifications:
   email: false

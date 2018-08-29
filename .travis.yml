@@ -37,7 +37,7 @@ before_install:
 
 - install:
   - test-drupal-module build
-  - composer require --working-dir="$DRUPAL_TRAVIS_DRUPAL_INSTALLATION_DIRECTORY" npm-asset/select2:~4.0
+  - composer require --working-dir="${DRUPAL_TRAVIS_DRUPAL_INSTALLATION_DIRECTORY}" npm-asset/select2:~4.0
 
 script:
   - test-drupal-module run-tests

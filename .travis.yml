@@ -38,7 +38,7 @@ before_install:
 install:
   # Add required assets. The build process knows how to handle asset-packagist.
   - test-drupal-module build
-  - composer require bower-asset/select2:~4.0 --no-update --working-dir=/tmp/test/select2/install
+  - composer require bower-asset/select2:~4.0 --working-dir=/tmp/test/select2/install
 
 script:
   - test-drupal-module run-tests

@@ -17,20 +17,8 @@ branches:
     - /^8\.([0-9]+|x)\-[0-9]+\.([0-9]+|x)$/
 
 env:
-  matrix:
-    # Add a test matrix where tests are running once with deprecations failing and once without.
-    # The test with deprecation warnings is allowed to fail.
-    - SYMFONY_DEPRECATIONS_HELPER=weak
-    - SYMFONY_DEPRECATIONS_HELPER=0
   global:
     - PATH="$PATH:$HOME/.composer/vendor/bin"
-
-matrix:
-  exclude:
-    - php: 5.6
-      env: SYMFONY_DEPRECATIONS_HELPER=0
-  allow_failures:
-    - env: SYMFONY_DEPRECATIONS_HELPER=0
 
 before_install:
   - composer global require thunder/travis

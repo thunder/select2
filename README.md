@@ -20,24 +20,27 @@ When the field widget is used in the entity reference context this module provid
 Install this module like every other Drupal module. Also it's needed to get the select2 library.
 
 ### Composer (recommended)
-If you would like to install the select2 library with composer, you will need to add the following to your composer.json file into the repositories section:
+If you would like to install the select2 library with composer, you probably used the [drupal composer template](https://github.com/drupal-composer/drupal-project) to setup your project. It's recommended to use [asset-packagist]() to install JavaScript libraries. So you will need to add the following to your composer.json file into the repositories section:
 
 ```json
     {
-      "type": "package",
-      "package": {
-        "name": "jquery/select2",
-        "version": "4.0.5",
-        "type": "drupal-library",
-        "dist": {
-          "url": "https://github.com/select2/select2/archive/4.0.5.zip",
-          "type": "zip"
-        }
-      }
+        "type": "composer",
+        "url": "https://asset-packagist.org"
     }
 ```
 
-After this you can install the library with "composer require jquery/select2" and the library will be downloaded into the libraries folder.
+It's also needed to extend the installer-path section:
+
+```json
+    "web/libraries/{$name}": [
+        "type:drupal-library",
+        "type:bower-asset",
+        "type:npm-asset"
+    ],
+```
+
+
+After this you can install the library with "composer require bower-asset/select2" and the library will be downloaded into the libraries folder.
 
 ### Manual
 Download it from the [release page](https://github.com/select2/select2/releases) and place it in Drupal's library folder.

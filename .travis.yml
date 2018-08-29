@@ -35,11 +35,13 @@ matrix:
 before_install:
   - composer global require thunder/travis
 
+install:
   # Add required assets. The build process knows how to handle asset-packagist.
-  - composer require npm-asset/select2:~4.0 --no-update
+  - test-drupal-module build
+  - composer require bower-asset/select2:~4.0 --no-update --working-dir=/tmp/test/select2/install
 
 script:
-  - test-drupal-module
+  - test-drupal-module run-tests
 
 notifications:
   email: false

@@ -49,7 +49,7 @@ You can use the select2 element in your forms like every other form element (see
 ```php
     $form['select2'] = [
       '#type' => 'select2',
-      '#title' => t('Delete temporary files after'),
+      '#title' => t('My select2 form element'),
       '#options' => ['foo', 'bar'],
     ];
 ```
@@ -60,7 +60,7 @@ Nevertheless you are able to override them:
 ```php
     $form['select2'] = [
       '#type' => 'select2',
-      '#title' => t('Delete temporary files after'),
+      '#title' => t('My select2 form element'),
       '#options' => ['foo', 'bar'],
       '#select2' => [
         'allowClear' => FALSE,

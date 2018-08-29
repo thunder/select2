@@ -40,7 +40,7 @@ It's also needed to extend the installer-path section:
 ```
 
 
-After this you can install the library with "composer require bower-asset/select2" and the library will be downloaded into the libraries folder.
+After this you can install the library with "composer require npm-asset/select2" and the library will be downloaded into the libraries folder.
 
 ### Manual
 Download it from the [release page](https://github.com/select2/select2/releases) and place it in Drupal's library folder.

@@ -59,7 +59,7 @@ class Select2Test extends UnitTestCase {
    *
    * @dataProvider providerTestProcessSelect
    */
-  public function testProcessSelect($multiple, $required, $expected) {
+  public function testProcessSelect($multiple, $required, $settings, $expected) {
     $element = [
       '#name' => 'field_foo',
       '#options' => [],
@@ -69,6 +69,7 @@ class Select2Test extends UnitTestCase {
       '#autocreate' => FALSE,
       '#autocomplete' => FALSE,
       '#cardinality' => 0,
+      '#select2' => $settings,
     ];
     $form_state = $this->prophesize(FormStateInterface::class)->reveal();
     $complete_form = [];
@@ -84,7 +85,7 @@ class Select2Test extends UnitTestCase {
    */
   public function providerTestProcessSelect() {
     $data = [];
-    $data[] = [TRUE, TRUE,
+    $data[] = [TRUE, TRUE, [],
       [
         '#attributes' => ['multiple' => 'multiple', 'name' => 'field_foo[]'],
         '#attached' => [
@@ -99,7 +100,7 @@ class Select2Test extends UnitTestCase {
         ],
       ],
     ];
-    $data[] = [FALSE, TRUE,
+    $data[] = [FALSE, TRUE, [],
       [
         '#attributes' => [],
         '#attached' => [
@@ -114,7 +115,7 @@ class Select2Test extends UnitTestCase {
         ],
       ],
     ];
-    $data[] = [TRUE, FALSE,
+    $data[] = [TRUE, FALSE, [],
       [
         '#attributes' => [],
         '#attached' => [
@@ -129,7 +130,7 @@ class Select2Test extends UnitTestCase {
         ],
       ],
     ];
-    $data[] = [FALSE, FALSE,
+    $data[] = [FALSE, FALSE, [],
       [
         '#attributes' => [],
         '#attached' => [
@@ -138,6 +139,22 @@ class Select2Test extends UnitTestCase {
               'field-foo' => [
                 'multiple' => FALSE,
                 'allowClear' => TRUE,
+              ],
+            ],
+          ],
+        ],
+      ],
+    ];
+    // Test overwriting of the default setting.
+    $data[] = [FALSE, FALSE, ['allowClear' => FALSE, 'multiple' => TRUE],
+      [
+        '#attributes' => [],
+        '#attached' => [
+          'drupalSettings' => [
+            'select2' => [
+              'field-foo' => [
+                'multiple' => TRUE,
+                'allowClear' => FALSE,
               ],
             ],
           ],

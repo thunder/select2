@@ -38,7 +38,8 @@ before_install:
 install:
   # Add required assets. The build process knows how to handle asset-packagist.
   - test-drupal-module build
-  - composer require bower-asset/select2:~4.0 --working-dir=/tmp/test/select2/install
+  # Memory limit is only necessary for PHP 5.6
+  - COMPOSER_MEMORY_LIMIT=-1 composer require bower-asset/select2:~4.0 --working-dir=/tmp/test/select2/install
 
 script:
   - test-drupal-module run_tests

@@ -24,7 +24,6 @@ class EntityAutocompleteMatcher {
    */
   public function __construct(SelectionPluginManagerInterface $selection_manager) {
     $this->selectionManager = $selection_manager;
-    check_url('http://www.google.de');
   }
 
   /**

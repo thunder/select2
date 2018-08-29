@@ -8,5 +8,8 @@
             "name": "Christian Fritsch",
             "email": "christian.fritsch@burda.com"
         }
-    ]
+    ],
+    "require": {
+        "bower-asset/select2": "~4.0"
+    }
 }

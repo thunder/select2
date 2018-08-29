@@ -34,8 +34,10 @@ matrix:
 
 before_install:
   - composer global require thunder/travis
+
+- install:
   - test-drupal-module build
-  - composer require --working-dir=$DRUPAL_TRAVIS_DRUPAL_INSTALLATION_DIRECTORY
+  - composer require --working-dir="$DRUPAL_TRAVIS_DRUPAL_INSTALLATION_DIRECTORY" npm-asset/select2:~4.0
 
 script:
   - test-drupal-module run-tests

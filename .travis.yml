@@ -35,7 +35,7 @@ matrix:
 before_install:
   - composer global require thunder/travis
 
-  # Add required assets the build process knows how to handle asset-packagist.
+  # Add required assets. The build process knows how to handle asset-packagist.
   - composer require npm-asset/select2:~4.0 --no-update
 
 script:

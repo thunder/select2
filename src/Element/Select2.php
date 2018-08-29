@@ -34,6 +34,7 @@ class Select2 extends Select {
     $info['#cardinality'] = 0;
     $info['#pre_render'][] = [$class, 'preRenderAutocomplete'];
     $info['#element_validate'][] = [$class, 'validateElement'];
+    $info['#select2'] = [];
 
     return $info;
   }
@@ -133,6 +134,11 @@ class Select2 extends Select {
       'tokenSeparators' => $element['#autocreate'] ? [','] : [],
       'selectOnClose' => $element['#autocomplete'],
     ];
+
+    // Allow to overwrite the default settings and set additional settings.
+    foreach ($element["#select2"] as $key => $value) {
+      $settings[$key] = $value;
+    }
 
     $selector = $element['#attributes']['data-drupal-selector'];
     $element['#attributes']['class'][] = 'select2-widget';

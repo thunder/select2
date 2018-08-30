@@ -72,8 +72,7 @@ Nevertheless you are able to override them:
 ```
 
 ### Themes
-The select2 library provides the possibility to use your own [theme](https://select2.org/appearance#themes) for the select2 widgets. This module provides a
-theme for Drupal's seven theme. If you have your own theme, you can customize the appearance of the select2 widget:
+The select2 library provides the possibility to use your own [theme](https://select2.org/appearance#themes) for the select2 widgets.  If you have your own theme, you can customize the appearance of the select2 widget:
 
 Add a 'select2.theme' entry to the libraries.yml of your theme. This module will use your defined theme automatically.
 
@@ -81,5 +80,10 @@ Add a 'select2.theme' entry to the libraries.yml of your theme. This module will
     select2.theme:
       css:
         component:
-          /css/my-select2-theme.css: {}
+          css/my-select2-theme.css: {}
 ```
+
+To start with your own select2 theme, it's recommended to copy all style definitions with a '--default' from the select2/dist/css/select2.css
+file into your my-select2-theme.css file. Then replace '--default' with '--my_theme' (machine name of your theme) and start customizing.
+
+Note: This module already provides a theme for Drupal's seven theme.

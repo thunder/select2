@@ -3,14 +3,7 @@ select2:
     js/select2.js: {}
   dependencies:
     - select2/select2.min
-    - select2/select2.seven
     - core/jquery.ui.sortable
-
-select2.seven:
-  css:
-    component:
-      css/select2.seven.css: {}
-      css/select2.seven-overrides.css: {}
 
 select2.min:
   remote: https://github.com/select2/select2

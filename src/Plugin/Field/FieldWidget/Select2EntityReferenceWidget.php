@@ -64,7 +64,9 @@ class Select2EntityReferenceWidget extends Select2Widget {
     $autocomplete = $this->getSetting('autocomplete');
     $operators = $this->getMatchOperatorOptions();
     $summary[] = t('Autocomplete: @autocomplete', ['@autocomplete' => $autocomplete ? $this->t('On') : $this->t('Off')]);
-    $summary[] = t('Autocomplete matching: @match_operator', ['@match_operator' => $operators[$this->getSetting('match_operator')]]);
+    if ($autocomplete) {
+      $summary[] = t('Autocomplete matching: @match_operator', ['@match_operator' => $operators[$this->getSetting('match_operator')]]);
+    }
     return $summary;
   }
 

@@ -26,8 +26,10 @@ class Select2Widget extends WidgetPluginBase {
     $this->facet = $facet;
 
     $items = [];
+    $active_items = [];
 
     foreach ($facet->getResults() as $result) {
+
       if (empty($result->getUrl())) {
         $items[] = $this->buildResultItem($result);
       }
@@ -48,15 +50,17 @@ class Select2Widget extends WidgetPluginBase {
         }
 
         $items[$result->getUrl()->toString()] = $result->getDisplayValue();
+        if ($result->isActive()) {
+          $active_items[] = $result->getUrl()->toString();
+        }
       }
     }
 
-
     return [
       '#type' => 'select2',
-      '#theme' => 'select',
       '#options' => $items,
       '#required' => FALSE,
+      '#value' => $active_items,
       '#attributes' => [
         'data-drupal-selector' => 'facet-' . $facet->id(),
         'data-drupal-facet-id' => $facet->id(),

@@ -3,7 +3,6 @@
 namespace Drupal\Tests\select2\Unit\Element;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\select2\Element\Select2;
 use Drupal\Tests\UnitTestCase;
 

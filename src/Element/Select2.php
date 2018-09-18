@@ -43,17 +43,6 @@ class Select2 extends Select {
    * {@inheritdoc}
    */
   public static function processSelect(&$element, FormStateInterface $form_state, &$complete_form) {
-    if ($element['#multiple']) {
-      $element['#attributes']['multiple'] = 'multiple';
-      $element['#attributes']['name'] = $element['#name'] . '[]';
-      // Ensure that we don't have an empty value for multiple selection.
-      unset($element['#options']['']);
-    }
-    else {
-      $empty_option = ['' => ''];
-      $element['#options'] = $empty_option + $element['#options'];
-    }
-
     // We need to disable form validation, because with autocreation the options
     // could contain non existing references. We still have validation in the
     // entity reference field.
@@ -108,15 +97,20 @@ class Select2 extends Select {
       // Reduce options to the preselected ones and bring them in the correct
       // order.
       $options = [];
+      $existing_options = OptGroup::flattenOptions($element['#options']);
       foreach ($element['#default_value'] as $value) {
-        $options[$value] = $element['#options'][$value];
+        $options[$value] = $existing_options[$value];
       }
       $element['#options'] = $options;
+    }
 
-      if (!$multiple) {
-        $empty_option = ['' => ''];
-        $element['#options'] = $empty_option + $element['#options'];
-      }
+    if ($multiple) {
+      $element['#attributes']['multiple'] = 'multiple';
+      $element['#attributes']['name'] = $element['#name'] . '[]';
+    }
+    else {
+      $empty_option = ['' => ''];
+      $element['#options'] = $empty_option + $element['#options'];
     }
 
     $current_language = \Drupal::languageManager()->getCurrentLanguage();

@@ -71,10 +71,7 @@ class Select2Test extends UnitTestCase {
       '#cardinality' => 0,
       '#select2' => $settings,
     ];
-    $form_state = $this->prophesize(FormStateInterface::class)->reveal();
-    $complete_form = [];
 
-    $element = Select2::processSelect($element, $form_state, $complete_form);
     $element = Select2::preRenderSelect($element);
     $element = Select2::preRenderAutocomplete($element);
     $this->assertArraySubset($expected, $element);

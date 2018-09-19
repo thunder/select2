@@ -33,6 +33,7 @@ class Select2 extends Select {
     $info['#autocreate'] = [];
     $info['#cardinality'] = 0;
     $info['#pre_render'][] = [$class, 'preRenderAutocomplete'];
+    $info['#pre_render'][] = [$class, 'preRenderOverwrites'];
     $info['#element_validate'][] = [$class, 'validateElement'];
     $info['#select2'] = [];
 
@@ -43,17 +44,6 @@ class Select2 extends Select {
    * {@inheritdoc}
    */
   public static function processSelect(&$element, FormStateInterface $form_state, &$complete_form) {
-    if ($element['#multiple']) {
-      $element['#attributes']['multiple'] = 'multiple';
-      $element['#attributes']['name'] = $element['#name'] . '[]';
-      // Ensure that we don't have an empty value for multiple selection.
-      unset($element['#options']['']);
-    }
-    else {
-      $empty_option = ['' => ''];
-      $element['#options'] = $empty_option + $element['#options'];
-    }
-
     // We need to disable form validation, because with autocreation the options
     // could contain non existing references. We still have validation in the
     // entity reference field.
@@ -103,19 +93,9 @@ class Select2 extends Select {
     $required = isset($element['#states']['required']) ? TRUE : $element['#required'];
     $multiple = $element['#multiple'];
 
-    if ($element['#autocomplete'] && $element['#target_type']) {
-      // Reduce options to the preselected ones and bring them in the correct
-      // order.
-      $options = [];
-      foreach ($element['#default_value'] as $value) {
-        $options[$value] = $element['#options'][$value];
-      }
-      $element['#options'] = $options;
-
-      if (!$multiple) {
-        $empty_option = ['' => ''];
-        $element['#options'] = $empty_option + $element['#options'];
-      }
+    if ($multiple) {
+      $element['#attributes']['multiple'] = 'multiple';
+      $element['#attributes']['name'] = $element['#name'] . '[]';
     }
 
     $current_language = \Drupal::languageManager()->getCurrentLanguage();
@@ -135,11 +115,6 @@ class Select2 extends Select {
       'tokenSeparators' => $element['#autocreate'] ? [','] : [],
       'selectOnClose' => $element['#autocomplete'],
     ];
-
-    // Allow to overwrite the default settings and set additional settings.
-    foreach ($element["#select2"] as $key => $value) {
-      $settings[$key] = $value;
-    }
 
     $selector = $element['#attributes']['data-drupal-selector'];
     $element['#attributes']['class'][] = 'select2-widget';
@@ -166,6 +141,14 @@ class Select2 extends Select {
     $element = EntityAutocomplete::processEntityAutocomplete($element, new FormState(), $complete_form);
     $element['#autocomplete_route_name'] = 'select2.entity_autocomplete';
 
+    // Reduce options to the preselected ones and bring them in the correct
+    // order.
+    $options = OptGroup::flattenOptions($element['#options']);
+    $element['#options'] = [];
+    foreach ($element['#default_value'] as $value) {
+      $element['#options'][$value] = $options[$value];
+    }
+
     /** @var \Drupal\Core\Access\AccessManagerInterface $access_manager */
     $access_manager = \Drupal::service('access_manager');
     $access = $access_manager->checkNamedRoute($element['#autocomplete_route_name'], $element['#autocomplete_route_parameters'], \Drupal::currentUser(), TRUE);
@@ -183,6 +166,24 @@ class Select2 extends Select {
         ],
       ];
     }
+    return $element;
+  }
+
+  /**
+   * Allows to modify the select2 settings.
+   */
+  public static function preRenderOverwrites($element) {
+    if (!$element['#multiple']) {
+      $empty_option = ['' => ''];
+      $element['#options'] = $empty_option + $element['#options'];
+    }
+
+    // Allow to overwrite the default settings and set additional settings.
+    $selector = $element['#attributes']['data-drupal-selector'];
+    foreach ($element["#select2"] as $key => $value) {
+      $element['#attached']['drupalSettings']['select2'][$selector][$key] = $value;
+    }
+
     return $element;
   }
 

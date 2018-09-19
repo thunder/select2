@@ -162,4 +162,41 @@ class Select2Test extends UnitTestCase {
     return $data;
   }
 
+  /**
+   * Tests that an empty option is added or not.
+   */
+  public function testEmptyOption() {
+    $element = [
+      '#name' => 'field_foo',
+      '#options' => [],
+      '#multiple' => TRUE,
+      '#required' => TRUE,
+      '#attributes' => ['data-drupal-selector' => 'field-foo'],
+      '#autocreate' => [],
+      '#autocomplete' => FALSE,
+      '#cardinality' => 0,
+      '#select2' => [],
+    ];
+    $element = Select2::preRenderSelect($element);
+    $element = Select2::preRenderAutocomplete($element);
+    $element = Select2::preRenderOverwrites($element);
+    $this->assertArrayNotHasKey('', $element['#options']);
+
+    $element = [
+      '#name' => 'field_foo',
+      '#options' => [],
+      '#multiple' => FALSE,
+      '#required' => TRUE,
+      '#attributes' => ['data-drupal-selector' => 'field-foo'],
+      '#autocreate' => [],
+      '#autocomplete' => FALSE,
+      '#cardinality' => 0,
+      '#select2' => [],
+    ];
+    $element = Select2::preRenderSelect($element);
+    $element = Select2::preRenderAutocomplete($element);
+    $element = Select2::preRenderOverwrites($element);
+    $this->assertArrayHasKey('', $element['#options']);
+  }
+
 }

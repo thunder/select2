@@ -92,17 +92,6 @@ class Select2 extends Select {
     $required = isset($element['#states']['required']) ? TRUE : $element['#required'];
     $multiple = $element['#multiple'];
 
-    if ($element['#autocomplete'] && $element['#target_type']) {
-      // Reduce options to the preselected ones and bring them in the correct
-      // order.
-      $options = [];
-      $existing_options = OptGroup::flattenOptions($element['#options']);
-      foreach ($element['#default_value'] as $value) {
-        $options[$value] = $existing_options[$value];
-      }
-      $element['#options'] = $options;
-    }
-
     if ($multiple) {
       $element['#attributes']['multiple'] = 'multiple';
       $element['#attributes']['name'] = $element['#name'] . '[]';
@@ -159,6 +148,15 @@ class Select2 extends Select {
     $complete_form = [];
     $element = EntityAutocomplete::processEntityAutocomplete($element, new FormState(), $complete_form);
     $element['#autocomplete_route_name'] = 'select2.entity_autocomplete';
+
+    // Reduce options to the preselected ones and bring them in the correct
+    // order.
+    $options = [];
+    $existing_options = OptGroup::flattenOptions($element['#options']);
+    foreach ($element['#default_value'] as $value) {
+      $options[$value] = $existing_options[$value];
+    }
+    $element['#options'] = $options;
 
     /** @var \Drupal\Core\Access\AccessManagerInterface $access_manager */
     $access_manager = \Drupal::service('access_manager');

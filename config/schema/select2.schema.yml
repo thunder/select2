@@ -9,3 +9,6 @@ field.widget.settings.select2_entity_reference:
     autocomplete:
       type: boolean
       label: 'Autocomplete'
+    match_operator:
+      type: string
+      label: 'Autocomplete matching'

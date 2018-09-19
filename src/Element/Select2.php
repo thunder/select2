@@ -2,12 +2,12 @@
 
 namespace Drupal\select2\Element;
 
-use Drupal\Component\Utility\Crypt;
+use Drupal\Core\Entity\Element\EntityAutocomplete;
 use Drupal\Core\Entity\EntityReferenceSelection\SelectionWithAutocreateInterface;
+use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\OptGroup;
 use Drupal\Core\Render\Element\Select;
-use Drupal\Core\Site\Settings;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
 
@@ -30,7 +30,7 @@ class Select2 extends Select {
     $info['#selection_handler'] = 'default';
     $info['#selection_settings'] = [];
     $info['#autocomplete'] = FALSE;
-    $info['#autocreate'] = FALSE;
+    $info['#autocreate'] = [];
     $info['#cardinality'] = 0;
     $info['#pre_render'][] = [$class, 'preRenderAutocomplete'];
     $info['#element_validate'][] = [$class, 'validateElement'];
@@ -79,10 +79,9 @@ class Select2 extends Select {
     }
 
     $label = substr($input, 4);
-    $bundle = reset($element['#selection_settings']['target_bundles']);
     // We are not saving created entities, because that's part of
     // Drupal\Core\Field\Plugin\Field\FieldType\EntityReferenceItem::preSave().
-    return $handler->createNewEntity($element['#target_type'], $bundle, $label, \Drupal::currentUser()->id());
+    return $handler->createNewEntity($element['#target_type'], $element['#autocreate']['bundle'], $label, $element['#autocreate']['uid']);
   }
 
   /**
@@ -124,7 +123,7 @@ class Select2 extends Select {
       'allowClear' => !$multiple && !$required,
       'dir' => $current_language->getDirection(),
       'language' => $current_language->getId(),
-      'tags' => $element['#autocreate'],
+      'tags' => (bool) $element['#autocreate'],
       'theme' => $select2_theme_exists ? $current_theme : 'default',
       'maximumSelectionLength' => $multiple ? $element['#cardinality'] : 0,
       'tokenSeparators' => $element['#autocreate'] ? [','] : [],
@@ -157,28 +156,9 @@ class Select2 extends Select {
       return $element;
     }
 
-    // Nothing to do if there is no target entity type.
-    if (empty($element['#target_type'])) {
-      throw new \InvalidArgumentException('Missing required #target_type parameter.');
-    }
-
-    // Store the selection settings in the key/value store and pass a hashed key
-    // in the route parameters.
-    $selection_settings = isset($element['#selection_settings']) ? $element['#selection_settings'] : [];
-    $data = serialize($selection_settings) . $element['#target_type'] . $element['#selection_handler'];
-    $selection_settings_key = Crypt::hmacBase64($data, Settings::getHashSalt());
-
-    $key_value_storage = \Drupal::keyValue('entity_autocomplete');
-    if (!$key_value_storage->has($selection_settings_key)) {
-      $key_value_storage->set($selection_settings_key, $selection_settings);
-    }
-
+    $complete_form = [];
+    $element = EntityAutocomplete::processEntityAutocomplete($element, new FormState(), $complete_form);
     $element['#autocomplete_route_name'] = 'select2.entity_autocomplete';
-    $element['#autocomplete_route_parameters'] = [
-      'target_type' => $element['#target_type'],
-      'selection_handler' => $element['#selection_handler'],
-      'selection_settings_key' => $selection_settings_key,
-    ];
 
     /** @var \Drupal\Core\Access\AccessManagerInterface $access_manager */
     $access_manager = \Drupal::service('access_manager');

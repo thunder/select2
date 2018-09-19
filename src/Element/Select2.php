@@ -151,12 +151,11 @@ class Select2 extends Select {
 
     // Reduce options to the preselected ones and bring them in the correct
     // order.
-    $options = [];
-    $existing_options = OptGroup::flattenOptions($element['#options']);
+    $options = OptGroup::flattenOptions($element['#options']);
+    $element['#options'] = [];
     foreach ($element['#default_value'] as $value) {
-      $options[$value] = $existing_options[$value];
+      $element['#options'][$value] = $options[$value];
     }
-    $element['#options'] = $options;
 
     /** @var \Drupal\Core\Access\AccessManagerInterface $access_manager */
     $access_manager = \Drupal::service('access_manager');

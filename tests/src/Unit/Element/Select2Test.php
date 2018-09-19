@@ -73,6 +73,7 @@ class Select2Test extends UnitTestCase {
 
     $element = Select2::preRenderSelect($element);
     $element = Select2::preRenderAutocomplete($element);
+    $element = Select2::preRenderOverwrites($element);
     $this->assertArraySubset($expected, $element);
   }
 

@@ -33,6 +33,7 @@ class Select2 extends Select {
     $info['#autocreate'] = [];
     $info['#cardinality'] = 0;
     $info['#pre_render'][] = [$class, 'preRenderAutocomplete'];
+    $info['#pre_render'][] = [$class, 'preRenderOverwrites'];
     $info['#element_validate'][] = [$class, 'validateElement'];
     $info['#select2'] = [];
 
@@ -96,10 +97,6 @@ class Select2 extends Select {
       $element['#attributes']['multiple'] = 'multiple';
       $element['#attributes']['name'] = $element['#name'] . '[]';
     }
-    else {
-      $empty_option = ['' => ''];
-      $element['#options'] = $empty_option + $element['#options'];
-    }
 
     $current_language = \Drupal::languageManager()->getCurrentLanguage();
     $current_theme = \Drupal::theme()->getActiveTheme()->getName();
@@ -118,11 +115,6 @@ class Select2 extends Select {
       'tokenSeparators' => $element['#autocreate'] ? [','] : [],
       'selectOnClose' => $element['#autocomplete'],
     ];
-
-    // Allow to overwrite the default settings and set additional settings.
-    foreach ($element["#select2"] as $key => $value) {
-      $settings[$key] = $value;
-    }
 
     $selector = $element['#attributes']['data-drupal-selector'];
     $element['#attributes']['class'][] = 'select2-widget';
@@ -174,6 +166,24 @@ class Select2 extends Select {
         ],
       ];
     }
+    return $element;
+  }
+
+  /**
+   * Allows to modify the select2 settings.
+   */
+  public static function preRenderOverwrites($element) {
+    if (!$element['#multiple']) {
+      $empty_option = ['' => ''];
+      $element['#options'] = $empty_option + $element['#options'];
+    }
+
+    // Allow to overwrite the default settings and set additional settings.
+    $selector = $element['#attributes']['data-drupal-selector'];
+    foreach ($element["#select2"] as $key => $value) {
+      $element['#attached']['drupalSettings']['select2'][$selector][$key] = $value;
+    }
+
     return $element;
   }
 

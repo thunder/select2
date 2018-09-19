@@ -35,4 +35,32 @@ class Select2Test extends KernelTestBase {
     $this->assertEquals(1, count($select2_js));
   }
 
+  /**
+   * Tests that an empty option is added or not.
+   */
+  public function testEmptyOption() {
+    $select = [
+      '#type' => 'select2',
+      '#options' => [],
+      '#multiple' => FALSE,
+      '#required' => FALSE,
+      '#attributes' => ['data-drupal-selector' => 'field-foo'],
+    ];
+    $this->render($select);
+    $select = $this->xpath('//select[@data-drupal-selector="field-foo"]/option[@value=""]');
+    $this->assertEquals(1, count($select));
+
+    $select = [
+      '#type' => 'select2',
+      '#options' => [],
+      '#multiple' => TRUE,
+      '#required' => FALSE,
+      '#attributes' => ['data-drupal-selector' => 'field-foo'],
+      '#name' => 'field_foo',
+    ];
+    $this->render($select);
+    $select = $this->xpath('//select[@data-drupal-selector="field-foo"]/option[@value=""]');
+    $this->assertEquals(0, count($select));
+  }
+
 }

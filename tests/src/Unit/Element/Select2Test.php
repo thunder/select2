@@ -66,7 +66,7 @@ class Select2Test extends UnitTestCase {
       '#multiple' => $multiple,
       '#required' => $required,
       '#attributes' => ['data-drupal-selector' => 'field-foo'],
-      '#autocreate' => FALSE,
+      '#autocreate' => [],
       '#autocomplete' => FALSE,
       '#cardinality' => 0,
       '#select2' => $settings,

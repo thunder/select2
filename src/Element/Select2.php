@@ -30,7 +30,7 @@ class Select2 extends Select {
     $info['#selection_handler'] = 'default';
     $info['#selection_settings'] = [];
     $info['#autocomplete'] = FALSE;
-    $info['#autocreate'] = NULL;
+    $info['#autocreate'] = [];
     $info['#cardinality'] = 0;
     $info['#pre_render'][] = [$class, 'preRenderAutocomplete'];
     $info['#element_validate'][] = [$class, 'validateElement'];
@@ -129,10 +129,10 @@ class Select2 extends Select {
       'allowClear' => !$multiple && !$required,
       'dir' => $current_language->getDirection(),
       'language' => $current_language->getId(),
-      'tags' => !empty($element['#autocreate']),
+      'tags' => (bool) $element['#autocreate'],
       'theme' => $select2_theme_exists ? $current_theme : 'default',
       'maximumSelectionLength' => $multiple ? $element['#cardinality'] : 0,
-      'tokenSeparators' => !empty($element['#autocreate']) ? [','] : [],
+      'tokenSeparators' => $element['#autocreate'] ? [','] : [],
       'selectOnClose' => $element['#autocomplete'],
     ];
 

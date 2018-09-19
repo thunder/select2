@@ -54,11 +54,11 @@ class Select2Test extends UnitTestCase {
   }
 
   /**
-   * @covers ::processSelect
+   * @covers ::preRenderSelect
    *
-   * @dataProvider providerTestProcessSelect
+   * @dataProvider providerTestPreRenderSelect
    */
-  public function testProcessSelect($multiple, $required, $settings, $expected) {
+  public function testPreRenderSelect($multiple, $required, $settings, $expected) {
     $element = [
       '#name' => 'field_foo',
       '#options' => [],
@@ -77,9 +77,9 @@ class Select2Test extends UnitTestCase {
   }
 
   /**
-   * Data provider for testProcessSelect().
+   * Data provider for testPreRenderSelect().
    */
-  public function providerTestProcessSelect() {
+  public function providerTestPreRenderSelect() {
     $data = [];
     $data[] = [TRUE, TRUE, [],
       [

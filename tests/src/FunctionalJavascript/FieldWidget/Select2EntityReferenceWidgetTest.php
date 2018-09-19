@@ -55,6 +55,53 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
   }
 
   /**
+   * Test autocomplete in a single value field.
+   *
+   * @dataProvider testSingleAutocompleteStartWithMatchProvider
+   */
+  public function testSingleAutocompleteStartWithMatch($match_operator, $count) {
+    $this->createField('select2', 'node', 'test', 'entity_reference', [
+      'target_type' => 'entity_test_mulrevpub',
+    ], [
+      'handler' => 'default:entity_test_mulrevpub',
+      'handler_settings' => [
+        'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
+        'auto_create' => FALSE,
+      ],
+    ], 'select2_entity_reference', ['autocomplete' => TRUE, 'match_operator' => $match_operator]);
+
+    EntityTestMulRevPub::create(['name' => 'foo'])->save();
+    EntityTestMulRevPub::create(['name' => 'bar'])->save();
+    EntityTestMulRevPub::create(['name' => 'bar foo'])->save();
+    EntityTestMulRevPub::create(['name' => 'gaga'])->save();
+
+    $page = $this->getSession()->getPage();
+    $assert_session = $this->assertSession();
+
+    $this->drupalGet('/node/add/test');
+    $page->fillField('title[0][value]', 'Test node');
+    $this->click('.form-item-select2 .select2-selection.select2-selection--single');
+
+    $page->find('css', '.select2-search__field')->setValue('fo');
+    $assert_session->waitForElement('xpath', '//li[@class="select2-results__option select2-results__option--highlighted" and text()="foo"]');
+
+    $assert_session->elementsCount('xpath', '//li[contains(@class, "select2-results__option")]', $count);
+  }
+
+  /**
+   * Data provider for testSingleAutocompleteStartWithMatch().
+   *
+   * @return array
+   *   The data.
+   */
+  public function testSingleAutocompleteStartWithMatchProvider() {
+    return [
+      ['STARTS_WITH', 1],
+      ['CONTAINS', 2],
+    ];
+  }
+
+  /**
    * Test autocomplete in a multiple value field.
    */
   public function testMultipleAutocomplete() {

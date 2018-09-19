@@ -26,6 +26,7 @@ class Select2EntityReferenceWidget extends Select2Widget {
   public static function defaultSettings() {
     return [
       'autocomplete' => FALSE,
+      'match_operator' => 'CONTAINS',
     ] + parent::defaultSettings();
   }
 
@@ -40,6 +41,18 @@ class Select2EntityReferenceWidget extends Select2Widget {
       '#default_value' => $this->getSetting('autocomplete'),
       '#description' => t('Options will be lazy loaded. This is recommended for lists with a lot of values.'),
     ];
+    $element['match_operator'] = [
+      '#type' => 'radios',
+      '#title' => t('Autocomplete matching'),
+      '#default_value' => $this->getSetting('match_operator'),
+      '#options' => $this->getMatchOperatorOptions(),
+      '#description' => t('Select the method used to collect autocomplete suggestions. Note that <em>Contains</em> can cause performance issues on sites with thousands of entities.'),
+      '#states' => [
+        'visible' => [
+          ':input[name$="[settings_edit_form][settings][autocomplete]"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
 
     return $element;
   }
@@ -50,7 +63,11 @@ class Select2EntityReferenceWidget extends Select2Widget {
   public function settingsSummary() {
     $summary = parent::settingsSummary();
     $autocomplete = $this->getSetting('autocomplete');
+    $operators = $this->getMatchOperatorOptions();
     $summary[] = t('Autocomplete: @autocomplete', ['@autocomplete' => $autocomplete ? $this->t('On') : $this->t('Off')]);
+    if ($autocomplete) {
+      $summary[] = t('Autocomplete matching: @match_operator', ['@match_operator' => $operators[$this->getSetting('match_operator')]]);
+    }
     return $summary;
   }
 
@@ -62,7 +79,7 @@ class Select2EntityReferenceWidget extends Select2Widget {
 
     $element['#target_type'] = $this->getFieldSetting('target_type');
     $element['#selection_handler'] = $this->getFieldSetting('handler');
-    $element['#selection_settings'] = $this->getFieldSetting('handler_settings') + ['match_operator' => 'CONTAINS'];
+    $element['#selection_settings'] = $this->getFieldSetting('handler_settings') + ['match_operator' => $this->getSetting('match_operator')];
     $element['#autocomplete'] = $this->getSetting('autocomplete');
 
     if ($this->getSelectionHandlerSetting('auto_create') && ($bundle = $this->getAutocreateBundle())) {
@@ -123,6 +140,19 @@ class Select2EntityReferenceWidget extends Select2Widget {
   protected function getSelectionHandlerSetting($setting_name) {
     $settings = $this->getFieldSetting('handler_settings');
     return isset($settings[$setting_name]) ? $settings[$setting_name] : NULL;
+  }
+
+  /**
+   * Returns the options for the match operator.
+   *
+   * @return array
+   *   List of options.
+   */
+  protected function getMatchOperatorOptions() {
+    return [
+      'STARTS_WITH' => t('Starts with'),
+      'CONTAINS' => t('Contains'),
+    ];
   }
 
 }

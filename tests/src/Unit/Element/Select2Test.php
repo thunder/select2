@@ -3,7 +3,6 @@
 namespace Drupal\Tests\select2\Unit\Element;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\select2\Element\Select2;
 use Drupal\Tests\UnitTestCase;
 
@@ -55,35 +54,33 @@ class Select2Test extends UnitTestCase {
   }
 
   /**
-   * @covers ::processSelect
+   * @covers ::preRenderSelect
    *
-   * @dataProvider providerTestProcessSelect
+   * @dataProvider providerTestPreRenderSelect
    */
-  public function testProcessSelect($multiple, $required, $settings, $expected) {
+  public function testPreRenderSelect($multiple, $required, $settings, $expected) {
     $element = [
       '#name' => 'field_foo',
       '#options' => [],
       '#multiple' => $multiple,
       '#required' => $required,
       '#attributes' => ['data-drupal-selector' => 'field-foo'],
-      '#autocreate' => FALSE,
+      '#autocreate' => [],
       '#autocomplete' => FALSE,
       '#cardinality' => 0,
       '#select2' => $settings,
     ];
-    $form_state = $this->prophesize(FormStateInterface::class)->reveal();
-    $complete_form = [];
 
-    $element = Select2::processSelect($element, $form_state, $complete_form);
     $element = Select2::preRenderSelect($element);
     $element = Select2::preRenderAutocomplete($element);
+    $element = Select2::preRenderOverwrites($element);
     $this->assertArraySubset($expected, $element);
   }
 
   /**
-   * Data provider for testProcessSelect().
+   * Data provider for testPreRenderSelect().
    */
-  public function providerTestProcessSelect() {
+  public function providerTestPreRenderSelect() {
     $data = [];
     $data[] = [TRUE, TRUE, [],
       [

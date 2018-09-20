@@ -5,6 +5,7 @@ namespace Drupal\Tests\select2\FunctionalJavascript\FieldWidget;
 use Drupal\entity_test\Entity\EntityTestBundle;
 use Drupal\entity_test\Entity\EntityTestMulRevPub;
 use Drupal\entity_test\Entity\EntityTestWithBundle;
+use Drupal\field\Entity\FieldConfig;
 use Drupal\Tests\select2\FunctionalJavascript\Select2JavascriptTestBase;
 
 /**
@@ -51,6 +52,53 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
 
     $node = $this->getNodeByTitle('Test node', TRUE);
     $this->assertArraySubset([['target_id' => 1]], $node->select2->getValue());
+  }
+
+  /**
+   * Test autocomplete in a single value field.
+   *
+   * @dataProvider testSingleAutocompleteStartWithMatchProvider
+   */
+  public function testSingleAutocompleteStartWithMatch($match_operator, $count) {
+    $this->createField('select2', 'node', 'test', 'entity_reference', [
+      'target_type' => 'entity_test_mulrevpub',
+    ], [
+      'handler' => 'default:entity_test_mulrevpub',
+      'handler_settings' => [
+        'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
+        'auto_create' => FALSE,
+      ],
+    ], 'select2_entity_reference', ['autocomplete' => TRUE, 'match_operator' => $match_operator]);
+
+    EntityTestMulRevPub::create(['name' => 'foo'])->save();
+    EntityTestMulRevPub::create(['name' => 'bar'])->save();
+    EntityTestMulRevPub::create(['name' => 'bar foo'])->save();
+    EntityTestMulRevPub::create(['name' => 'gaga'])->save();
+
+    $page = $this->getSession()->getPage();
+    $assert_session = $this->assertSession();
+
+    $this->drupalGet('/node/add/test');
+    $page->fillField('title[0][value]', 'Test node');
+    $this->click('.form-item-select2 .select2-selection.select2-selection--single');
+
+    $page->find('css', '.select2-search__field')->setValue('fo');
+    $assert_session->waitForElement('xpath', '//li[@class="select2-results__option select2-results__option--highlighted" and text()="foo"]');
+
+    $assert_session->elementsCount('xpath', '//li[contains(@class, "select2-results__option")]', $count);
+  }
+
+  /**
+   * Data provider for testSingleAutocompleteStartWithMatch().
+   *
+   * @return array
+   *   The data.
+   */
+  public function testSingleAutocompleteStartWithMatchProvider() {
+    return [
+      ['STARTS_WITH', 1],
+      ['CONTAINS', 2],
+    ];
   }
 
   /**
@@ -128,14 +176,27 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
    * Test autocreation for a multi value field.
    */
   public function testMultipleAutocreation() {
+    EntityTestBundle::create([
+      'id' => 'test1',
+      'label' => 'Test1 label',
+      'description' => 'My test description',
+    ])->save();
+
+    EntityTestBundle::create([
+      'id' => 'test2',
+      'label' => 'Test2 label',
+      'description' => 'My test description',
+    ])->save();
+
     $this->createField('select2', 'node', 'test', 'entity_reference', [
-      'target_type' => 'entity_test_mulrevpub',
+      'target_type' => 'entity_test_with_bundle',
       'cardinality' => -1,
     ], [
-      'handler' => 'default:entity_test_mulrevpub',
+      'handler' => 'default:entity_test_with_bundle',
       'handler_settings' => [
-        'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
+        'target_bundles' => ['test1' => 'test1', 'test2' => 'test2'],
         'auto_create' => TRUE,
+        'auto_create_bundle' => 'test2',
       ],
     ], 'select2_entity_reference');
 
@@ -155,8 +216,32 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
 
     $node = $this->getNodeByTitle('Test node', TRUE);
     $this->assertArraySubset([['target_id' => 1], ['target_id' => 2]], $node->select2->getValue());
-    $this->assertNotEmpty(EntityTestMulRevPub::load(1));
-    $this->assertNotEmpty(EntityTestMulRevPub::load(2));
+    $entity = EntityTestWithBundle::load(1);
+    $this->assertNotEmpty($entity);
+    $this->assertSame('test2', $entity->bundle());
+    $entity = EntityTestWithBundle::load(2);
+    $this->assertNotEmpty($entity);
+    $this->assertSame('test2', $entity->bundle());
+
+    $field = FieldConfig::loadByName('node', 'test', 'select2');
+    $field->setSetting('handler_settings', [
+      'target_bundles' => ['test1' => 'test1', 'test2' => 'test2'],
+      'auto_create' => TRUE,
+      'auto_create_bundle' => 'test1',
+    ]);
+    $field->save();
+
+    $this->drupalGet($node->toUrl('edit-form'));
+
+    $this->click('.form-item-select2 .select2-selection.select2-selection--multiple');
+    $page->find('css', '.select2-search__field')->setValue('New value 3');
+    $page->find('css', '.select2-results__option--highlighted')->click();
+
+    $page->pressButton('Save');
+
+    $entity = EntityTestWithBundle::load(3);
+    $this->assertNotEmpty($entity);
+    $this->assertSame('test1', $entity->bundle());
   }
 
   /**

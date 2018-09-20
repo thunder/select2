@@ -26,7 +26,7 @@
               q: params.term,
               page: params.page || 1
             };
-          }
+          };
         }
         $(this).css('width', '100%').select2(config);
 

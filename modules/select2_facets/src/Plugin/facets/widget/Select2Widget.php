@@ -63,8 +63,7 @@ class Select2Widget extends WidgetPluginBase {
       '#value' => $active_items,
       '#attributes' => [
         'data-drupal-selector' => 'facet-' . $facet->id(),
-        'data-drupal-facet-id' => $facet->id(),
-        'data-drupal-facet-alias' => $facet->getUrlAlias(),
+        'data-drupal-facet-cancel-url' => reset($active_items),
         'class' => ['js-facets-select2'],
       ],
       '#attached' => [

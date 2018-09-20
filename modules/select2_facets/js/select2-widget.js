@@ -32,7 +32,11 @@
 
       // Go to the selected option when it's clicked.
       $dropdown.on('change.facets', function () {
-        window.location.href = $($dropdown).val();
+        var url = $($dropdown).val();
+        if (!url) {
+          url = $($dropdown).data('drupal-facet-cancel-url');
+        }
+        window.location.href = url;
       });
 
       // Replace links with dropdown.

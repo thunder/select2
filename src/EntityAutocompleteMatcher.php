@@ -38,6 +38,8 @@ class EntityAutocompleteMatcher {
    *   An array of settings that will be passed to the selection handler.
    * @param string $string
    *   (optional) The label of the entity to query by.
+   * @param int $page
+   *   (optional) An offset for the results.
    *
    * @return array
    *   An array of matched entity labels, in the format required by the AJAX
@@ -48,7 +50,7 @@ class EntityAutocompleteMatcher {
    *
    * @see \Drupal\system\Controller\EntityAutocompleteController
    */
-  public function getMatches($target_type, $selection_handler, array $selection_settings, $string = '') {
+  public function getMatches($target_type, $selection_handler, array $selection_settings, $string = '', $page = 0) {
     $matches = [];
 
     $options = $selection_settings + [
@@ -60,7 +62,7 @@ class EntityAutocompleteMatcher {
     if (isset($string)) {
       // Get an array of matching entities.
       $match_operator = !empty($selection_settings['match_operator']) ? $selection_settings['match_operator'] : 'CONTAINS';
-      $entity_labels = $handler->getReferenceableEntities($string, $match_operator, 10);
+      $entity_labels = $handler->getReferenceableEntities($string, $match_operator, 10, $page * 10);
 
       // Loop through the entities and convert them into autocomplete output.
       foreach ($entity_labels as $values) {

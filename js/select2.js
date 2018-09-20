@@ -19,6 +19,15 @@
             text: term
           };
         };
+        if (config.hasOwnProperty('ajax')) {
+          // Use pagination for ajax requests.
+          config.ajax.data = function (params) {
+            return {
+              q: params.term,
+              page: params.page || 1
+            };
+          }
+        }
         $(this).css('width', '100%').select2(config);
 
         // Copied from https://github.com/woocommerce/woocommerce/blob/master/assets/js/admin/wc-enhanced-select.js#L118

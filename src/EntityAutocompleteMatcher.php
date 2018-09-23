@@ -62,7 +62,8 @@ class EntityAutocompleteMatcher {
     if (isset($string)) {
       // Get an array of matching entities.
       $match_operator = !empty($selection_settings['match_operator']) ? $selection_settings['match_operator'] : 'CONTAINS';
-      $entity_labels = $handler->getReferenceableEntities($string, $match_operator, 10, $page * 10);
+      $match_size = !empty($selection_settings['match_size']) ? $selection_settings['match_size'] : 10;
+      $entity_labels = $handler->getReferenceableEntities($string, $match_operator, $match_size, $page * $match_size);
 
       // Loop through the entities and convert them into autocomplete output.
       foreach ($entity_labels as $values) {

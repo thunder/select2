@@ -79,7 +79,10 @@ class Select2EntityReferenceWidget extends Select2Widget {
 
     $element['#target_type'] = $this->getFieldSetting('target_type');
     $element['#selection_handler'] = $this->getFieldSetting('handler');
-    $element['#selection_settings'] = $this->getFieldSetting('handler_settings') + ['match_operator' => $this->getSetting('match_operator')];
+    $element['#selection_settings'] = $this->getFieldSetting('handler_settings') + [
+      'match_operator' => $this->getSetting('match_operator'),
+      'match_size' => 10,
+    ];
     $element['#autocomplete'] = $this->getSetting('autocomplete');
 
     if ($this->getSelectionHandlerSetting('auto_create') && ($bundle = $this->getAutocreateBundle())) {

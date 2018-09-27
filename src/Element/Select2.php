@@ -34,9 +34,9 @@ use Drupal\Core\Url;
  *   ];
  *
  * If you want to prevent the rendering of all options and fetch the options via
- * ajax instead, you can use the 'autocomplete' setting. It's also needed to
- * specify which entities are available with 'target_type', 'selection_handler'
- * and 'selection_settings'.
+ * ajax instead, you can use the '#autocomplete' property. It's also needed to
+ * specify which entities are available with '#target_type',
+ * '#selection_handler' and '#selection_settings'.
  * @code
  *   $form['my_element'] = [
  *     '#type' => 'select2',
@@ -74,7 +74,8 @@ use Drupal\Core\Url;
  *   ];
  *
  * The render element sets a bunch of default values to configure the select2
- * element. Nevertheless all select2 properties can be overwritten.
+ * element. Nevertheless all select2 config values can be overwritten with the
+ * '#select2' property.
  * @code
  *   $form['my_element'] = [
  *     '#type' => 'select2',

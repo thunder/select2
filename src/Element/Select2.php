@@ -12,7 +12,78 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
 
 /**
- * Provides a form element for a simple select2 select box.
+ * Provides an select2 form element.
+ *
+ * Properties:
+ * - #cardinality: (optional) How many options can be selected. Default is
+ *   unlimited.
+ *
+ * Simple usage example:
+ * @code
+ *   $form['example_select'] = [
+ *     '#type' => 'select2',
+ *     '#title' => $this->t('Select element'),
+ *     '#options' => [
+ *       '1' => $this->t('One'),
+ *       '2' => [
+ *         '2.1' => $this->t('Two point one'),
+ *         '2.2' => $this->t('Two point two'),
+ *       ],
+ *       '3' => $this->t('Three'),
+ *     ],
+ *   ];
+ *
+ * If you want to prevent the rendering of all options and fetch the options via
+ * ajax instead, you can use the 'autocomplete' setting. It's also needed to
+ * specify which entities are available with 'target_type', 'selection_handler'
+ * and 'selection_settings'.
+ * @code
+ *   $form['my_element'] = [
+ *     '#type' => 'select2',
+ *     '#title' => $this->t('Select element'),
+ *     '#options' => [
+ *       '1' => $this->t('One'),
+ *       '2' => $this->t('Two'),
+ *       '3' => $this->t('Three'),
+ *     ],
+ *     '#autocomplete' => TRUE,
+ *     '#target_type' => 'node',
+ *     // The selection handler is optional and pre-populated to 'default'.
+ *     '#selection_handler' => 'default',
+ *     '#selection_settings' => [
+ *       'target_bundles' => ['article', 'page'],
+ *     ],
+ *   ];
+ *
+ * If you want to allow an input of an entity label that does not exist yet but
+ * can be created "on the fly" on form submission, the '#autocreate' property
+ * can be used:
+ * @code
+ *   // #autocreate should be an array where the 'bundle' key is required and
+ *   // should be the bundle name for the new entity.
+ *   // The 'uid' key of the #autocreate array is optional and defaults to the
+ *   // current logged-in user. It should be the user ID for the new entity,
+ *   // if the target entity type implements \Drupal\user\EntityOwnerInterface.
+ *   $form['my_element'] = [
+ *     '#type' => 'select2',
+ *     '#target_type' => 'taxonomy_term',
+ *     '#autocreate' => [
+ *       'bundle' => 'tags',
+ *       'uid' => <a valid user ID>,
+ *     ],
+ *   ];
+ *
+ * The render element sets a bunch of default values to configure the select2
+ * element. Nevertheless all select2 properties can be overwritten.
+ * @code
+ *   $form['my_element'] = [
+ *     '#type' => 'select2',
+ *     '#select2' => [
+ *       'allowClear' => TRUE,
+ *     ],
+ *   ];
+ *
+ * @see https://select2.org/configuration/options-api
  *
  * @FormElement("select2")
  */

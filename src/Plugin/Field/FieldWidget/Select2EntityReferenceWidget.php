@@ -99,10 +99,17 @@ class Select2EntityReferenceWidget extends Select2Widget {
   /**
    * {@inheritdoc}
    */
-  protected static function transposeSelections(array $values, array $element) {
+  protected static function prepareFieldValues(array $values, array $element) {
     if (empty($element['#autocreate'])) {
-      return parent::transposeSelections($values, $element);
+      return parent::prepareFieldValues($values, $element);
     }
+
+    $handler_settings = $element['#selection_settings'] + [
+      'target_type' => $element['#target_type'],
+      'handler' => $element['#selection_handler'],
+    ];
+    /** @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface $handler */
+    $handler = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($handler_settings);
 
     $options = OptGroup::flattenOptions($element['#options']);
     $items = [];
@@ -111,38 +118,17 @@ class Select2EntityReferenceWidget extends Select2Widget {
         $items[] = [$element['#key_column'] => $value];
       }
       else {
-        $items[] = ['entity' => static::createNewEntity($element, $value)];
+        if ($handler instanceof SelectionWithAutocreateInterface) {
+          $label = substr($value, 4);
+          // We are not saving created entities, because that's part of
+          // Drupal\Core\Field\Plugin\Field\FieldType\EntityReferenceItem::preSave().
+          $items[] = [
+            'entity' => $handler->createNewEntity($element['#target_type'], $element['#autocreate']['bundle'], $label, $element['#autocreate']['uid']),
+          ];
+        }
       }
     }
     return $items;
-  }
-
-  /**
-   * Create a new entity.
-   *
-   * @param array $element
-   *   The form element.
-   * @param string $input
-   *   The input for the new entity.
-   *
-   * @return \Drupal\Core\Entity\EntityInterface
-   *   A new unsaved entity.
-   */
-  protected static function createNewEntity(array $element, $input) {
-    $options = $element['#selection_settings'] + [
-      'target_type' => $element['#target_type'],
-      'handler' => $element['#selection_handler'],
-    ];
-    /** @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface $handler */
-    $handler = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($options);
-    if (!$handler instanceof SelectionWithAutocreateInterface) {
-      return NULL;
-    }
-
-    $label = substr($input, 4);
-    // We are not saving created entities, because that's part of
-    // Drupal\Core\Field\Plugin\Field\FieldType\EntityReferenceItem::preSave().
-    return $handler->createNewEntity($element['#target_type'], $element['#autocreate']['bundle'], $label, $element['#autocreate']['uid']);
   }
 
   /**

@@ -64,7 +64,7 @@ class Select2Widget extends OptionsSelectWidget {
       unset($values[$index]);
     }
 
-    $items = static::transposeSelections($values, $element);
+    $items = static::prepareFieldValues($values, $element);
     $form_state->setValueForElement($element, $items);
   }
 
@@ -79,7 +79,7 @@ class Select2Widget extends OptionsSelectWidget {
    * @return array
    *   Values with the correct keys.
    */
-  protected static function transposeSelections(array $values, array $element) {
+  protected static function prepareFieldValues(array $values, array $element) {
     // Transpose selections from field => delta to delta => field.
     $items = [];
     foreach ($values as $value) {

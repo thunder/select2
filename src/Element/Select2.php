@@ -105,7 +105,6 @@ class Select2 extends Select {
     $info['#cardinality'] = 0;
     $info['#pre_render'][] = [$class, 'preRenderAutocomplete'];
     $info['#pre_render'][] = [$class, 'preRenderOverwrites'];
-
     $info['#select2'] = [];
 
     return $info;

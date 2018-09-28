@@ -2,8 +2,10 @@
 
 namespace Drupal\select2\Plugin\Field\FieldWidget;
 
+use Drupal\Core\Entity\EntityReferenceSelection\SelectionWithAutocreateInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Form\OptGroup;
 use Drupal\user\EntityOwnerInterface;
 
 /**
@@ -92,6 +94,55 @@ class Select2EntityReferenceWidget extends Select2Widget {
     $element['#multiple'] = $this->multiple && (count($this->options) > 1 || !empty($element['#autocreate']));
 
     return $element;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected static function transposeSelections(array $values, array $element) {
+    if (empty($element['#autocreate'])) {
+      return parent::transposeSelections($values, $element);
+    }
+
+    $options = OptGroup::flattenOptions($element['#options']);
+    $items = [];
+    foreach ($values as $value) {
+      if (isset($options[$value])) {
+        $items[] = [$element['#key_column'] => $value];
+      }
+      else {
+        $items[] = ['entity' => static::createNewEntity($element, $value)];
+      }
+    }
+    return $items;
+  }
+
+  /**
+   * Create a new entity.
+   *
+   * @param array $element
+   *   The form element.
+   * @param string $input
+   *   The input for the new entity.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface
+   *   A new unsaved entity.
+   */
+  protected static function createNewEntity(array $element, $input) {
+    $options = $element['#selection_settings'] + [
+      'target_type' => $element['#target_type'],
+      'handler' => $element['#selection_handler'],
+    ];
+    /** @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface $handler */
+    $handler = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($options);
+    if (!$handler instanceof SelectionWithAutocreateInterface) {
+      return NULL;
+    }
+
+    $label = substr($input, 4);
+    // We are not saving created entities, because that's part of
+    // Drupal\Core\Field\Plugin\Field\FieldType\EntityReferenceItem::preSave().
+    return $handler->createNewEntity($element['#target_type'], $element['#autocreate']['bundle'], $label, $element['#autocreate']['uid']);
   }
 
   /**

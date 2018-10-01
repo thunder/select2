@@ -43,6 +43,8 @@
 }
 ul.select2-results__options li {
   padding: 3px 1em 3px .4em;
+  color: #595959;
+  font-size: 0.95em;
 }
 
 .select2-container--seven .select2-search--dropdown .select2-search__field {

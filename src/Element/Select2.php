@@ -121,6 +121,11 @@ class Select2 extends Select {
       unset($element['#needs_validation']);
     }
 
+    if (!$element['#multiple'] && !isset($element['#options'][''])) {
+      $empty_option = ['' => ''];
+      $element['#options'] = $empty_option + $element['#options'];
+    }
+
     // Set the type from select2 to select to get proper form validation.
     $element['#type'] = 'select';
 

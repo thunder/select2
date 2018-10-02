@@ -3,7 +3,6 @@
 namespace Drupal\select2\Element;
 
 use Drupal\Core\Entity\Element\EntityAutocomplete;
-use Drupal\Core\Entity\EntityReferenceSelection\SelectionWithAutocreateInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\OptGroup;
@@ -106,7 +105,6 @@ class Select2 extends Select {
     $info['#cardinality'] = 0;
     $info['#pre_render'][] = [$class, 'preRenderAutocomplete'];
     $info['#pre_render'][] = [$class, 'preRenderOverwrites'];
-    $info['#element_validate'][] = [$class, 'validateElement'];
     $info['#select2'] = [];
 
     return $info;
@@ -123,38 +121,15 @@ class Select2 extends Select {
       unset($element['#needs_validation']);
     }
 
+    if (!$element['#multiple'] && !isset($element['#options'][''])) {
+      $empty_option = ['' => ''];
+      $element['#options'] = $empty_option + $element['#options'];
+    }
+
     // Set the type from select2 to select to get proper form validation.
     $element['#type'] = 'select';
 
     return $element;
-  }
-
-  /**
-   * Create a new entity.
-   *
-   * @param array $element
-   *   The form element.
-   * @param string $input
-   *   The input for the new entity.
-   *
-   * @return \Drupal\Core\Entity\EntityInterface
-   *   A new unsaved entity.
-   */
-  protected static function createNewEntity(array $element, $input) {
-    $options = $element['#selection_settings'] + [
-      'target_type' => $element['#target_type'],
-      'handler' => $element['#selection_handler'],
-    ];
-    /** @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface $handler */
-    $handler = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($options);
-    if (!$handler instanceof SelectionWithAutocreateInterface) {
-      return NULL;
-    }
-
-    $label = substr($input, 4);
-    // We are not saving created entities, because that's part of
-    // Drupal\Core\Field\Plugin\Field\FieldType\EntityReferenceItem::preSave().
-    return $handler->createNewEntity($element['#target_type'], $element['#autocreate']['bundle'], $label, $element['#autocreate']['uid']);
   }
 
   /**
@@ -257,51 +232,6 @@ class Select2 extends Select {
     }
 
     return $element;
-  }
-
-  /**
-   * Validates the select2 element.
-   *
-   * More or less a copy of OptionsWidgetBase::validateElement(). Changes are
-   * '_none' was replaced by '' and we create new entities for non-existing
-   * options.
-   */
-  public static function validateElement(array $element, FormStateInterface $form_state) {
-    if ($element['#required'] && $element['#value'] == '') {
-      $form_state->setError($element, t('@name field is required.', ['@name' => $element['#title']]));
-    }
-
-    // Massage submitted form values.
-    // Drupal\Core\Field\WidgetBase::submit() expects values as
-    // an array of values keyed by delta first, then by column, while our
-    // widgets return the opposite.
-    if (is_array($element['#value'])) {
-      $values = array_values($element['#value']);
-    }
-    else {
-      $values = [$element['#value']];
-    }
-
-    // Filter out the '' option. Use a strict comparison, because
-    // 0 == 'any string'.
-    $index = array_search('', $values, TRUE);
-    if ($index !== FALSE) {
-      unset($values[$index]);
-    }
-
-    // Transpose selections from field => delta to delta => field.
-    $items = [];
-    // Options might be nested ("optgroups"), flatten the list.
-    $options = OptGroup::flattenOptions($element['#options']);
-    foreach ($values as $value) {
-      if (isset($options[$value])) {
-        $items[] = [$element['#key_column'] => $value];
-      }
-      else {
-        $items[] = ['entity' => static::createNewEntity($element, $value)];
-      }
-    }
-    $form_state->setValueForElement($element, $items);
   }
 
 }

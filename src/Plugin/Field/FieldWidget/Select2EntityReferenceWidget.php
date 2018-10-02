@@ -2,10 +2,12 @@
 
 namespace Drupal\select2\Plugin\Field\FieldWidget;
 
+use Drupal\Core\Entity\EntityReferenceSelection\SelectionWithAutocreateInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Form\OptGroup;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\user\EntityOwnerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -122,6 +124,41 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
     $element['#multiple'] = $this->multiple && (count($this->options) > 1 || !empty($element['#autocreate']));
 
     return $element;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected static function prepareFieldValues(array $values, array $element) {
+    if (empty($element['#autocreate'])) {
+      return parent::prepareFieldValues($values, $element);
+    }
+
+    $handler_settings = $element['#selection_settings'] + [
+      'target_type' => $element['#target_type'],
+      'handler' => $element['#selection_handler'],
+    ];
+    /** @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface $handler */
+    $handler = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($handler_settings);
+
+    $options = OptGroup::flattenOptions($element['#options']);
+    $items = [];
+    foreach ($values as $value) {
+      if (isset($options[$value])) {
+        $items[] = [$element['#key_column'] => $value];
+      }
+      else {
+        if ($handler instanceof SelectionWithAutocreateInterface) {
+          $label = substr($value, 4);
+          // We are not saving created entities, because that's part of
+          // Drupal\Core\Field\Plugin\Field\FieldType\EntityReferenceItem::preSave().
+          $items[] = [
+            'entity' => $handler->createNewEntity($element['#target_type'], $element['#autocreate']['bundle'], $label, $element['#autocreate']['uid']),
+          ];
+        }
+      }
+    }
+    return $items;
   }
 
   /**

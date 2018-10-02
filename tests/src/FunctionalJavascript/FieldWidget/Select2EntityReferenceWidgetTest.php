@@ -2,6 +2,9 @@
 
 namespace Drupal\Tests\select2\FunctionalJavascript\FieldWidget;
 
+use Drupal\Component\Serialization\Json;
+use Drupal\Component\Utility\SortArray;
+use Drupal\Core\Url;
 use Drupal\entity_test\Entity\EntityTestBundle;
 use Drupal\entity_test\Entity\EntityTestMulRevPub;
 use Drupal\entity_test\Entity\EntityTestWithBundle;
@@ -329,6 +332,49 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
 
     $assert_session->waitForElement('named', ['id_or_name', 'file_0_remove_button']);
     $assert_session->elementNotExists('css', '.messages--error');
+  }
+
+  /**
+   * Tests that the autocomplete ordering is alphabetically.
+   */
+  public function testAutocompleteOrdering() {
+    $this->createField('select2', 'node', 'test', 'entity_reference', [
+      'target_type' => 'entity_test_mulrevpub',
+    ], [
+      'handler' => 'default:entity_test_mulrevpub',
+      'handler_settings' => [
+        'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
+        'auto_create' => FALSE,
+      ],
+    ], 'select2_entity_reference', ['autocomplete' => TRUE, 'match_operator' => 'CONTAINS']);
+
+    EntityTestMulRevPub::create(['name' => 'foo'])->save();
+    EntityTestMulRevPub::create(['name' => 'bar'])->save();
+    EntityTestMulRevPub::create(['name' => 'bar foo'])->save();
+    EntityTestMulRevPub::create(['name' => 'gaga'])->save();
+
+    $this->drupalGet('/node/add/test');
+    $url = $this->getSession()->evaluateScript("drupalSettings.select2['edit-select2'].ajax.url");
+
+    $url = Url::fromUserInput($url);
+    $url->setAbsolute(TRUE);
+    $url->setRouteParameter('q', 'f');
+
+    $response = \Drupal::httpClient()->get($url->toString());
+
+    $results = Json::decode($response->getBody()->getContents())['results'];
+
+    $expected_results = $results;
+    uasort($expected_results, [static::class, 'sortByTextProperty']);
+
+    $this->assertSame($expected_results, $results);
+  }
+
+  /**
+   * Sort array by 'text' property.
+   */
+  public static function sortByTextProperty($a, $b) {
+    return SortArray::sortByKeyString($a, $b, 'text');
   }
 
 }

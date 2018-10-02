@@ -1,9 +1,24 @@
 /* Overrides */
-.select2-container--seven .select2-selection--single {
-  border: 1px solid #b8b8b8;
+.select2-container--seven .select2-selection--single,
+.select2-container--seven .select2-selection--single .select2-selection__arrow {
+  height: 31px;
 }
 .select2-container--seven .select2-selection--multiple {
+  height: auto;
+}
+.select2-container--seven .select2-selection--single,
+.select2-container--seven .select2-selection--multiple {
   border: 1px solid #b8b8b8;
+  border-top-color: #999;
+  border-radius: 2px;
+  box-sizing: border-box;
+  max-width: 100%;
+  background: #fcfcfa;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.125);
+  font-size: 1em;
+  color: #595959;
+  -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
+  transition: border linear 0.2s, box-shadow linear 0.2s;
 }
 .select2-container--seven .select2-selection--multiple .select2-selection__choice {
   background-color: #ebeae4;
@@ -11,6 +26,24 @@
 }
 .select2-container--seven.select2-container--focus .select2-selection--multiple {
   border: solid #b8b8b8 1px;
+}
+.select2-container--seven .select2-selection--single .select2-selection__placeholder {
+  color: #757575;
+}
+.select2-container--seven .select2-selection--single .select2-selection__rendered {
+  color: #595959;
+  padding-left: 6px;
+  line-height: 31px;
+}
+.select2-container--seven .select2-search--inline .select2-search__field {
+  padding-top: 3px;
+}
+.select2-container--seven ul li.select2-results__message {
+  color: #595959;
+  font-size: 0.95em;
+}
+.select2-container--seven ul li.select2-results__option {
+  padding: 3px 1em 3px .4em;
 }
 .select2-container--seven .select2-search--dropdown .select2-search__field {
   border: 1px solid #b8b8b8;
@@ -25,6 +58,16 @@
 
 .select2-container--seven .select2-dropdown {
   border-color: #b8b8b8;
+  border-radius: 2px;
+}
+.select2-container--seven .select2-dropdown--above {
+  border-bottom: 1px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.select2-container--seven .select2-dropdown--below {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 .select2-container--seven .select2-selection--multiple:focus,
 .select2-container--seven .select2-selection--single:focus {

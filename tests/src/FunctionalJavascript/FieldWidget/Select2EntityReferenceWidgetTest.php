@@ -3,7 +3,6 @@
 namespace Drupal\Tests\select2\FunctionalJavascript\FieldWidget;
 
 use Drupal\Component\Serialization\Json;
-use Drupal\Component\Utility\SortArray;
 use Drupal\Core\Url;
 use Drupal\entity_test\Entity\EntityTestBundle;
 use Drupal\entity_test\Entity\EntityTestMulRevPub;

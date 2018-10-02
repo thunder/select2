@@ -21,6 +21,7 @@ class ElementTest extends WebDriverTestBase {
    * Tests select2 optgroups.
    */
   public function testOptgroups() {
+    $page = $this->getSession()->getPage();
     $this->drupalGet('/select2-optgroup-form');
 
     $this->click('.form-item-select2-optgroups .select2-selection.select2-selection--single');
@@ -29,6 +30,12 @@ class ElementTest extends WebDriverTestBase {
 
     $this->assertSession()->elementTextContains('css', '.select2-results__group', 'Baba');
     $this->assertSession()->elementTextContains('css', 'ul.select2-results__options li.select2-results__option ul.select2-results__options--nested li.select2-results__option', 'Nana');
+
+    $page->find('css', '.select2-search__field')->setValue('Nana');
+    $page->find('css', '.select2-results__option--highlighted')->click();
+    $page->pressButton('Submit');
+    $json = json_decode($this->getSession()->getPage()->getText(), TRUE);
+    $this->assertEquals(3, $json['select2_optgroups']);
   }
 
   /**

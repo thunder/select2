@@ -7,6 +7,7 @@ use Drupal\entity_test\Entity\EntityTestMulRevPub;
 use Drupal\entity_test\Entity\EntityTestWithBundle;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\Tests\select2\FunctionalJavascript\Select2JavascriptTestBase;
+use Drupal\Tests\TestFileCreationTrait;
 
 /**
  * Tests select2 entity reference widget.
@@ -14,6 +15,8 @@ use Drupal\Tests\select2\FunctionalJavascript\Select2JavascriptTestBase;
  * @group select2
  */
 class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
+
+  use TestFileCreationTrait;
 
   /**
    * {@inheritdoc}
@@ -293,6 +296,39 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
 
     $node = $this->getNodeByTitle('Test node', TRUE);
     $this->assertArraySubset([['target_id' => 1], ['target_id' => 2]], $node->select2->getValue());
+  }
+
+  /**
+   * Test that in-between ajax calls are not creating new entities.
+   */
+  public function testAjaxCallbacksInBetween() {
+
+    $this->container->get('module_installer')->install(['file']);
+
+    $this->createField('select2', 'node', 'test', 'entity_reference', [
+      'target_type' => 'entity_test_mulrevpub',
+    ], [
+      'handler' => 'default:entity_test_mulrevpub',
+      'handler_settings' => [
+        'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
+        'auto_create' => FALSE,
+      ],
+    ], 'select2_entity_reference', ['autocomplete' => TRUE]);
+
+    $this->createField('file', 'node', 'test', 'file', [], [],
+      'file_generic', []);
+
+    $page = $this->getSession()->getPage();
+    $assert_session = $this->assertSession();
+
+    $this->drupalGet('/node/add/test');
+    $page->fillField('title[0][value]', 'Test node');
+
+    $test_file = current($this->getTestFiles('text'));
+    $page->attachFileToField("files[file_0]", \Drupal::service('file_system')->realpath($test_file->uri));
+
+    $assert_session->waitForElement('named', ['id_or_name', 'file_0_remove_button']);
+    $assert_session->elementNotExists('css', '.messages--error');
   }
 
 }

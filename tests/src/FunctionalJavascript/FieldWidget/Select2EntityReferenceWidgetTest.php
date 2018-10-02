@@ -364,17 +364,8 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
 
     $results = Json::decode($response->getBody()->getContents())['results'];
 
-    $expected_results = $results;
-    uasort($expected_results, [static::class, 'sortByTextProperty']);
-
-    $this->assertSame($expected_results, $results);
-  }
-
-  /**
-   * Sort array by 'text' property.
-   */
-  public static function sortByTextProperty($a, $b) {
-    return SortArray::sortByKeyString($a, $b, 'text');
+    $expected = [['id' => 3, 'text' => 'bar foo'], ['id' => 1, 'text' => 'foo']];
+    $this->assertSame($expected, $results);
   }
 
 }

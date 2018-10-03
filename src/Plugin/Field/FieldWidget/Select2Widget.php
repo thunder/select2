@@ -25,10 +25,56 @@ class Select2Widget extends OptionsSelectWidget {
   /**
    * {@inheritdoc}
    */
+  public static function defaultSettings() {
+    return [
+      'width' => '100%',
+    ] + parent::defaultSettings();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function settingsForm(array $form, FormStateInterface $form_state) {
+    $element['width'] = [
+      '#type' => 'textfield',
+      '#title' => t('Field width'),
+      '#default_value' => $this->getSetting('width'),
+      '#description' => $this->t('Define a width for the select2 field. It can be either px, em or %. E.g. 500px, 50%, 200em.'),
+      '#required' => TRUE,
+      '#size' => '10',
+      '#element_validate' => [[$this, 'validateWidth']],
+    ];
+    return $element;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function settingsSummary() {
+    $summary = [];
+    $summary[] = t('Field width: @width', ['@width' => $this->getSetting('width')]);
+    return $summary;
+  }
+
+  /**
+   * Validate the width.
+   */
+  public function validateWidth($element, FormStateInterface $form_state, $form) {
+    if (!preg_match("/^\d+(px|em|\%)$/i", $element['#value'])) {
+      $form_state->setError($element, $this->t('Width is not in a valid format.'));
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $element = parent::formElement($items, $delta, $element, $form, $form_state);
     $element['#type'] = 'select2';
     $element['#cardinality'] = $this->fieldDefinition->getFieldStorageDefinition()->getCardinality();
+    $element['#select2'] = [
+      'width' => $this->getSetting('width'),
+    ];
 
     return $element;
   }

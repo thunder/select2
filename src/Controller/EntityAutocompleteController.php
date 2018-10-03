@@ -100,7 +100,7 @@ class EntityAutocompleteController extends ControllerBase {
       }
 
       $matches['results'] = $this->matcher->getMatches($target_type, $selection_handler, $selection_settings, $typed_string, $request->query->get('page') - 1);
-      $matches['pagination']['more'] = count($matches['results']) == $selection_settings['match_size'];
+      $matches['pagination']['more'] = count($matches['results']) == $selection_settings['match_limit'];
     }
 
     return new JsonResponse($matches);

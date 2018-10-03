@@ -57,9 +57,14 @@ class Select2Widget extends OptionsSelectWidget {
   }
 
   /**
-   * Validate the width.
+   * Validate the width textfield.
+   *
+   * @param array $element
+   *   The form element.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state object.
    */
-  public function validateWidth($element, FormStateInterface $form_state, $form) {
+  public function validateWidth(array $element, FormStateInterface $form_state) {
     if (!preg_match("/^\d+(px|em|\%)$/i", $element['#value'])) {
       $form_state->setError($element, $this->t('Width is not in a valid format.'));
     }

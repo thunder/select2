@@ -2,7 +2,9 @@
 
 namespace Drupal\select2_facets\Plugin\facets\widget;
 
+use Drupal\Component\Utility\Crypt;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Site\Settings;
 use Drupal\Core\Url;
 use Drupal\facets\FacetInterface;
 use Drupal\facets\Widget\WidgetPluginBase;
@@ -17,6 +19,16 @@ use Drupal\facets\Widget\WidgetPluginBase;
  * )
  */
 class Select2Widget extends WidgetPluginBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function defaultConfiguration() {
+    return [
+      'autocomplete' => FALSE,
+      'match_operator' => 'CONTAINS',
+    ] + parent::defaultConfiguration();
+  }
 
   /**
    * {@inheritdoc}
@@ -50,7 +62,7 @@ class Select2Widget extends WidgetPluginBase {
 
     }
 
-    return [
+    $element = [
       '#type' => 'select2',
       '#options' => $items,
       '#required' => FALSE,
@@ -71,13 +83,91 @@ class Select2Widget extends WidgetPluginBase {
         ],
       ],
     ];
+
+    if ($this->getConfiguration()['autocomplete']) {
+      $element['#autocomplete'] = [
+        'process' => [$this, 'processFacetAutocomplete'],
+      ];
+    }
+
+    return $element;
   }
 
   /**
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state, FacetInterface $facet) {
+    $form['autocomplete'] = [
+      '#type' => 'checkbox',
+      '#title' => t('Autocomplete'),
+      '#default_value' => $this->getConfiguration()['autocomplete'],
+      '#description' => t('Options will be lazy loaded. This is recommended for lists with a lot of values.'),
+    ];
+    $form['match_operator'] = [
+      '#type' => 'radios',
+      '#title' => t('Autocomplete matching'),
+      '#default_value' => $this->getConfiguration()['match_operator'],
+      '#options' => $this->getMatchOperatorOptions(),
+      '#description' => t('Select the method used to collect autocomplete suggestions. Note that <em>Contains</em> can cause performance issues on sites with thousands of entities.'),
+      '#states' => [
+        'visible' => [
+          ':input[name$="widget_config[autocomplete]"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+
     return $form;
+  }
+
+  /**
+   * Returns the options for the match operator.
+   *
+   * @return array
+   *   List of options.
+   */
+  protected function getMatchOperatorOptions() {
+    return [
+      'STARTS_WITH' => t('Starts with'),
+      'CONTAINS' => t('Contains'),
+    ];
+  }
+
+  /**
+   * Set the autocomplete route properties.
+   *
+   * @param array $element
+   *   The render element.
+   *
+   * @return array
+   *   The render element with autocomplete settings.
+   */
+  public function processFacetAutocomplete(array $element) {
+    /** @var \Drupal\facets\FacetManager\DefaultFacetManager $facet_manager */
+    $facet_manager = \Drupal::service('facets.manager');
+    $facets = $facet_manager->getFacetsByFacetSourceId($this->facet->getFacetSourceId());
+    $selection_settings = [];
+    foreach ($facets as $facet) {
+      $selection_settings[$facet->id()] = $facet->getActiveItems();
+    }
+
+    // Store the selection settings in the key/value store and pass a hashed key
+    // in the route parameters.
+    $data = serialize($selection_settings) . $this->facet->getFacetSourceId() . $this->facet->id();
+    $selection_settings_key = Crypt::hmacBase64($data, Settings::getHashSalt());
+
+    $key_value_storage = \Drupal::keyValue('entity_autocomplete');
+    if (!$key_value_storage->has($selection_settings_key)) {
+      $key_value_storage->set($selection_settings_key, $selection_settings);
+    }
+
+    $element['#autocomplete_route_name'] = 'select2_facets.facet_autocomplete';
+    $element['#autocomplete_route_parameters'] = [
+      'facetsource_id' => $this->facet->getFacetSourceId(),
+      'facet_id' => $this->facet->id(),
+      'selection_settings_key' => $selection_settings_key,
+    ];
+
+    return $element;
   }
 
 }

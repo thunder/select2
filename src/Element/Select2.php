@@ -184,15 +184,18 @@ class Select2 extends Select {
       return $element;
     }
 
-    $complete_form = [];
-    $element = EntityAutocomplete::processEntityAutocomplete($element, new FormState(), $complete_form);
-    $element['#autocomplete_route_name'] = 'select2.entity_autocomplete';
+    if (!empty($element['#autocomplete']['process'])) {
+      $element = call_user_func($element['#autocomplete']['process'], $element);
+    }
+    else {
+      $element = static::processEntityAutocomplete($element);
+    }
 
     // Reduce options to the preselected ones and bring them in the correct
     // order.
     $options = OptGroup::flattenOptions($element['#options']);
     $element['#options'] = [];
-    foreach ($element['#default_value'] as $value) {
+    foreach ($element['#value'] as $value) {
       $element['#options'][$value] = $options[$value];
     }
 
@@ -213,6 +216,22 @@ class Select2 extends Select {
         ],
       ];
     }
+    return $element;
+  }
+
+  /**
+   * Set the autocomplete route properties.
+   *
+   * @param array $element
+   *   The render element.
+   *
+   * @return array
+   *   The render element with autocomplete settings.
+   */
+  public static function processEntityAutocomplete(array $element) {
+    $complete_form = [];
+    $element = EntityAutocomplete::processEntityAutocomplete($element, new FormState(), $complete_form);
+    $element['#autocomplete_route_name'] = 'select2.entity_autocomplete';
     return $element;
   }
 

@@ -119,8 +119,8 @@ class Select2 extends Select {
         'target_type' => $element['#target_type'],
         'handler' => $element['#selection_handler'],
       ];
-      $options = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($handler_settings)->getReferenceableEntities();
-      $element['#options'] = OptGroup::flattenOptions($options);
+      $value = is_array($element['#value']) ? $element['#value'] : [$element['#value']];
+      $element['#options'] = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($handler_settings)->validateReferenceableEntities($value);
     }
 
     // We need to disable form validation, because with autocreation the options

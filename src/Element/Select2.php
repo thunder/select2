@@ -114,6 +114,15 @@ class Select2 extends Select {
    * {@inheritdoc}
    */
   public static function processSelect(&$element, FormStateInterface $form_state, &$complete_form) {
+    if ($element['#autocomplete']) {
+      $handler_settings = $element['#selection_settings'] + [
+        'target_type' => $element['#target_type'],
+        'handler' => $element['#selection_handler'],
+      ];
+      $options = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($handler_settings)->getReferenceableEntities();
+      $element['#options'] = OptGroup::flattenOptions($options);
+    }
+
     // We need to disable form validation, because with autocreation the options
     // could contain non existing references. We still have validation in the
     // entity reference field.
@@ -192,9 +201,13 @@ class Select2 extends Select {
     // Reduce options to the preselected ones and bring them in the correct
     // order.
     $options = OptGroup::flattenOptions($element['#options']);
+    $values = isset($element['#value']) ? $element['#value'] : $element['#default_value'];
+    $values = is_array($values) ? $values : [$values];
     $element['#options'] = [];
-    foreach ($element['#default_value'] as $value) {
-      $element['#options'][$value] = $options[$value];
+    foreach ($values as $value) {
+      if (isset($options[$value])) {
+        $element['#options'][$value] = $options[$value];
+      }
     }
 
     /** @var \Drupal\Core\Access\AccessManagerInterface $access_manager */

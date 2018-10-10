@@ -39,7 +39,7 @@ class Select2Widget extends OptionsSelectWidget {
       '#type' => 'textfield',
       '#title' => t('Field width'),
       '#default_value' => $this->getSetting('width'),
-      '#description' => $this->t('Define a width for the select2 field. It can be either px, em or %. E.g. 500px, 50%, 200em.'),
+      '#description' => $this->t("Define a width for the select2 field. It can be either 'element', 'style', 'resolve' or any possible CSS unit. E.g. 500px, 50%, 200em. See the <a href='https://select2.org/appearance#container-width'>select2 documentation</a> for further explanations."),
       '#required' => TRUE,
       '#size' => '10',
       '#element_validate' => [[$this, 'validateWidth']],
@@ -65,7 +65,7 @@ class Select2Widget extends OptionsSelectWidget {
    *   The form state object.
    */
   public function validateWidth(array $element, FormStateInterface $form_state) {
-    if (!preg_match("/^\d+(px|em|\%)$/i", $element['#value'])) {
+    if (!preg_match("/^(\d+(cm|mm|in|px|pt|pc|em|ex|ch|rem|vm|vh|vmin|vmax|\%)|element|style|resolve)$/i", $element['#value'])) {
       $form_state->setError($element, $this->t('Width is not in a valid format.'));
     }
   }

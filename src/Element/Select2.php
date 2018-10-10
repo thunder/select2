@@ -161,6 +161,7 @@ class Select2 extends Select {
       'maximumSelectionLength' => $multiple ? $element['#cardinality'] : 0,
       'tokenSeparators' => $element['#autocreate'] ? [','] : [],
       'selectOnClose' => $element['#autocomplete'],
+      'width' => '100%',
     ];
 
     $selector = $element['#attributes']['data-drupal-selector'];

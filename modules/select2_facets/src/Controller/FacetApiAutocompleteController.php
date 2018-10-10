@@ -3,17 +3,15 @@
 namespace Drupal\select2_facets\Controller;
 
 use Drupal\Component\Utility\Crypt;
-use Drupal\Component\Utility\NestedArray;
 use Drupal\Component\Utility\Tags;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Site\Settings;
-use Drupal\Core\Url;
 use Drupal\facets\FacetManager\DefaultFacetManager;
-use Drupal\facets\Processor\ProcessorInterface;
 use Drupal\Core\KeyValueStore\KeyValueStoreInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
@@ -36,16 +34,33 @@ class FacetApiAutocompleteController extends ControllerBase {
   protected $facetManager;
 
   /**
+   * The request stack.
+   *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $requestStack;
+
+  /**
+   * Array of request.
+   *
+   * @var array
+   */
+  protected $storedRequests = [];
+
+  /**
    * Constructs a FacetApiAutocompleteController object.
    *
    * @param \Drupal\Core\KeyValueStore\KeyValueStoreInterface $key_value
    *   The key value factory.
    * @param \Drupal\facets\FacetManager\DefaultFacetManager $facetManager
    *   The facet manager service.
+   * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
+   *   The request stack.
    */
-  public function __construct(KeyValueStoreInterface $key_value, DefaultFacetManager $facetManager) {
+  public function __construct(KeyValueStoreInterface $key_value, DefaultFacetManager $facetManager, RequestStack $requestStack) {
     $this->keyValue = $key_value;
     $this->facetManager = $facetManager;
+    $this->requestStack = $requestStack;
   }
 
   /**
@@ -54,7 +69,8 @@ class FacetApiAutocompleteController extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('keyvalue')->get('entity_autocomplete'),
-      $container->get('keyvalue')->get('facets.manager')
+      $container->get('facets.manager'),
+      $container->get('request_stack')
     );
   }
 
@@ -77,6 +93,8 @@ class FacetApiAutocompleteController extends ControllerBase {
    * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
    *   Thrown if the selection settings key is not found in the key/value store
    *   or if it does not match the stored data.
+   *
+   * @throws \Drupal\facets\Exception\InvalidProcessorException
    */
   public function handleAutocomplete(Request $request, $facetsource_id, $facet_id, $selection_settings_key) {
     $matches['results'] = [];
@@ -101,48 +119,64 @@ class FacetApiAutocompleteController extends ControllerBase {
         // key/value store.
         throw new AccessDeniedHttpException();
       }
+      $this->setRequestStack(unserialize($selection_settings['request']));
 
       $facets = $this->facetManager->getFacetsByFacetSourceId($facetsource_id);
-
-      $route_parameters['f'] = [];
       foreach ($facets as $facet) {
-        $facet->setActiveItems($selection_settings[$facet->id()]);
-        if ($facet_id == $facet->id() && $facet->getShowOnlyOneResult()) {
+        if ($facet->id() != $facet_id) {
           continue;
         }
-        foreach ($selection_settings[$facet->id()] as $setting) {
-          $route_parameters['f'][] = $facet->id() . ":$setting";
+        $this->facetManager->build($facet);
+        foreach ($facet->getResults() as $result) {
+          $display_value = mb_strtolower($result->getDisplayValue());
+          switch ($selection_settings['match_operator']) {
+            case 'CONTAINS':
+              if (strpos($display_value, $typed_string) === FALSE) {
+                continue 2;
+              }
+              break;
+
+            case 'START_WITH':
+              if (strpos($display_value, $typed_string) === 0) {
+                continue 2;
+              }
+              break;
+          }
+
+          $matches['results'][] = [
+            'id' => $result->getUrl()->toString(),
+            'text' => $result->getDisplayValue(),
+          ];
         }
       }
 
-      $this->facetManager->updateResults($facetsource_id);
-      foreach ($facets as $facet) {
-        if ($facet->id() == $facet_id) {
-          foreach ($facet->getProcessorsByStage(ProcessorInterface::STAGE_BUILD) as $processor) {
-            $results = $processor->build($facet, $facet->getResults());
-          }
-
-          foreach ($results as $result) {
-            $url = $result->getUrl();
-
-            $options = array_filter($url->getOptions()['query'], function ($key) {
-              return $key == 'f';
-            }, ARRAY_FILTER_USE_KEY);
-
-            $options = NestedArray::mergeDeepArray([$route_parameters, $options]);
-
-            $result->setUrl(new Url(Url::fromUserInput($facet->getFacetSource()->getPath())->getRouteName(), [], ['query' => $options]));
-
-            $matches['results'][] = [
-              'id' => $result->getUrl()->toString(),
-              'text' => $result->getDisplayValue(),
-            ];
-          }
-        }
-      }
+      $this->restoreRequestStack();
     }
 
     return new JsonResponse($matches);
+  }
+
+  /**
+   * Resets the request stack and adds one request.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The one and only request.
+   */
+  protected function setRequestStack(Request $request) {
+    while ($this->requestStack->getCurrentRequest()) {
+      $this->storedRequests[] = $this->requestStack->pop();
+    }
+    $this->requestStack->push($request);
+  }
+
+  /**
+   * Restore all saved requests on the stack.
+   */
+  protected function restoreRequestStack() {
+    $this->requestStack->pop();
+    foreach ($this->storedRequests as $request) {
+      $this->requestStack->push($request);
+    }
   }
 
 }

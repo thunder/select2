@@ -142,13 +142,10 @@ class Select2Widget extends WidgetPluginBase {
    *   The render element with autocomplete settings.
    */
   public function processFacetAutocomplete(array $element) {
-    /** @var \Drupal\facets\FacetManager\DefaultFacetManager $facet_manager */
-    $facet_manager = \Drupal::service('facets.manager');
-    $facets = $facet_manager->getFacetsByFacetSourceId($this->facet->getFacetSourceId());
-    $selection_settings = [];
-    foreach ($facets as $facet) {
-      $selection_settings[$facet->id()] = $facet->getActiveItems();
-    }
+    $selection_settings = [
+      'request' => serialize(\Drupal::request()),
+      'match_operator' => $this->getConfiguration()['match_operator'],
+    ];
 
     // Store the selection settings in the key/value store and pass a hashed key
     // in the route parameters.

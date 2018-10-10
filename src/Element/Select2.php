@@ -195,7 +195,8 @@ class Select2 extends Select {
     // order.
     $options = OptGroup::flattenOptions($element['#options']);
     $element['#options'] = [];
-    foreach ($element['#value'] as $value) {
+    $values = !empty($element['#value']) ? $element['#value'] : $element['#default_value'];
+    foreach ($values as $value) {
       $element['#options'][$value] = $options[$value];
     }
 

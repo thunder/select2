@@ -129,18 +129,8 @@ class FacetApiAutocompleteController extends ControllerBase {
         $this->facetManager->build($facet);
         foreach ($facet->getResults() as $result) {
           $display_value = mb_strtolower($result->getDisplayValue());
-          switch ($selection_settings['match_operator']) {
-            case 'CONTAINS':
-              if (strpos($display_value, $typed_string) === FALSE) {
-                continue 2;
-              }
-              break;
-
-            case 'START_WITH':
-              if (strpos($display_value, $typed_string) === 0) {
-                continue 2;
-              }
-              break;
+          if (strpos($display_value, $typed_string) === ($selection_settings['match_operator'] == 'CONTAINS' ? FALSE : 0)) {
+            continue;
           }
 
           $matches['results'][] = [

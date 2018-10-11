@@ -2,8 +2,12 @@
 
 namespace Drupal\select2\Plugin\Field\FieldWidget;
 
+use Drupal\Component\Utility\Html;
+use Drupal\Core\Entity\EntityReferenceSelection\SelectionPluginManagerInterface;
 use Drupal\Core\Entity\EntityReferenceSelection\SelectionWithAutocreateInterface;
+use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -34,18 +38,50 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
   protected $entityTypeManager;
 
   /**
+   * The entity repository service.
+   *
+   * @var \Drupal\Core\Entity\EntityRepositoryInterface
+   */
+  protected $entityRepository;
+
+  /**
+   * The entity repository service.
+   *
+   * @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionPluginManagerInterface
+   */
+  protected $selectionPluginManager;
+
+  /**
+   * The field item.
+   *
+   * @var \Drupal\Core\Field\FieldItemListInterface
+   */
+  protected $fieldItem;
+
+  /**
    * {@inheritdoc}
    */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, EntityTypeManagerInterface $entity_type_manager, EntityRepositoryInterface $entity_repository, SelectionPluginManagerInterface $selection_plugin_manager) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
     $this->entityTypeManager = $entity_type_manager;
+    $this->entityRepository = $entity_repository;
+    $this->selectionPluginManager = $selection_plugin_manager;
   }
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static($plugin_id, $plugin_definition, $configuration['field_definition'], $configuration['settings'], $configuration['third_party_settings'], $container->get('entity_type.manager'));
+    return new static(
+      $plugin_id,
+      $plugin_definition,
+      $configuration['field_definition'],
+      $configuration['settings'],
+      $configuration['third_party_settings'],
+      $container->get('entity_type.manager'),
+      $container->get('entity.repository'),
+      $container->get('plugin.manager.entity_reference_selection')
+    );
   }
 
   /**
@@ -88,6 +124,33 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
   /**
    * {@inheritdoc}
    */
+  protected function getOptions(FieldableEntityInterface $entity) {
+    if ($this->getSetting('autocomplete')) {
+      $selected_options = [];
+      foreach ($this->fieldItem as $item) {
+        $value = $item->{$this->column};
+        $selected_options[] = $value;
+      }
+
+      $handler_settings = $this->getSelectionSettings() + [
+        'target_type' => $this->getFieldSetting('target_type'),
+        'handler' => $this->getFieldSetting('handler'),
+      ];
+      $options = $this->selectionPluginManager->getInstance($handler_settings)->validateReferenceableEntities($selected_options);
+
+      $entities = $this->entityTypeManager->getStorage($this->getFieldSetting('target_type'))->loadMultiple($options);
+      foreach ($entities as $entity_id => $entity) {
+        $options[$entity_id] = Html::escape($this->entityRepository->getTranslationFromContext($entity)->label());
+      }
+
+      return $this->options = $options;
+    }
+    return parent::getOptions($entity);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function settingsSummary() {
     $summary = parent::settingsSummary();
     $autocomplete = $this->getSetting('autocomplete');
@@ -103,15 +166,12 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
+    $this->fieldItem = $items;
     $element = parent::formElement($items, $delta, $element, $form, $form_state);
 
     $element['#target_type'] = $this->getFieldSetting('target_type');
-    $label_field = $this->entityTypeManager->getDefinition($element['#target_type'])->getKey('label') ?: '_none';
     $element['#selection_handler'] = $this->getFieldSetting('handler');
-    $element['#selection_settings'] = [
-      'match_operator' => $this->getSetting('match_operator'),
-      'sort' => ['field' => $label_field],
-    ] + $this->getFieldSetting('handler_settings');
+    $element['#selection_settings'] = $this->getSelectionSettings();
     $element['#autocomplete'] = $this->getSetting('autocomplete');
 
     if ($this->getSelectionHandlerSetting('auto_create') && ($bundle = $this->getAutocreateBundle())) {
@@ -124,6 +184,22 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
     $element['#multiple'] = $this->multiple && (count($this->options) > 1 || !empty($element['#autocreate']));
 
     return $element;
+  }
+
+  /**
+   * Build array of selection settings.
+   *
+   * @return array
+   *   Selection settings.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   */
+  protected function getSelectionSettings() {
+    $label_field = $this->entityTypeManager->getDefinition($this->getFieldSetting('target_type'))->getKey('label') ?: '_none';
+    return [
+      'match_operator' => $this->getSetting('match_operator'),
+      'sort' => ['field' => $label_field],
+    ] + $this->getFieldSetting('handler_settings');
   }
 
   /**

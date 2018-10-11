@@ -181,7 +181,9 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
         'uid' => ($entity instanceof EntityOwnerInterface) ? $entity->getOwnerId() : \Drupal::currentUser()->id(),
       ];
     }
-    $element['#multiple'] = $this->multiple && (count($this->options) > 1 || !empty($element['#autocreate']));
+    // Do not display a 'multiple' select box if there is only one option. But
+    // with 'autocreate' or 'autocomplete' we want to ignore that.
+    $element['#multiple'] = $this->multiple && (count($this->options) > 1 || isset($element['#autocreate']) || $element['#autocomplete']);
 
     return $element;
   }

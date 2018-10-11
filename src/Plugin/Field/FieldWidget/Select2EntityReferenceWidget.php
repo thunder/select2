@@ -110,7 +110,7 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
     $element['#selection_handler'] = $this->getFieldSetting('handler');
     $element['#selection_settings'] = [
       'match_operator' => $this->getSetting('match_operator'),
-      'match_size' => 10,
+      'match_limit' => 10,
       'sort' => ['field' => $label_field],
     ] + $this->getFieldSetting('handler_settings');
     $element['#autocomplete'] = $this->getSetting('autocomplete');

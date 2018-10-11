@@ -28,7 +28,7 @@
             };
           };
         }
-        $(this).css('width', '100%').select2(config);
+        $(this).select2(config);
 
         // Copied from https://github.com/woocommerce/woocommerce/blob/master/assets/js/admin/wc-enhanced-select.js#L118
         if (config.hasOwnProperty('ajax')) {

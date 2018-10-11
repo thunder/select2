@@ -2,9 +2,15 @@
 
 namespace Drupal\select2\Plugin\Field\FieldWidget;
 
+use Drupal\Core\Entity\EntityReferenceSelection\SelectionWithAutocreateInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Form\OptGroup;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\user\EntityOwnerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Plugin implementation of the 'select2' widget.
@@ -18,7 +24,29 @@ use Drupal\user\EntityOwnerInterface;
  *   multiple_values = TRUE
  * )
  */
-class Select2EntityReferenceWidget extends Select2Widget {
+class Select2EntityReferenceWidget extends Select2Widget implements ContainerFactoryPluginInterface {
+
+  /**
+   * The entity type manager service.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, EntityTypeManagerInterface $entity_type_manager) {
+    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
+    $this->entityTypeManager = $entity_type_manager;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static($plugin_id, $plugin_definition, $configuration['field_definition'], $configuration['settings'], $configuration['third_party_settings'], $container->get('entity_type.manager'));
+  }
 
   /**
    * {@inheritdoc}
@@ -78,11 +106,13 @@ class Select2EntityReferenceWidget extends Select2Widget {
     $element = parent::formElement($items, $delta, $element, $form, $form_state);
 
     $element['#target_type'] = $this->getFieldSetting('target_type');
+    $label_field = $this->entityTypeManager->getDefinition($element['#target_type'])->getKey('label') ?: '_none';
     $element['#selection_handler'] = $this->getFieldSetting('handler');
-    $element['#selection_settings'] = $this->getFieldSetting('handler_settings') + [
+    $element['#selection_settings'] = [
       'match_operator' => $this->getSetting('match_operator'),
       'match_size' => 10,
-    ];
+      'sort' => ['field' => $label_field],
+    ] + $this->getFieldSetting('handler_settings');
     $element['#autocomplete'] = $this->getSetting('autocomplete');
 
     if ($this->getSelectionHandlerSetting('auto_create') && ($bundle = $this->getAutocreateBundle())) {
@@ -95,6 +125,41 @@ class Select2EntityReferenceWidget extends Select2Widget {
     $element['#multiple'] = $this->multiple && (count($this->options) > 1 || !empty($element['#autocreate']));
 
     return $element;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected static function prepareFieldValues(array $values, array $element) {
+    if (empty($element['#autocreate'])) {
+      return parent::prepareFieldValues($values, $element);
+    }
+
+    $handler_settings = $element['#selection_settings'] + [
+      'target_type' => $element['#target_type'],
+      'handler' => $element['#selection_handler'],
+    ];
+    /** @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface $handler */
+    $handler = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($handler_settings);
+
+    $options = OptGroup::flattenOptions($element['#options']);
+    $items = [];
+    foreach ($values as $value) {
+      if (isset($options[$value])) {
+        $items[] = [$element['#key_column'] => $value];
+      }
+      else {
+        if ($handler instanceof SelectionWithAutocreateInterface) {
+          $label = substr($value, 4);
+          // We are not saving created entities, because that's part of
+          // Drupal\Core\Field\Plugin\Field\FieldType\EntityReferenceItem::preSave().
+          $items[] = [
+            'entity' => $handler->createNewEntity($element['#target_type'], $element['#autocreate']['bundle'], $label, $element['#autocreate']['uid']),
+          ];
+        }
+      }
+    }
+    return $items;
   }
 
   /**

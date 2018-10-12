@@ -2,6 +2,7 @@
 
 namespace Drupal\select2\Element;
 
+use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\Element\EntityAutocomplete;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
@@ -120,7 +121,12 @@ class Select2 extends Select {
         'handler' => $element['#selection_handler'],
       ];
       $value = is_array($element['#value']) ? $element['#value'] : [$element['#value']];
-      $element['#options'] = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($handler_settings)->validateReferenceableEntities($value);
+      $options = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($handler_settings)->validateReferenceableEntities($value);
+      $entities = \Drupal::entityTypeManager()->getStorage($element['#target_type'])->loadMultiple($options);
+      foreach ($entities as $entity_id => $entity) {
+        $options[$entity_id] = Html::escape(\Drupal::service('entity.repository')->getTranslationFromContext($entity)->label());
+      }
+      $element['#options'] = $options;
     }
 
     // We need to disable form validation, because with autocreation the options

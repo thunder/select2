@@ -29,7 +29,7 @@ If you would like to install the select2 library with composer, you probably use
     }
 ```
 
-It's also needed to extend the installer-path section:
+It's also needed to extend the 'installer-path' section:
 
 ```json
     "web/libraries/{$name}": [
@@ -38,7 +38,7 @@ It's also needed to extend the installer-path section:
         "type:npm-asset"
     ],
 ```
-And add a new installer-types section next to it:
+And add a new 'installer-types' section next to the 'installer-path' in the 'extra' section:
 
 ```json
     "installer-types": ["bower-asset", "npm-asset"],

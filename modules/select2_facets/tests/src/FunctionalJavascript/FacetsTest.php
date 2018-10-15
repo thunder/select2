@@ -24,11 +24,11 @@ class FacetsTest extends WebDriverTestBase {
     $reference1 = EntityTestMulRevPub::create(['name' => 'Reference 1'])->save();
     $reference2 = EntityTestMulRevPub::create(['name' => 'Reference 2'])->save();
     $reference3 = EntityTestMulRevPub::create(['name' => 'Reference 3'])->save();
-    $entity1 = EntityTestMulRevPub::create([
+    EntityTestMulRevPub::create([
       'name' => 'Entity 1',
       'field_references' => [$reference1, $reference2],
     ])->save();
-    $entity2 = EntityTestMulRevPub::create([
+    EntityTestMulRevPub::create([
       'name' => 'Entity 2',
       'field_references' => [$reference1, $reference3],
     ])->save();
@@ -41,10 +41,7 @@ class FacetsTest extends WebDriverTestBase {
 
     $this->drupalPlaceBlock('facet_block:referenced');
 
-    $page = $this->getSession()->getPage();
     $this->drupalGet('/test-entity-view');
-
-    sleep(5);
   }
 
 }

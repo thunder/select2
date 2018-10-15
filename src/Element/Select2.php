@@ -230,7 +230,7 @@ class Select2 extends Select {
     if (!$value_callable || !is_callable($value_callable)) {
       $value_callable = '\Drupal\select2\Element\Select2::setAutocompleteRouteParameters';
     }
-    call_user_func_array($value_callable, [&$element]);
+    $element = call_user_func_array($value_callable, [$element]);
 
     // Reduce options to the preselected ones and bring them in the correct
     // order.
@@ -269,11 +269,15 @@ class Select2 extends Select {
    *
    * @param array $element
    *   The render element.
+   *
+   * @return array
+   *   The render element with autocomplete route parameters.
    */
   protected static function setAutocompleteRouteParameters(array &$element) {
     $complete_form = [];
     $element = EntityAutocomplete::processEntityAutocomplete($element, new FormState(), $complete_form);
     $element['#autocomplete_route_name'] = 'select2.entity_autocomplete';
+    return $element;
   }
 
   /**

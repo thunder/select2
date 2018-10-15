@@ -10,7 +10,6 @@
         }
     ],
     "require-dev": {
-        "drupal/core": "^8.6",
         "drupal/facets": "^1.1",
         "drupal/search_api": "^1.10"
     }

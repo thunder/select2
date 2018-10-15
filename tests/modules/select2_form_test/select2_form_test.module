@@ -8,7 +8,7 @@
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Implements hook_form_alter().
+ * Implements hook_form_FORM_ID_alter().
  */
 function select2_form_test_form_views_exposed_form_alter(&$form, FormStateInterface $form_state, $form_id) {
 

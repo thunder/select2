@@ -89,9 +89,7 @@ class Select2Widget extends WidgetPluginBase {
     ];
 
     if ($this->getConfiguration()['autocomplete']) {
-      $element['#autocomplete'] = [
-        'process' => [$this, 'processFacetAutocomplete'],
-      ];
+      $element['#autocomplete_route_callback'] = [$this, 'processFacetAutocomplete'];
     }
 
     return $element;
@@ -168,7 +166,7 @@ class Select2Widget extends WidgetPluginBase {
    * @return array
    *   The render element with autocomplete settings.
    */
-  public function processFacetAutocomplete(array $element) {
+  public function processFacetAutocomplete(array &$element) {
     $selection_settings = [
       'request' => serialize(\Drupal::request()),
       'match_operator' => $this->getConfiguration()['match_operator'],

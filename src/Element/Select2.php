@@ -230,7 +230,7 @@ class Select2 extends Select {
     if (!$value_callable || !is_callable($value_callable)) {
       $value_callable = '\Drupal\select2\Element\Select2::setAutocompleteRouteParameters';
     }
-    $element = call_user_func_array($value_callable, [$element]);
+    $element = call_user_func_array($value_callable, [&$element]);
 
     // Reduce options to the preselected ones and bring them in the correct
     // order.

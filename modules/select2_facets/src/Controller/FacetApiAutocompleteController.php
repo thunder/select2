@@ -3,7 +3,6 @@
 namespace Drupal\select2_facets\Controller;
 
 use Drupal\Component\Utility\Crypt;
-use Drupal\Component\Utility\Tags;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Site\Settings;
 use Drupal\facets\FacetManager\DefaultFacetManager;

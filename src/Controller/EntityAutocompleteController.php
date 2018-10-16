@@ -3,7 +3,6 @@
 namespace Drupal\select2\Controller;
 
 use Drupal\Component\Utility\Crypt;
-use Drupal\Component\Utility\Tags;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Site\Settings;
 use Drupal\select2\EntityAutocompleteMatcher;

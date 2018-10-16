@@ -100,8 +100,7 @@ class FacetApiAutocompleteController extends ControllerBase {
     $matches['results'] = [];
     // Get the typed string from the URL, if it exists.
     if ($input = $request->query->get('q')) {
-      $typed_string = Tags::explode($input);
-      $typed_string = mb_strtolower(array_pop($typed_string));
+      $typed_string = mb_strtolower($input);
 
       // Selection settings are passed in as a hashed key of a serialized array
       // stored in the key/value store.

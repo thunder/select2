@@ -3,6 +3,5 @@ drupal.select2_facets.select2-widget:
   js:
     js/select2-widget.js: {}
   dependencies:
-  - core/jquery
   - core/drupal
   - core/jquery.once

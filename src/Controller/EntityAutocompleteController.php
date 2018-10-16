@@ -79,9 +79,6 @@ class EntityAutocompleteController extends ControllerBase {
     $matches['results'] = [];
     // Get the typed string from the URL, if it exists.
     if ($input = $request->query->get('q')) {
-      $typed_string = Tags::explode($input);
-      $typed_string = mb_strtolower(array_pop($typed_string));
-
       // Selection settings are passed in as a hashed key of a serialized array
       // stored in the key/value store.
       $selection_settings = $this->keyValue->get($selection_settings_key, FALSE);
@@ -99,7 +96,7 @@ class EntityAutocompleteController extends ControllerBase {
         throw new AccessDeniedHttpException();
       }
 
-      $matches['results'] = $this->matcher->getMatches($target_type, $selection_handler, $selection_settings, $typed_string);
+      $matches['results'] = $this->matcher->getMatches($target_type, $selection_handler, $selection_settings, mb_strtolower($input));
     }
 
     return new JsonResponse($matches);

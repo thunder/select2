@@ -3,6 +3,7 @@
 namespace Drupal\Tests\select2_facets\FunctionalJavascript;
 
 use Drupal\entity_test\Entity\EntityTestMulRevPub;
+use Drupal\facets\Entity\Facet;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 
 /**
@@ -18,9 +19,11 @@ class FacetsTest extends WebDriverTestBase {
   protected static $modules = ['select2_facets_test'];
 
   /**
-   * Tests select2 autocomplete.
+   * {@inheritdoc}
    */
-  public function testAutocomplete() {
+  protected function setUp() {
+    parent::setUp();
+
     $reference1 = EntityTestMulRevPub::create(['name' => 'Reference 1']);
     $reference1->save();
     $reference2 = EntityTestMulRevPub::create(['name' => 'Reference 2']);
@@ -43,23 +46,49 @@ class FacetsTest extends WebDriverTestBase {
     search_api_cron();
 
     $this->drupalPlaceBlock('facet_block:referenced');
+  }
 
+  /**
+   * Tests basic select2 functionality.
+   *
+   * @dataProvider testBasicFunctionalityProvider
+   */
+  public function testBasicFunctionality($config) {
     $this->drupalGet('/test-entity-view');
+
+    $facet = Facet::load('referenced');
+    $facet->setWidget('select2', $config);
+    $facet->save();
 
     $page = $this->getSession()->getPage();
     $assert_session = $this->assertSession();
 
     $this->click('.form-item-referenced .select2-selection.select2-selection--multiple');
-    $page->find('css', '.select2-search__field')->setValue('Reference 2');
-    $page->find('xpath', '//li[@class="select2-results__option select2-results__option--highlighted"]')->click();
+    $page->find('css', '.select2-search__field')->setValue('Reference');
+    $this->assertNotEmpty($assert_session->waitForElement('xpath', '//li[@class="select2-results__option" and text()="Reference 2"]'));
+    $page->find('xpath', '//li[@class="select2-results__option" and text()="Reference 2"]')->click();
 
     $assert_session->addressEquals('test-entity-view?f%5B0%5D=referenced%3A2');
 
     $this->click('.form-item-referenced .select2-selection.select2-selection--multiple');
-    $page->find('css', '.select2-search__field')->setValue('Reference 1');
-    $page->find('xpath', '//li[@class="select2-results__option select2-results__option--highlighted"]')->click();
+    $page->find('css', '.select2-search__field')->setValue('Reference');
+    $this->assertNotEmpty($assert_session->waitForElement('xpath', '//li[@class="select2-results__option" and text()="Reference 1"]'));
+    $page->find('xpath', '//li[@class="select2-results__option" and text()="Reference 1"]')->click();
 
     $assert_session->addressEquals('test-entity-view?f%5B0%5D=referenced%3A2&f%5B1%5D=referenced%3A1');
+  }
+
+  /**
+   * Data provider for testBasicFunctionality().
+   *
+   * @return array
+   *   The data.
+   */
+  public function testBasicFunctionalityProvider() {
+    return [
+      [[]],
+      [['autocomplete' => TRUE]],
+    ];
   }
 
 }

@@ -69,6 +69,7 @@ class Select2Widget extends WidgetPluginBase {
       '#required' => FALSE,
       '#value' => $active_items,
       '#multiple' => !$facet->getShowOnlyOneResult(),
+      '#autocomplete' => $this->getConfiguration()['autocomplete'],
       '#name' => $facet->getName(),
       '#attributes' => [
         'data-drupal-selector' => 'facet-' . $facet->id(),
@@ -88,7 +89,7 @@ class Select2Widget extends WidgetPluginBase {
       ],
     ];
 
-    if ($this->getConfiguration()['autocomplete']) {
+    if ($element['#autocomplete']) {
       $element['#autocomplete_route_callback'] = [$this, 'processFacetAutocomplete'];
     }
 

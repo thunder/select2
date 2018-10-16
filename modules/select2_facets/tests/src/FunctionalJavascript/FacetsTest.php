@@ -53,12 +53,16 @@ class FacetsTest extends WebDriverTestBase {
    *
    * @dataProvider providerTestBasicFunctionality
    */
-  public function testBasicFunctionality($config) {
-    $this->drupalGet('/test-entity-view');
+  public function testBasicFunctionality($config, $expected_settings) {
 
     $facet = Facet::load('referenced');
     $facet->setWidget('select2', $config);
     $facet->save();
+
+    $this->drupalGet('/test-entity-view');
+
+    $settings = $this->getSession()->evaluateScript("drupalSettings.select2['facet-referenced']");
+    $this->assertArraySubset($expected_settings, $settings);
 
     $page = $this->getSession()->getPage();
     $assert_session = $this->assertSession();
@@ -86,8 +90,8 @@ class FacetsTest extends WebDriverTestBase {
    */
   public function providerTestBasicFunctionality() {
     return [
-      [[]],
-      [['autocomplete' => TRUE]],
+      [[], ['tags' => FALSE]],
+      [['autocomplete' => TRUE], ['ajax' => [], 'tags' => FALSE]],
     ];
   }
 

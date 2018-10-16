@@ -51,7 +51,7 @@ class FacetsTest extends WebDriverTestBase {
   /**
    * Tests basic select2 functionality.
    *
-   * @dataProvider testBasicFunctionalityProvider
+   * @dataProvider providerTestBasicFunctionality
    */
   public function testBasicFunctionality($config) {
     $this->drupalGet('/test-entity-view');
@@ -84,7 +84,7 @@ class FacetsTest extends WebDriverTestBase {
    * @return array
    *   The data.
    */
-  public function testBasicFunctionalityProvider() {
+  public function providerTestBasicFunctionality() {
     return [
       [[]],
       [['autocomplete' => TRUE]],

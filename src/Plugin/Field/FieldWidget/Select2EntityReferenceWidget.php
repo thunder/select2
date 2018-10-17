@@ -106,7 +106,8 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
     $element = parent::formElement($items, $delta, $element, $form, $form_state);
 
     $element['#target_type'] = $this->getFieldSetting('target_type');
-    $label_field = $this->entityTypeManager->getDefinition($element['#target_type'])->getKey('label') ?: '_none';
+    $entity_definition = $this->entityTypeManager->getDefinition($element['#target_type']);
+    $label_field = $entity_definition->getKey('label') ?: '_none';
     $element['#selection_handler'] = $this->getFieldSetting('handler');
     $element['#selection_settings'] = [
       'match_operator' => $this->getSetting('match_operator'),
@@ -122,6 +123,19 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
       ];
     }
     $element['#multiple'] = $this->multiple && (count($this->options) > 1 || !empty($element['#autocreate']));
+
+    if ($element['#autocomplete'] && $element['#multiple']) {
+      $message = $this->t("Drag to re-order @entity_types.", ['@entity_types' => $entity_definition->getPluralLabel()]);
+      if (!empty($element['#description'])) {
+        $element['#description'] = [
+          '#theme' => 'item_list',
+          '#items' => [$element['#description'], $message],
+        ];
+      }
+      else {
+        $element['#description'] = $message;
+      }
+    }
 
     return $element;
   }

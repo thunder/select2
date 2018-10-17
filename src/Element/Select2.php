@@ -9,6 +9,7 @@ use Drupal\Core\Form\OptGroup;
 use Drupal\Core\Render\Element\Select;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
+use Drupal\select2\Select2Trait;
 
 /**
  * Provides an select2 form element.
@@ -16,6 +17,11 @@ use Drupal\Core\Url;
  * Properties:
  * - #cardinality: (optional) How many options can be selected. Default is
  *   unlimited.
+ * - #autocomplete_options_callback: (optional) A callback to return all valid
+ *   currently selected options. @see static::getValidSelectedOptions().
+ * - #autocomplete_route_callback: (optional) A callback that sets the
+ *   #autocomplete_route_name and autocomplete_route_parameters keys on the
+ *   render element. @see static::setAutocompleteRouteParameters().
  *
  * Simple usage example:
  * @code
@@ -89,6 +95,8 @@ use Drupal\Core\Url;
  */
 class Select2 extends Select {
 
+  use Select2Trait;
+
   /**
    * {@inheritdoc}
    */
@@ -114,13 +122,14 @@ class Select2 extends Select {
    * {@inheritdoc}
    */
   public static function processSelect(&$element, FormStateInterface $form_state, &$complete_form) {
+    // Fill the options, because in autocomplete we cleared them and for the
+    // validation the at least selected options are needed.
     if ($element['#autocomplete']) {
-      $handler_settings = $element['#selection_settings'] + [
-        'target_type' => $element['#target_type'],
-        'handler' => $element['#selection_handler'],
-      ];
-      $value = is_array($element['#value']) ? $element['#value'] : [$element['#value']];
-      $element['#options'] = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($handler_settings)->validateReferenceableEntities($value);
+      $value_callable = isset($element['#autocomplete_options_callback']) ? $element['#autocomplete_options_callback'] : NULL;
+      if (!$value_callable || !is_callable($value_callable)) {
+        $value_callable = '\Drupal\select2\Element\Select2::getValidSelectedOptions';
+      }
+      $element['#options'] = call_user_func_array($value_callable, [$element, $form_state]);
     }
 
     // We need to disable form validation, because with autocreation the options
@@ -139,6 +148,29 @@ class Select2 extends Select {
     $element['#type'] = 'select';
 
     return $element;
+  }
+
+  /**
+   * Get an array of currently selected options.
+   *
+   * @param array $element
+   *   The render element.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state object.
+   *
+   * @return array
+   *   Key => entity ID, Value => entity label.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   */
+  protected static function getValidSelectedOptions(array $element, FormStateInterface $form_state) {
+    $handler_settings = $element['#selection_settings'] + [
+      'target_type' => $element['#target_type'],
+      'handler' => $element['#selection_handler'],
+    ];
+    $value = is_array($element['#value']) ? $element['#value'] : [$element['#value']];
+    return static::getValidReferenceableEntities($value, $handler_settings);
   }
 
   /**
@@ -194,9 +226,11 @@ class Select2 extends Select {
       return $element;
     }
 
-    $complete_form = [];
-    $element = EntityAutocomplete::processEntityAutocomplete($element, new FormState(), $complete_form);
-    $element['#autocomplete_route_name'] = 'select2.entity_autocomplete';
+    $value_callable = isset($element['#autocomplete_route_callback']) ? $element['#autocomplete_route_callback'] : NULL;
+    if (!$value_callable || !is_callable($value_callable)) {
+      $value_callable = '\Drupal\select2\Element\Select2::setAutocompleteRouteParameters';
+    }
+    $element = call_user_func_array($value_callable, [&$element]);
 
     // Reduce options to the preselected ones and bring them in the correct
     // order.
@@ -227,6 +261,22 @@ class Select2 extends Select {
         ],
       ];
     }
+    return $element;
+  }
+
+  /**
+   * Sets the autocomplete route parameters.
+   *
+   * @param array $element
+   *   The render element.
+   *
+   * @return array
+   *   The render element with autocomplete route parameters.
+   */
+  protected static function setAutocompleteRouteParameters(array &$element) {
+    $complete_form = [];
+    $element = EntityAutocomplete::processEntityAutocomplete($element, new FormState(), $complete_form);
+    $element['#autocomplete_route_name'] = 'select2.entity_autocomplete';
     return $element;
   }
 

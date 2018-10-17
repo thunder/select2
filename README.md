@@ -29,7 +29,7 @@ If you would like to install the select2 library with composer, you probably use
     }
 ```
 
-It's also needed to extend the installer-path section:
+It's also needed to extend the 'installer-path' section:
 
 ```json
     "web/libraries/{$name}": [
@@ -38,9 +38,13 @@ It's also needed to extend the installer-path section:
         "type:npm-asset"
     ],
 ```
+And add a new 'installer-types' section next to the 'installer-path' in the 'extra' section:
 
+```json
+    "installer-types": ["bower-asset", "npm-asset"],
+```
 
-After this you can install the library with "composer require npm-asset/select2" and the library will be downloaded into the libraries folder.
+After this you can install the library with "composer require oomphinc/composer-installers-extender npm-asset/select2" and the library will be downloaded into the libraries folder.
 
 ### Manual
 Download it from the [release page](https://github.com/select2/select2/releases) and place it in Drupal's library folder.

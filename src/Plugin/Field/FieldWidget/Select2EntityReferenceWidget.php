@@ -125,7 +125,7 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
     $element['#multiple'] = $this->multiple && (count($this->options) > 1 || !empty($element['#autocreate']));
 
     if ($element['#autocomplete'] && $element['#multiple']) {
-      $message = $this->t("You are able to change the order of @entity_types by drag'n'drop.", ['@entity_types' => $entity_definition->getPluralLabel()]);
+      $message = $this->t("Drag to re-order @entity_types.", ['@entity_types' => $entity_definition->getPluralLabel()]);
       if (!empty($element['#description'])) {
         $element['#description'] = [
           '#theme' => 'item_list',

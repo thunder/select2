@@ -4,9 +4,13 @@ namespace Drupal\select2_facets\Plugin\facets\widget;
 
 use Drupal\Component\Utility\Crypt;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\KeyValueStore\KeyValueStoreInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Site\Settings;
 use Drupal\facets\FacetInterface;
 use Drupal\facets\Widget\WidgetPluginBase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * The select2 widget.
@@ -17,7 +21,43 @@ use Drupal\facets\Widget\WidgetPluginBase;
  *   description = @Translation("A configurable widget that shows a select2."),
  * )
  */
-class Select2Widget extends WidgetPluginBase {
+class Select2Widget extends WidgetPluginBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * The current request.
+   *
+   * @var \Symfony\Component\HttpFoundation\Request
+   */
+  protected $request;
+
+  /**
+   * The key-value store for entity_autocomplete.
+   *
+   * @var \Drupal\Core\KeyValueStore\KeyValueStoreInterface
+   */
+  protected $keyValueStore;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, Request $request, KeyValueStoreInterface $key_value_store) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->request = $request;
+    $this->keyValueStore = $key_value_store;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('request_stack')->getCurrentRequest(),
+      $container->get('keyvalue')->get('entity_autocomplete')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -144,7 +184,7 @@ class Select2Widget extends WidgetPluginBase {
    */
   public function processFacetAutocomplete(array &$element) {
     $selection_settings = [
-      'request' => serialize(\Drupal::request()),
+      'request' => serialize($this->request),
       'match_operator' => $this->getConfiguration()['match_operator'],
       'show_numbers' => $this->getConfiguration()['show_numbers'],
     ];
@@ -153,10 +193,8 @@ class Select2Widget extends WidgetPluginBase {
     // in the route parameters.
     $data = serialize($selection_settings) . $this->facet->getFacetSourceId() . $this->facet->id();
     $selection_settings_key = Crypt::hmacBase64($data, Settings::getHashSalt());
-
-    $key_value_storage = \Drupal::keyValue('entity_autocomplete');
-    if (!$key_value_storage->has($selection_settings_key)) {
-      $key_value_storage->set($selection_settings_key, $selection_settings);
+    if (!$this->keyValueStore->has($selection_settings_key)) {
+      $this->keyValueStore->set($selection_settings_key, $selection_settings);
     }
 
     $element['#autocomplete_route_name'] = 'select2_facets.facet_autocomplete';

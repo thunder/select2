@@ -17,6 +17,7 @@ facet_source_id: 'search_api:views_page__test_entity_view__page_1'
 widget:
   type: select2
   config:
+    show_numbers: false
     width: 100%
     autocomplete: false
     match_operator: CONTAINS

@@ -97,8 +97,7 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
       // Get all currently selected options.
       $selected_options = [];
       foreach ($entity->get($this->fieldDefinition->getName()) as $item) {
-        $value = $item->{$this->column};
-        $selected_options[] = $value;
+        $selected_options[] = $item->{$this->column};
       }
 
       if (!$selected_options) {

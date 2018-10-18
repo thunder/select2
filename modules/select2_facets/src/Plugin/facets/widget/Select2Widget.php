@@ -42,7 +42,10 @@ class Select2Widget extends WidgetPluginBase {
       if (empty($result->getUrl())) {
         continue;
       }
-      $items[$result->getUrl()->toString()] = $result->getDisplayValue();
+
+      $count = $result->getCount();
+      $this->showNumbers = $this->getConfiguration()['show_numbers'] && ($count !== NULL);
+      $items[$result->getUrl()->toString()] = ($this->showNumbers ? sprintf('%s (%d)', $result->getDisplayValue(), $result->getCount()) : $result->getDisplayValue());
       if ($result->isActive()) {
         $active_items[] = $result->getUrl()->toString();
       }
@@ -85,6 +88,7 @@ class Select2Widget extends WidgetPluginBase {
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state, FacetInterface $facet) {
+    $form = parent::buildConfigurationForm($form, $form_state, $facet);
     $form['width'] = [
       '#type' => 'textfield',
       '#title' => t('Field width'),

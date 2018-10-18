@@ -5,7 +5,6 @@ namespace Drupal\select2_facets\Plugin\facets\widget;
 use Drupal\Component\Utility\Crypt;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Site\Settings;
-use Drupal\Core\Url;
 use Drupal\facets\FacetInterface;
 use Drupal\facets\Widget\WidgetPluginBase;
 
@@ -35,32 +34,18 @@ class Select2Widget extends WidgetPluginBase {
    * {@inheritdoc}
    */
   public function build(FacetInterface $facet) {
-
     $this->facet = $facet;
 
     $items = [];
     $active_items = [];
-
     foreach ($facet->getResults() as $result) {
       if (empty($result->getUrl())) {
         continue;
       }
-      // When the facet is being build in an AJAX request, and the facetsource
-      // is a block, we need to update the url to use the current request url.
-      if ($result->getUrl()->isRouted() && $result->getUrl()->getRouteName() === 'facets.block.ajax') {
-        $request = \Drupal::request();
-        $url_object = \Drupal::service('path.validator')->getUrlIfValid($request->getPathInfo());
-        if ($url_object) {
-          $url = $result->getUrl();
-          $result->setUrl(new Url($url_object->getRouteName(), $url_object->getRouteParameters(), $url->getOptions()));
-        }
-      }
-
       $items[$result->getUrl()->toString()] = $result->getDisplayValue();
       if ($result->isActive()) {
         $active_items[] = $result->getUrl()->toString();
       }
-
     }
 
     $element = [

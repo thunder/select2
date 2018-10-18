@@ -132,7 +132,7 @@ class FacetApiAutocompleteController extends ControllerBase {
           }
           $matches['results'][] = [
             'id' => $result->getUrl()->toString(),
-            'text' => $result->getDisplayValue(),
+            'text' => ($selection_settings['show_numbers'] ? sprintf('%s (%d)', $result->getDisplayValue(), $result->getCount()) : $result->getDisplayValue()),
           ];
         }
       }

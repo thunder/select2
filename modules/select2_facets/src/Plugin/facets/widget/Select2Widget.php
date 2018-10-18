@@ -146,6 +146,7 @@ class Select2Widget extends WidgetPluginBase {
     $selection_settings = [
       'request' => serialize(\Drupal::request()),
       'match_operator' => $this->getConfiguration()['match_operator'],
+      'show_numbers' => $this->getConfiguration()['show_numbers'],
     ];
 
     // Store the selection settings in the key/value store and pass a hashed key

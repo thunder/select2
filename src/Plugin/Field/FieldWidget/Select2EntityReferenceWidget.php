@@ -38,13 +38,6 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
   protected $entityTypeManager;
 
   /**
-   * The field item.
-   *
-   * @var \Drupal\Core\Field\FieldItemListInterface
-   */
-  protected $fieldItem;
-
-  /**
    * {@inheritdoc}
    */
   public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, EntityTypeManagerInterface $entity_type_manager) {
@@ -100,10 +93,10 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
    * {@inheritdoc}
    */
   protected function getOptions(FieldableEntityInterface $entity) {
-    if ($this->getSetting('autocomplete')) {
+    if (!isset($this->options) && $this->getSetting('autocomplete')) {
       // Get all currently selected options.
       $selected_options = [];
-      foreach ($this->fieldItem as $item) {
+      foreach ($entity->get($this->fieldDefinition->getName()) as $item) {
         $value = $item->{$this->column};
         $selected_options[] = $value;
       }
@@ -141,7 +134,6 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
-    $this->fieldItem = $items;
     $element = parent::formElement($items, $delta, $element, $form, $form_state);
 
     $element['#target_type'] = $this->getFieldSetting('target_type');

@@ -62,7 +62,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
   /**
    * Test autocomplete in a single value field.
    *
-   * @dataProvider testSingleAutocompleteStartWithMatchProvider
+   * @dataProvider providerTestSingleAutocompleteStartWithMatch
    */
   public function testSingleAutocompleteStartWithMatch($match_operator, $count) {
     $this->createField('select2', 'node', 'test', 'entity_reference', [
@@ -99,7 +99,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
    * @return array
    *   The data.
    */
-  public function testSingleAutocompleteStartWithMatchProvider() {
+  public function providerTestSingleAutocompleteStartWithMatch() {
     return [
       ['STARTS_WITH', 1],
       ['CONTAINS', 2],

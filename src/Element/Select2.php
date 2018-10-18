@@ -257,6 +257,7 @@ class Select2 extends Select {
       $element['#attached']['drupalSettings']['select2'][$selector] += [
         'minimumInputLength' => 1,
         'ajax' => [
+          'delay' => 10,
           'url' => $url->getGeneratedUrl(),
         ],
       ];

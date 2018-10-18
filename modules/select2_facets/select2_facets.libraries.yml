@@ -1,0 +1,7 @@
+drupal.select2_facets.select2-widget:
+  version: VERSION
+  js:
+    js/select2-widget.js: {}
+  dependencies:
+  - core/drupal
+  - core/jquery.once

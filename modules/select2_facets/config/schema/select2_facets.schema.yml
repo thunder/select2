@@ -1,5 +1,5 @@
 facet.widget.config.select2:
-  type: mapping
+  type: facet.widget.default_config
   label: 'Select2 widget configuration'
   mapping:
     width:

@@ -16,7 +16,7 @@
           }
           return option.text;
         };
-        $(e.target).data('select2-config', config)
+        $(e.target).data('select2-config', config);
       });
     }
   };

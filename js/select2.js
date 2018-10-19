@@ -8,7 +8,8 @@
   Drupal.behaviors.select2 = {
     attach: function (context) {
       $('.select2-widget', context).once('select2-init').each(function () {
-        var config = drupalSettings.select2[$(this).attr('data-drupal-selector')];
+        $(this).trigger('select2-init');
+        var config = $(this).data('select2-config');
         config.createTag = function (params) {
           var term = $.trim(params.term);
           if (term === '') {

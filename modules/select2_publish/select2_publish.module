@@ -1,7 +1,8 @@
 <?php
+
 /**
  * @file
- * Contains
+ * This is the select2_publish module.
  */
 
 use Drupal\select2_publish\Publish;

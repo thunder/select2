@@ -2,6 +2,7 @@
 
 namespace Drupal\select2\Element;
 
+use Drupal\Component\Serialization\Json;
 use Drupal\Core\Entity\Element\EntityAutocomplete;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
@@ -205,9 +206,8 @@ class Select2 extends Select {
       'width' => '100%',
     ];
 
-    $selector = $element['#attributes']['data-drupal-selector'];
     $element['#attributes']['class'][] = 'select2-widget';
-    $element['#attached']['drupalSettings']['select2'][$selector] = $settings;
+    $element['#attributes']['data-select2-config'] = $settings;
 
     // Adding the select2 library.
     $element['#attached']['library'][] = 'select2/select2';
@@ -253,8 +253,7 @@ class Select2 extends Select {
         ->toString(TRUE);
 
       // Provide a data attribute for the JavaScript behavior to bind to.
-      $selector = $element['#attributes']['data-drupal-selector'];
-      $element['#attached']['drupalSettings']['select2'][$selector] += [
+      $element['#attributes']['data-select2-config'] += [
         'minimumInputLength' => 1,
         'ajax' => [
           'delay' => 10,
@@ -291,10 +290,10 @@ class Select2 extends Select {
     }
 
     // Allow to overwrite the default settings and set additional settings.
-    $selector = $element['#attributes']['data-drupal-selector'];
     foreach ($element["#select2"] as $key => $value) {
-      $element['#attached']['drupalSettings']['select2'][$selector][$key] = $value;
+      $element['#attributes']['data-select2-config'][$key] = $value;
     }
+    $element['#attributes']['data-select2-config'] = Json::encode($element['#attributes']['data-select2-config']);
 
     return $element;
   }

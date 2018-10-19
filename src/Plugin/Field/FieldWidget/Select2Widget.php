@@ -25,12 +25,47 @@ class Select2Widget extends OptionsSelectWidget {
   /**
    * {@inheritdoc}
    */
+  public static function defaultSettings() {
+    return [
+      'width' => '100%',
+    ] + parent::defaultSettings();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function settingsForm(array $form, FormStateInterface $form_state) {
+    $element['width'] = [
+      '#type' => 'textfield',
+      '#title' => t('Field width'),
+      '#default_value' => $this->getSetting('width'),
+      '#description' => $this->t("Define a width for the select2 field. It can be either 'element', 'style', 'resolve' or any possible CSS value. E.g. 500px, 50%, 200em. See the <a href='https://select2.org/appearance#container-width'>select2 documentation</a> for further explanations."),
+      '#required' => TRUE,
+      '#size' => '10',
+      '#pattern' => "^(\d+(cm|mm|in|px|pt|pc|em|ex|ch|rem|vm|vh|vmin|vmax|\%)|element|style|resolve|auto|initial|inherit)$",
+    ];
+    return $element;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function settingsSummary() {
+    $summary = [];
+    $summary[] = t('Field width: @width', ['@width' => $this->getSetting('width')]);
+    return $summary;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $element = parent::formElement($items, $delta, $element, $form, $form_state);
     $element['#type'] = 'select2';
     $element['#cardinality'] = $this->fieldDefinition->getFieldStorageDefinition()->getCardinality();
-    // The validation method is part of the render element.
-    unset($element['#element_validate']);
+    $element['#select2'] = [
+      'width' => $this->getSetting('width'),
+    ];
 
     return $element;
   }
@@ -39,5 +74,55 @@ class Select2Widget extends OptionsSelectWidget {
    * {@inheritdoc}
    */
   protected function getEmptyLabel() {}
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function validateElement(array $element, FormStateInterface $form_state) {
+    if ($element['#required'] && $element['#value'] == '') {
+      $form_state->setError($element, t('@name field is required.', ['@name' => $element['#title']]));
+    }
+
+    // Massage submitted form values.
+    // Drupal\Core\Field\WidgetBase::submit() expects values as
+    // an array of values keyed by delta first, then by column, while our
+    // widgets return the opposite.
+    if (is_array($element['#value'])) {
+      $values = array_values($element['#value']);
+    }
+    else {
+      $values = [$element['#value']];
+    }
+
+    // Filter out the '' option. Use a strict comparison, because
+    // 0 == 'any string'.
+    $index = array_search('', $values, TRUE);
+    if ($index !== FALSE) {
+      unset($values[$index]);
+    }
+
+    $items = static::prepareFieldValues($values, $element);
+    $form_state->setValueForElement($element, $items);
+  }
+
+  /**
+   * Set's the values to the correct column key.
+   *
+   * @param array $values
+   *   The input values.
+   * @param array $element
+   *   The render element.
+   *
+   * @return array
+   *   Values with the correct keys.
+   */
+  protected static function prepareFieldValues(array $values, array $element) {
+    // Transpose selections from field => delta to delta => field.
+    $items = [];
+    foreach ($values as $value) {
+      $items[] = [$element['#key_column'] => $value];
+    }
+    return $items;
+  }
 
 }

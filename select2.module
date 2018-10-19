@@ -12,5 +12,49 @@ function select2_library_info_alter(&$libraries, $extension) {
   if ($extension === 'select2' && function_exists('libraries_get_path')) {
     $libraries['select2.min']['js'] = ['/' . libraries_get_path('select2') . '/dist/js/select2.min.js' => ['minified' => TRUE]];
     $libraries['select2.min']['css']['component'] = ['/' . libraries_get_path('select2') . '/dist/css/select2.min.css' => []];
+    foreach (\Drupal::languageManager()->getLanguages() as $language) {
+      if (file_exists(libraries_get_path('select2') . '/dist/js/i18n/' . $language->getId() . '.js')) {
+        $libraries['select2.i18n.' . $language->getId()] = [
+          'js' => [
+            '/' . libraries_get_path('select2') . '/dist/js/i18n/' . $language->getId() . '.js' => ['minified' => TRUE],
+          ],
+          'dependencies' => [
+            'select2/select2',
+          ],
+        ];
+      }
+    }
   }
+
+  if ($extension === 'seven') {
+    $module_path = \Drupal::moduleHandler()->getModule('select2')->getPath();
+    $libraries['select2.theme'] = [
+      'css' => [
+        'component' => [
+          "/$module_path/css/select2.seven.css" => [],
+          "/$module_path/css/select2.seven-overrides.css" => [],
+        ],
+      ],
+    ];
+  }
+}
+
+/**
+ * Implements hook_library_info_build().
+ */
+function select2_library_info_build() {
+  $libraries = [];
+  foreach (\Drupal::languageManager()->getLanguages() as $language) {
+    if (file_exists('libraries/select2/dist/js/i18n/' . $language->getId() . '.js')) {
+      $libraries['select2.i18n.' . $language->getId()] = [
+        'js' => [
+          '/libraries/select2/dist/js/i18n/' . $language->getId() . '.js' => ['minified' => TRUE],
+        ],
+        'dependencies' => [
+          'select2/select2',
+        ],
+      ];
+    }
+  }
+  return $libraries;
 }

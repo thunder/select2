@@ -40,7 +40,10 @@ class Select2AjaxForm extends FormBase {
         'auto_create' => TRUE,
         'auto_create_bundle' => 'entity_test_mulrevpub',
       ],
-      '#autocreate' => TRUE,
+      '#autocreate' => [
+        'bundle' => 'entity_test_mulrevpub',
+        'uid' => '1',
+      ],
       '#multiple' => TRUE,
     ];
 

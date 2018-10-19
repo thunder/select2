@@ -2,6 +2,7 @@
 
 namespace Drupal\select2;
 
+use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\EntityReferenceSelection\SelectionPluginManagerInterface;
 
 /**
@@ -64,7 +65,7 @@ class EntityAutocompleteMatcher {
       // Loop through the entities and convert them into autocomplete output.
       foreach ($entity_labels as $values) {
         foreach ($values as $entity_id => $label) {
-          $matches[] = ['id' => $entity_id, 'text' => $label];
+          $matches[] = ['id' => $entity_id, 'text' => Html::decodeEntities($label)];
         }
       }
     }

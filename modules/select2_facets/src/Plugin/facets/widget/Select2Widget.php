@@ -136,7 +136,7 @@ class Select2Widget extends WidgetPluginBase implements ContainerFactoryPluginIn
       '#description' => $this->t("Define a width for the select2 field. It can be either 'element', 'style', 'resolve' or any possible CSS unit. E.g. 500px, 50%, 200em. See the <a href='https://select2.org/appearance#container-width'>select2 documentation</a> for further explanations."),
       '#required' => TRUE,
       '#size' => '10',
-      '#pattern' => "^(\d+(cm|mm|in|px|pt|pc|em|ex|ch|rem|vm|vh|vmin|vmax|\%)|element|style|resolve)$",
+      '#pattern' => "\d+(cm|mm|in|px|pt|pc|em|ex|ch|rem|vm|vh|vmin|vmax|%)|element|style|resolve|auto|initial|inherit",
     ];
     $form['autocomplete'] = [
       '#type' => 'checkbox',

@@ -26,7 +26,16 @@ class Publish {
         $element['#options_attributes'][$id] = $properties;
       }
 
+      $default_status = 'true';
+      if ($element['#autocreate']) {
+        /** @var \Drupal\Core\Entity\EntityPublishedInterface $entity */
+        $entity_definition = \Drupal::entityTypeManager()->getDefinition($element['#target_type']);
+        $entity = \Drupal::entityTypeManager()->getStorage($element['#target_type'])->create([$entity_definition->getKey('bundle') => $element['#autocreate']['bundle']]);
+        $default_status = $entity->isPublished() ? 'true' : 'false';
+      }
+
       $element['#attached']['library'][] = 'select2_publish/select2.publish';
+      $element['#attributes']['data-select2-publish-default'] = $default_status;
       return $element;
     }
 

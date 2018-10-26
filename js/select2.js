@@ -8,7 +8,6 @@
   Drupal.behaviors.select2 = {
     attach: function (context) {
       $('.select2-widget', context).once('select2-init').each(function () {
-        $(this).trigger('select2-init');
         var config = $(this).data('select2-config');
         config.createTag = function (params) {
           var term = $.trim(params.term);
@@ -20,6 +19,13 @@
             text: term
           };
         };
+        $(this).data('select2-config', config);
+
+        // Emit an event, that other modules have the chance to modify the
+        // select2 settings.
+        $(this).trigger('select2-init');
+        config = $(this).data('select2-config');
+
         $(this).select2(config);
 
         // Copied from https://github.com/woocommerce/woocommerce/blob/master/assets/js/admin/wc-enhanced-select.js#L118

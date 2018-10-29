@@ -5,13 +5,45 @@
  * This is the select2_publish module.
  */
 
-use Drupal\select2_publish\Publish;
+use Drupal\Core\Entity\EntityPublishedInterface;
 
 /**
  * Implements hook_element_info_alter().
  */
 function select2_publish_element_info_alter(array &$info) {
   if (!empty($info['select2'])) {
-    $info['select2']['#pre_render'][] = [Publish::class, 'preRenderPublish'];
+    $info['select2']['#pre_render'][] = 'select2_publish_add_status_properties';
+  }
+}
+
+/**
+ * Attach status properties to the render element.
+ */
+function select2_publish_add_status_properties($element) {
+  if ($element['#target_type']) {
+    $entities = \Drupal::entityTypeManager()
+      ->getStorage($element['#target_type'])
+      ->loadMultiple(array_keys($element['#options']));
+
+    foreach ($entities as $id => $entity) {
+      if ($entity instanceof EntityPublishedInterface) {
+        $element['#options_attributes'][$id]['data-published'] = $entity->isPublished() ? 'true' : 'false';
+      }
+    }
+
+    $default_status = 'true';
+    if ($element['#autocreate']) {
+      /** @var \Drupal\Core\Entity\EntityPublishedInterface $entity */
+      $entity_definition = \Drupal::entityTypeManager()
+        ->getDefinition($element['#target_type']);
+      $entity = \Drupal::entityTypeManager()
+        ->getStorage($element['#target_type'])
+        ->create([$entity_definition->getKey('bundle') => $element['#autocreate']['bundle']]);
+      $default_status = $entity->isPublished() ? 'true' : 'false';
+    }
+
+    $element['#attached']['library'][] = 'select2_publish/select2.publish';
+    $element['#attributes']['data-select2-publish-default'] = $default_status;
+    return $element;
   }
 }

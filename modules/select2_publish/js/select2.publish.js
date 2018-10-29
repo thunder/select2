@@ -20,7 +20,7 @@
             published: $(e.target).data('select2-publish-default')
           };
         };
-        config.templateSelection = config.templateResult = config.templateResult = function (option, item) {
+        config.templateSelection = config.templateResult = function (option, item) {
           if (item) {
             var published = (option.published === true || $(option.element).attr('data-published') === 'true');
             $(item).addClass(published ? 'published' : 'unpublished');

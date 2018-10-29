@@ -21,8 +21,8 @@ function select2_publish_element_info_alter(array &$info) {
  */
 function select2_publish_add_status_properties($element) {
   if ($element['#target_type']) {
-    $entities = \Drupal::entityTypeManager()
-      ->getStorage($element['#target_type'])
+    $entity_manager = \Drupal::entityTypeManager();
+    $entities = $entity_manager->getStorage($element['#target_type'])
       ->loadMultiple(array_keys($element['#options']));
 
     foreach ($entities as $id => $entity) {
@@ -34,16 +34,31 @@ function select2_publish_add_status_properties($element) {
     $default_status = 'true';
     if ($element['#autocreate']) {
       /** @var \Drupal\Core\Entity\EntityPublishedInterface $entity */
-      $entity_definition = \Drupal::entityTypeManager()
-        ->getDefinition($element['#target_type']);
-      $entity = \Drupal::entityTypeManager()
-        ->getStorage($element['#target_type'])
+      $entity_definition = $entity_manager->getDefinition($element['#target_type']);
+      $entity = $entity_manager->getStorage($element['#target_type'])
         ->create([$entity_definition->getKey('bundle') => $element['#autocreate']['bundle']]);
-      $default_status = $entity->isPublished() ? 'true' : 'false';
+      if ($entity instanceof EntityPublishedInterface) {
+        $default_status = $entity->isPublished() ? 'true' : 'false';
+      }
     }
 
     $element['#attached']['library'][] = 'select2_publish/select2.publish';
     $element['#attributes']['data-select2-publish-default'] = $default_status;
     return $element;
+  }
+}
+
+/**
+ * Implements hook_select2_autocomplete_matches_alter().
+ */
+function select2_publish_select2_autocomplete_matches_alter(array &$matches, array $options) {
+  $entities = \Drupal::entityTypeManager()
+    ->getStorage($options['target_type'])
+    ->loadMultiple(array_keys($matches));
+
+  foreach ($entities as $id => $entity) {
+    if ($entity instanceof EntityPublishedInterface) {
+      $matches[$id]['published'] = $entity->isPublished();
+    }
   }
 }

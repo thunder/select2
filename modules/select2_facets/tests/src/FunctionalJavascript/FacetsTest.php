@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\select2_facets\FunctionalJavascript;
 
+use Drupal\Component\Serialization\Json;
 use Drupal\entity_test\Entity\EntityTestMulRevPub;
 use Drupal\facets\Entity\Facet;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
@@ -61,8 +62,8 @@ class FacetsTest extends WebDriverTestBase {
 
     $this->drupalGet('/test-entity-view');
 
-    $settings = $this->getSession()->evaluateScript("drupalSettings.select2['facet-referenced']");
-    $this->assertArraySubset($expected_settings, $settings);
+    $settings = $this->getSession()->getPage()->findField('Referenced[]')->getAttribute('data-select2-config');
+    $this->assertArraySubset($expected_settings, Json::decode($settings));
 
     $page = $this->getSession()->getPage();
     $assert_session = $this->assertSession();

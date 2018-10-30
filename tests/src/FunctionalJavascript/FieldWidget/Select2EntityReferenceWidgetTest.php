@@ -353,9 +353,9 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
     EntityTestMulRevPub::create(['name' => 'gaga'])->save();
 
     $this->drupalGet('/node/add/test');
-    $url = $this->getSession()->evaluateScript("drupalSettings.select2['edit-select2'].ajax.url");
+    $settings = Json::decode($this->getSession()->getPage()->findField('select2')->getAttribute('data-select2-config'));
 
-    $url = Url::fromUserInput($url);
+    $url = Url::fromUserInput($settings['ajax']['url']);
     $url->setAbsolute(TRUE);
     $url->setRouteParameter('q', 'f');
 

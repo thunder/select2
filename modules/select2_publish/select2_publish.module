@@ -29,6 +29,7 @@ function select2_publish_add_status_properties($element) {
     }
 
     $entity_storage = $entity_manager->getStorage($element['#target_type']);
+    /** @var \Drupal\Core\Entity\EntityPublishedInterface $entity */
     foreach ($entity_storage->loadMultiple(array_keys($element['#options'])) as $id => $entity) {
       $element['#options_attributes'][$id]['data-published'] = $entity->isPublished() ? 'true' : 'false';
     }
@@ -57,8 +58,8 @@ function select2_publish_select2_autocomplete_matches_alter(array &$matches, arr
     return;
   }
 
-  $entities = $entity_manager->getStorage($options['target_type'])
-    ->loadMultiple(array_keys($matches));
+  $entities = $entity_manager->getStorage($options['target_type'])->loadMultiple(array_keys($matches));
+  /** @var \Drupal\Core\Entity\EntityPublishedInterface $entity */
   foreach ($entities as $id => $entity) {
     $matches[$id]['published'] = $entity->isPublished();
   }

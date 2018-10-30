@@ -22,7 +22,9 @@
         $(this).data('select2-config', config);
 
         // Emit an event, that other modules have the chance to modify the
-        // select2 settings.
+        // select2 settings. Make sure that other JavaScript code that rely on
+        // this event will be loaded first.
+        // @see: modules/select2_publish/select2_publish.libraries.yml
         $(this).trigger('select2-init');
         config = $(this).data('select2-config');
 

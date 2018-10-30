@@ -54,8 +54,6 @@ class PublishTest extends Select2JavascriptTestBase {
     $this->assertNotEmpty($assert_session->waitForElement('xpath', '//li[@class="select2-results__option unpublished select2-results__option--highlighted" and text()="bar"]'));
     $page->find('xpath', '//li[@class="select2-results__option unpublished select2-results__option--highlighted" and text()="bar"]')->click();
     $this->assertNotEmpty($assert_session->waitForElement('xpath', '//li[@class="select2-selection__choice unpublished" and text()="bar"]'));
-
-    $page->pressButton('Save');
   }
 
   /**

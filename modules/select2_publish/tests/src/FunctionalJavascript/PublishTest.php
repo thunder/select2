@@ -56,9 +56,6 @@ class PublishTest extends Select2JavascriptTestBase {
     $this->assertNotEmpty($assert_session->waitForElement('xpath', '//li[@class="select2-selection__choice unpublished" and text()="bar"]'));
 
     $page->pressButton('Save');
-
-    $node = $this->getNodeByTitle('Test node', TRUE);
-    $this->assertArraySubset([['target_id' => 2], ['target_id' => 1]], $node->select2->getValue());
   }
 
   /**

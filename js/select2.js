@@ -28,6 +28,10 @@
         $(this).trigger('select2-init');
         config = $(this).data('select2-config');
 
+        // If config has a dropdownParent property, wrap it a jQuery object.
+        if (config.hasOwnProperty('dropdownParent')) {
+          config.dropdownParent = $(config.dropdownParent);
+        }
         $(this).select2(config);
 
         // Copied from https://github.com/woocommerce/woocommerce/blob/master/assets/js/admin/wc-enhanced-select.js#L118

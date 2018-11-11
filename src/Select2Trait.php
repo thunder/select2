@@ -27,7 +27,7 @@ trait Select2Trait {
     $options = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($handler_settings)->validateReferenceableEntities($ids);
     $entities = \Drupal::entityTypeManager()->getStorage($handler_settings['target_type'])->loadMultiple($options);
     foreach ($entities as $entity_id => $entity) {
-      $options[$entity_id] = Html::escape(\Drupal::service('entity.repository')->getTranslationFromContext($entity)->label());
+      $options[$entity_id] = Html::decodeEntities(\Drupal::service('entity.repository')->getTranslationFromContext($entity)->label());
     }
     return $options;
   }

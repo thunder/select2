@@ -1,6 +1,6 @@
-name: Select2 facets
+name: Select2 Facets
 type: module
-description: Provides a select2 facet widget.
+description: Provides a Select2 Facet widget.
 package: Search
 core: '8.x'
 dependencies:

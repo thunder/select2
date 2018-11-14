@@ -99,6 +99,7 @@ class Select2Widget extends WidgetPluginBase implements ContainerFactoryPluginIn
       '#multiple' => !$facet->getShowOnlyOneResult(),
       '#autocomplete' => $this->getConfiguration()['autocomplete'],
       '#name' => $facet->getName(),
+      '#title' => $facet->get('show_title') ? $facet->getName() : '',
       '#attributes' => [
         'data-drupal-selector' => 'facet-' . $facet->id(),
         'class' => ['js-facets-select2'],

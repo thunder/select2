@@ -7,6 +7,8 @@
 
   'use strict';
 
+  Drupal.facets = Drupal.facets || {};
+
   /**
    * Add event handler to all select2 widgets.
    */

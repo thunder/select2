@@ -20,10 +20,16 @@ branches:
 
 env:
   matrix:
-    - DRUPAL_VERSION=^8.5
-    - DRUPAL_VERSION=^8.6
+    - DRUPAL_TRAVIS_DRUPAL_VERSION=~8.5.0
+    - DRUPAL_TRAVIS_DRUPAL_VERSION=~8.6.0
+    - DRUPAL_TRAVIS_DRUPAL_VERSION=~8.6.0 DRUPAL_TRAVIS_TEST_DEPRECATION=false
   global:
     - PATH="$PATH:$HOME/.composer/vendor/bin"
+
+matrix:
+  allow_failures:
+    - env: DRUPAL_TRAVIS_DRUPAL_VERSION=~8.6.0
+
 
 before_install:
   - composer global require thunder/travis

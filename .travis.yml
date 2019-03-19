@@ -19,14 +19,23 @@ branches:
     - /^8\.([0-9]+|x)\-[0-9]+\.([0-9]+|x)$/
 
 env:
+  matrix:
+    - DRUPAL_TRAVIS_DRUPAL_VERSION=~8.6.0
+    - DRUPAL_TRAVIS_DRUPAL_VERSION=~8.7.0
+    - DRUPAL_TRAVIS_DRUPAL_VERSION=~8.7.0 DRUPAL_TRAVIS_TEST_DEPRECATION=false
   global:
     - PATH="$PATH:$HOME/.composer/vendor/bin"
+
+matrix:
+  allow_failures:
+    - env: DRUPAL_TRAVIS_DRUPAL_VERSION=~8.7.0
+
 
 before_install:
   - composer global require thunder/travis
 
 install:
-  - test-drupal-module prepare_build
+  - test-drupal-project prepare_build
   - composer require npm-asset/select2:~4.0 --working-dir=/tmp/test/select2/install
 
 script:

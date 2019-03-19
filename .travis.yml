@@ -35,7 +35,7 @@ before_install:
   - composer global require thunder/travis
 
 install:
-  - test-drupal-module prepare_build
+  - test-drupal-project prepare_build
   - composer require npm-asset/select2:~4.0 --working-dir=/tmp/test/select2/install
 
 script:

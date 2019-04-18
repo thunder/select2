@@ -5,7 +5,6 @@ namespace Drupal\select2_facets\Controller;
 use Drupal\Component\Utility\Crypt;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Site\Settings;
-use Drupal\facets\FacetManager\DefaultFacetManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

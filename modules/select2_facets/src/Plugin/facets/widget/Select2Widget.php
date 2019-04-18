@@ -39,7 +39,7 @@ class Select2Widget extends WidgetPluginBase implements ContainerFactoryPluginIn
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    $plugin = static::create($container, $configuration, $plugin_id, $plugin_definition);
+    $plugin = new static($configuration, $plugin_id, $plugin_definition);
     $plugin->request = $container->get('request_stack')->getCurrentRequest();
     $plugin->keyValueStore = $container->get('keyvalue')->get('entity_autocomplete');
     return $plugin;

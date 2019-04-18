@@ -23,19 +23,11 @@ class EntityAutocompleteController extends ControllerBase {
   protected $matcher;
 
   /**
-   * The key value store.
-   *
-   * @var \Drupal\Core\KeyValueStore\KeyValueStoreInterface
-   */
-  protected $keyValue;
-
-  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    $controller = static::create($container);
+    $controller = parent::create($container);
     $controller->matcher = $container->get('select2.autocomplete_matcher');
-    $controller->keyValue = $container->get('keyvalue')->get('entity_autocomplete');
     return $controller;
   }
 
@@ -65,7 +57,7 @@ class EntityAutocompleteController extends ControllerBase {
     if ($input = $request->query->get('q')) {
       // Selection settings are passed in as a hashed key of a serialized array
       // stored in the key/value store.
-      $selection_settings = $this->keyValue->get($selection_settings_key, FALSE);
+      $selection_settings = $this->keyValue('entity_autocomplete')->get($selection_settings_key, FALSE);
       if ($selection_settings !== FALSE) {
         $selection_settings_hash = Crypt::hmacBase64(serialize($selection_settings) . $target_type . $selection_handler, Settings::getHashSalt());
         if ($selection_settings_hash !== $selection_settings_key) {

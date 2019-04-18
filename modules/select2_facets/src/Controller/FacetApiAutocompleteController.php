@@ -16,13 +16,6 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 class FacetApiAutocompleteController extends ControllerBase {
 
   /**
-   * The key value store.
-   *
-   * @var \Drupal\Core\KeyValueStore\KeyValueStoreInterface
-   */
-  protected $keyValue;
-
-  /**
    * The facet manager service.
    *
    * @var \Drupal\facets\FacetManager\DefaultFacetManager
@@ -47,8 +40,7 @@ class FacetApiAutocompleteController extends ControllerBase {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    $controller = static::create($container);
-    $controller->keyValue = $container->get('keyvalue')->get('entity_autocomplete');
+    $controller = parent::create($container);
     $controller->facetManager = $container->get('facets.manager');
     $controller->requestStack = $container->get('request_stack');
     return $controller;
@@ -84,7 +76,7 @@ class FacetApiAutocompleteController extends ControllerBase {
 
       // Selection settings are passed in as a hashed key of a serialized array
       // stored in the key/value store.
-      $selection_settings = $this->keyValue->get($selection_settings_key, FALSE);
+      $selection_settings = $this->keyValue('entity_autocomplete')->get($selection_settings_key, FALSE);
       if ($selection_settings !== FALSE) {
         $selection_settings_hash = Crypt::hmacBase64(serialize($selection_settings) . $facetsource_id . $facet_id, Settings::getHashSalt());
         if ($selection_settings_hash !== $selection_settings_key) {

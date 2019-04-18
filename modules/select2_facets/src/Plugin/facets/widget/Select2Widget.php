@@ -4,13 +4,11 @@ namespace Drupal\select2_facets\Plugin\facets\widget;
 
 use Drupal\Component\Utility\Crypt;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\KeyValueStore\KeyValueStoreInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Site\Settings;
 use Drupal\facets\FacetInterface;
 use Drupal\facets\Widget\WidgetPluginBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * The select2 widget.
@@ -40,23 +38,11 @@ class Select2Widget extends WidgetPluginBase implements ContainerFactoryPluginIn
   /**
    * {@inheritdoc}
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, Request $request, KeyValueStoreInterface $key_value_store) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->request = $request;
-    $this->keyValueStore = $key_value_store;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $container->get('request_stack')->getCurrentRequest(),
-      $container->get('keyvalue')->get('entity_autocomplete')
-    );
+    $plugin = static::create($container, $configuration, $plugin_id, $plugin_definition);
+    $plugin->request = $container->get('request_stack')->getCurrentRequest();
+    $plugin->keyValueStore = $container->get('keyvalue')->get('entity_autocomplete');
+    return $plugin;
   }
 
   /**

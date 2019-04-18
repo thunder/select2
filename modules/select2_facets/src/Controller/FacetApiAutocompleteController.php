@@ -6,11 +6,9 @@ use Drupal\Component\Utility\Crypt;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Site\Settings;
 use Drupal\facets\FacetManager\DefaultFacetManager;
-use Drupal\Core\KeyValueStore\KeyValueStoreInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
@@ -47,30 +45,14 @@ class FacetApiAutocompleteController extends ControllerBase {
   protected $storedRequests = [];
 
   /**
-   * Constructs a FacetApiAutocompleteController object.
-   *
-   * @param \Drupal\Core\KeyValueStore\KeyValueStoreInterface $key_value
-   *   The key value factory.
-   * @param \Drupal\facets\FacetManager\DefaultFacetManager $facetManager
-   *   The facet manager service.
-   * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
-   *   The request stack.
-   */
-  public function __construct(KeyValueStoreInterface $key_value, DefaultFacetManager $facetManager, RequestStack $requestStack) {
-    $this->keyValue = $key_value;
-    $this->facetManager = $facetManager;
-    $this->requestStack = $requestStack;
-  }
-
-  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('keyvalue')->get('entity_autocomplete'),
-      $container->get('facets.manager'),
-      $container->get('request_stack')
-    );
+    $controller = static::create($container);
+    $controller->keyValue = $container->get('keyvalue')->get('entity_autocomplete');
+    $controller->facetManager = $container->get('facets.manager');
+    $controller->requestStack = $container->get('request_stack');
+    return $controller;
   }
 
   /**

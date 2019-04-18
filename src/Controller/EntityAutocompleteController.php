@@ -5,8 +5,6 @@ namespace Drupal\select2\Controller;
 use Drupal\Component\Utility\Crypt;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Site\Settings;
-use Drupal\select2\EntityAutocompleteMatcher;
-use Drupal\Core\KeyValueStore\KeyValueStoreInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,26 +30,13 @@ class EntityAutocompleteController extends ControllerBase {
   protected $keyValue;
 
   /**
-   * Constructs a EntityAutocompleteController object.
-   *
-   * @param \Drupal\select2\EntityAutocompleteMatcher $matcher
-   *   The autocomplete matcher for entity references.
-   * @param \Drupal\Core\KeyValueStore\KeyValueStoreInterface $key_value
-   *   The key value factory.
-   */
-  public function __construct(EntityAutocompleteMatcher $matcher, KeyValueStoreInterface $key_value) {
-    $this->matcher = $matcher;
-    $this->keyValue = $key_value;
-  }
-
-  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('select2.autocomplete_matcher'),
-      $container->get('keyvalue')->get('entity_autocomplete')
-    );
+    $controller = static::create($container);
+    $controller->matcher = $container->get('select2.autocomplete_matcher');
+    $controller->keyValue = $container->get('keyvalue')->get('entity_autocomplete');
+    return $controller;
   }
 
   /**

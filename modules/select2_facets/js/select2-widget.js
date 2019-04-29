@@ -25,7 +25,7 @@
         $select2_widget.on('facets_filtering.select2', function () {
           $select2_widget.prop('disabled', true);
         });
-      })
+      });
   };
 
   /**

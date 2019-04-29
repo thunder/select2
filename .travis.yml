@@ -1,5 +1,8 @@
 language: php
-sudo: required
+dist: xenial
+
+services:
+  - mysql
 
 cache:
   apt: true
@@ -10,26 +13,33 @@ cache:
 
 php:
   - 7.2
-  - 5.6
 
 branches:
   only:
     - /^8\.([0-9]+|x)\-[0-9]+\.([0-9]+|x)$/
 
 env:
+  matrix:
+    - DRUPAL_TRAVIS_DRUPAL_VERSION=~8.6.0
+    - DRUPAL_TRAVIS_DRUPAL_VERSION=~8.7.0
+    - DRUPAL_TRAVIS_DRUPAL_VERSION=~8.7.0 DRUPAL_TRAVIS_TEST_DEPRECATION=false
   global:
     - PATH="$PATH:$HOME/.composer/vendor/bin"
+
+matrix:
+  allow_failures:
+    - env: DRUPAL_TRAVIS_DRUPAL_VERSION=~8.7.0
+
 
 before_install:
   - composer global require thunder/travis
 
 install:
-  - test-drupal-module prepare_build
-  # Memory limit is only necessary for PHP 5.6
-  - COMPOSER_MEMORY_LIMIT=-1 composer require npm-asset/select2:~4.0 --working-dir=/tmp/test/select2/install
+  - test-drupal-project prepare_build
+  - composer require npm-asset/select2:~4.0 --working-dir=/tmp/test/select2/install
 
 script:
-  - test-drupal-module run_tests
+  - test-drupal-project
 
 notifications:
   email: false

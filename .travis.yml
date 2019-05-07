@@ -36,7 +36,7 @@ before_install:
 
 install:
   - test-drupal-project prepare_build
-  - composer require npm-asset/select2:~4.0 --working-dir=/tmp/test/select2/install
+  - composer require npm-asset/select2:4.0.4 --working-dir=/tmp/test/select2/install
 
 script:
   - test-drupal-project

@@ -185,7 +185,7 @@ class Select2Widget extends WidgetPluginBase implements ContainerFactoryPluginIn
    */
   public function processFacetAutocomplete(array &$element) {
     $selection_settings = [
-      'request' => serialize($this->request),
+      'path' => $this->request->getUri(),
       'match_operator' => $this->getConfiguration()['match_operator'],
       'show_numbers' => $this->getConfiguration()['show_numbers'],
     ];

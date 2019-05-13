@@ -8,6 +8,7 @@ use Drupal\Core\Site\Settings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
@@ -41,9 +42,29 @@ class FacetApiAutocompleteController extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     $controller = parent::create($container);
-    $controller->facetManager = $container->get('facets.manager');
-    $controller->requestStack = $container->get('request_stack');
+    $controller->setFacetManager($container->get('facets.manager'));
+    $controller->setRequestStack($container->get('request_stack'));
     return $controller;
+  }
+
+  /**
+   * Set the facet manager service.
+   *
+   * @param \Drupal\facets\FacetManager\DefaultFacetManager $facetManager
+   *   The facet manager.
+   */
+  public function setFacetManager(DefaultFacetManager $facetManager): void {
+    $this->facetManager = $facetManager;
+  }
+
+  /**
+   * Set the request stack.
+   *
+   * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
+   *   The request stack object.
+   */
+  public function setRequestStack(RequestStack $requestStack): void {
+    $this->requestStack = $requestStack;
   }
 
   /**
@@ -90,7 +111,7 @@ class FacetApiAutocompleteController extends ControllerBase {
         // key/value store.
         throw new AccessDeniedHttpException();
       }
-      $this->setRequestStack(unserialize($selection_settings['request']));
+      $this->overwriteRequestStack(unserialize($selection_settings['request']));
 
       $facets = $this->facetManager->getFacetsByFacetSourceId($facetsource_id);
       foreach ($facets as $facet) {
@@ -120,7 +141,7 @@ class FacetApiAutocompleteController extends ControllerBase {
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The one and only request.
    */
-  protected function setRequestStack(Request $request) {
+  protected function overwriteRequestStack(Request $request) {
     while ($this->requestStack->getCurrentRequest()) {
       $this->storedRequests[] = $this->requestStack->pop();
     }

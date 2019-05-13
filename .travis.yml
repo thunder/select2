@@ -19,16 +19,16 @@ branches:
     - /^8\.([0-9]+|x)\-[0-9]+\.([0-9]+|x)$/
 
 env:
-  matrix:
-    - DRUPAL_TRAVIS_DRUPAL_VERSION=~8.6.0
-    - DRUPAL_TRAVIS_DRUPAL_VERSION=~8.7.0
-    - DRUPAL_TRAVIS_DRUPAL_VERSION=~8.7.0 DRUPAL_TRAVIS_TEST_DEPRECATION=false
   global:
     - PATH="$PATH:$HOME/.composer/vendor/bin"
 
 matrix:
   allow_failures:
     - env: DRUPAL_TRAVIS_DRUPAL_VERSION=~8.7.0
+  include:
+    - env: DRUPAL_TRAVIS_DRUPAL_VERSION=~8.6.0
+    - env: DRUPAL_TRAVIS_DRUPAL_VERSION=~8.7.0
+    - env: DRUPAL_TRAVIS_DRUPAL_VERSION=~8.7.0 DRUPAL_TRAVIS_TEST_DEPRECATION=false
 
 
 before_install:

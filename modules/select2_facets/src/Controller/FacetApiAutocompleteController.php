@@ -54,7 +54,7 @@ class FacetApiAutocompleteController extends ControllerBase {
    * @param \Drupal\facets\FacetManager\DefaultFacetManager $facetManager
    *   The facet manager.
    */
-  public function setFacetManager(DefaultFacetManager $facetManager) {
+  protected function setFacetManager(DefaultFacetManager $facetManager) {
     $this->facetManager = $facetManager;
   }
 
@@ -64,7 +64,7 @@ class FacetApiAutocompleteController extends ControllerBase {
    * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
    *   The request stack object.
    */
-  public function setRequestStack(RequestStack $requestStack) {
+  protected function setRequestStack(RequestStack $requestStack) {
     $this->requestStack = $requestStack;
   }
 

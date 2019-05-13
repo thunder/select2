@@ -38,7 +38,7 @@ class EntityAutocompleteController extends ControllerBase {
    * @param \Drupal\select2\EntityAutocompleteMatcher $matcher
    *   The autocomplete matcher for entity references.
    */
-  public function setMatcher(EntityAutocompleteMatcher $matcher) {
+  protected function setMatcher(EntityAutocompleteMatcher $matcher) {
     $this->matcher = $matcher;
   }
 

@@ -5,6 +5,7 @@ namespace Drupal\select2\Controller;
 use Drupal\Component\Utility\Crypt;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Site\Settings;
+use Drupal\select2\EntityAutocompleteMatcher;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,7 +19,7 @@ class EntityAutocompleteController extends ControllerBase {
   /**
    * The autocomplete matcher for entity references.
    *
-   * @var \Drupal\Core\Entity\EntityAutocompleteMatcher
+   * @var \Drupal\select2\EntityAutocompleteMatcher
    */
   protected $matcher;
 
@@ -27,8 +28,18 @@ class EntityAutocompleteController extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     $controller = parent::create($container);
-    $controller->matcher = $container->get('select2.autocomplete_matcher');
+    $controller->setMatcher($container->get('select2.autocomplete_matcher'));
     return $controller;
+  }
+
+  /**
+   * Set the entity autocomplete matcher.
+   *
+   * @param \Drupal\select2\EntityAutocompleteMatcher $matcher
+   *   The autocomplete matcher for entity references.
+   */
+  public function setMatcher(EntityAutocompleteMatcher $matcher) {
+    $this->matcher = $matcher;
   }
 
   /**

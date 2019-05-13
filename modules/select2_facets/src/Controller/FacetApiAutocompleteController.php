@@ -102,7 +102,7 @@ class FacetApiAutocompleteController extends ControllerBase {
    * @param \Drupal\Core\Path\CurrentPathStack $currentPathStack
    *   Current path stack object.
    */
-  public function setCurrentPathStack(CurrentPathStack $currentPathStack) {
+  protected function setCurrentPathStack(CurrentPathStack $currentPathStack) {
     $this->currentPathStack = $currentPathStack;
   }
 
@@ -112,7 +112,7 @@ class FacetApiAutocompleteController extends ControllerBase {
    * @param \Drupal\Core\Routing\AccessAwareRouterInterface $router
    *   The router object.
    */
-  public function setRouter(AccessAwareRouterInterface $router) {
+  protected function setRouter(AccessAwareRouterInterface $router) {
     $this->router = $router;
   }
 
@@ -122,7 +122,7 @@ class FacetApiAutocompleteController extends ControllerBase {
    * @param \Drupal\Core\PathProcessor\InboundPathProcessorInterface $pathProcessor
    *   The path processor service object.
    */
-  public function setPathProcessor(InboundPathProcessorInterface $pathProcessor) {
+  protected function setPathProcessor(InboundPathProcessorInterface $pathProcessor) {
     $this->pathProcessor = $pathProcessor;
   }
 

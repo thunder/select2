@@ -6,7 +6,6 @@ use Drupal\Component\Utility\Crypt;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Site\Settings;
 use Drupal\select2\EntityAutocompleteMatcher;
-use Drupal\Core\KeyValueStore\KeyValueStoreInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,38 +19,27 @@ class EntityAutocompleteController extends ControllerBase {
   /**
    * The autocomplete matcher for entity references.
    *
-   * @var \Drupal\Core\Entity\EntityAutocompleteMatcher
+   * @var \Drupal\select2\EntityAutocompleteMatcher
    */
   protected $matcher;
-
-  /**
-   * The key value store.
-   *
-   * @var \Drupal\Core\KeyValueStore\KeyValueStoreInterface
-   */
-  protected $keyValue;
-
-  /**
-   * Constructs a EntityAutocompleteController object.
-   *
-   * @param \Drupal\select2\EntityAutocompleteMatcher $matcher
-   *   The autocomplete matcher for entity references.
-   * @param \Drupal\Core\KeyValueStore\KeyValueStoreInterface $key_value
-   *   The key value factory.
-   */
-  public function __construct(EntityAutocompleteMatcher $matcher, KeyValueStoreInterface $key_value) {
-    $this->matcher = $matcher;
-    $this->keyValue = $key_value;
-  }
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('select2.autocomplete_matcher'),
-      $container->get('keyvalue')->get('entity_autocomplete')
-    );
+    $controller = parent::create($container);
+    $controller->setMatcher($container->get('select2.autocomplete_matcher'));
+    return $controller;
+  }
+
+  /**
+   * Set the entity autocomplete matcher.
+   *
+   * @param \Drupal\select2\EntityAutocompleteMatcher $matcher
+   *   The autocomplete matcher for entity references.
+   */
+  protected function setMatcher(EntityAutocompleteMatcher $matcher) {
+    $this->matcher = $matcher;
   }
 
   /**
@@ -80,7 +68,7 @@ class EntityAutocompleteController extends ControllerBase {
     if ($input = $request->query->get('q')) {
       // Selection settings are passed in as a hashed key of a serialized array
       // stored in the key/value store.
-      $selection_settings = $this->keyValue->get($selection_settings_key, FALSE);
+      $selection_settings = $this->keyValue('entity_autocomplete')->get($selection_settings_key, FALSE);
       if ($selection_settings !== FALSE) {
         $selection_settings_hash = Crypt::hmacBase64(serialize($selection_settings) . $target_type . $selection_handler, Settings::getHashSalt());
         if ($selection_settings_hash !== $selection_settings_key) {

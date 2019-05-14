@@ -4,9 +4,11 @@ namespace Drupal\select2_facets\Controller;
 
 use Drupal\Component\Utility\Crypt;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Path\CurrentPathStack;
+use Drupal\Core\PathProcessor\InboundPathProcessorInterface;
+use Drupal\Core\Routing\AccessAwareRouterInterface;
 use Drupal\Core\Site\Settings;
 use Drupal\facets\FacetManager\DefaultFacetManager;
-use Drupal\Core\KeyValueStore\KeyValueStoreInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,13 +19,6 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  * Defines a route controller for facets autocomplete form elements.
  */
 class FacetApiAutocompleteController extends ControllerBase {
-
-  /**
-   * The key value store.
-   *
-   * @var \Drupal\Core\KeyValueStore\KeyValueStoreInterface
-   */
-  protected $keyValue;
 
   /**
    * The facet manager service.
@@ -40,6 +35,27 @@ class FacetApiAutocompleteController extends ControllerBase {
   protected $requestStack;
 
   /**
+   * The current path stack.
+   *
+   * @var \Drupal\Core\Path\CurrentPathStack
+   */
+  protected $currentPathStack;
+
+  /**
+   * The current router.
+   *
+   * @var \Drupal\Core\Routing\AccessAwareRouterInterface
+   */
+  protected $router;
+
+  /**
+   * The processor manager.
+   *
+   * @var \Drupal\Core\PathProcessor\InboundPathProcessorInterface
+   */
+  protected $pathProcessor;
+
+  /**
    * Array of request.
    *
    * @var array
@@ -47,30 +63,67 @@ class FacetApiAutocompleteController extends ControllerBase {
   protected $storedRequests = [];
 
   /**
-   * Constructs a FacetApiAutocompleteController object.
-   *
-   * @param \Drupal\Core\KeyValueStore\KeyValueStoreInterface $key_value
-   *   The key value factory.
-   * @param \Drupal\facets\FacetManager\DefaultFacetManager $facetManager
-   *   The facet manager service.
-   * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
-   *   The request stack.
+   * {@inheritdoc}
    */
-  public function __construct(KeyValueStoreInterface $key_value, DefaultFacetManager $facetManager, RequestStack $requestStack) {
-    $this->keyValue = $key_value;
+  public static function create(ContainerInterface $container) {
+    $controller = parent::create($container);
+    $controller->setFacetManager($container->get('facets.manager'));
+    $controller->setRequestStack($container->get('request_stack'));
+    $controller->setCurrentPathStack($container->get('path.current'));
+    $controller->setRouter($container->get('router'));
+    $controller->setPathProcessor($container->get('path_processor_manager'));
+
+    return $controller;
+  }
+
+  /**
+   * Set the facet manager service.
+   *
+   * @param \Drupal\facets\FacetManager\DefaultFacetManager $facetManager
+   *   The facet manager.
+   */
+  protected function setFacetManager(DefaultFacetManager $facetManager) {
     $this->facetManager = $facetManager;
+  }
+
+  /**
+   * Set the request stack.
+   *
+   * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
+   *   The request stack object.
+   */
+  protected function setRequestStack(RequestStack $requestStack) {
     $this->requestStack = $requestStack;
   }
 
   /**
-   * {@inheritdoc}
+   * Set the current path stack.
+   *
+   * @param \Drupal\Core\Path\CurrentPathStack $currentPathStack
+   *   Current path stack object.
    */
-  public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('keyvalue')->get('entity_autocomplete'),
-      $container->get('facets.manager'),
-      $container->get('request_stack')
-    );
+  protected function setCurrentPathStack(CurrentPathStack $currentPathStack) {
+    $this->currentPathStack = $currentPathStack;
+  }
+
+  /**
+   * Set the router.
+   *
+   * @param \Drupal\Core\Routing\AccessAwareRouterInterface $router
+   *   The router object.
+   */
+  protected function setRouter(AccessAwareRouterInterface $router) {
+    $this->router = $router;
+  }
+
+  /**
+   * Set the path processor service.
+   *
+   * @param \Drupal\Core\PathProcessor\InboundPathProcessorInterface $pathProcessor
+   *   The path processor service object.
+   */
+  protected function setPathProcessor(InboundPathProcessorInterface $pathProcessor) {
+    $this->pathProcessor = $pathProcessor;
   }
 
   /**
@@ -103,7 +156,7 @@ class FacetApiAutocompleteController extends ControllerBase {
 
       // Selection settings are passed in as a hashed key of a serialized array
       // stored in the key/value store.
-      $selection_settings = $this->keyValue->get($selection_settings_key, FALSE);
+      $selection_settings = $this->keyValue('entity_autocomplete')->get($selection_settings_key, FALSE);
       if ($selection_settings !== FALSE) {
         $selection_settings_hash = Crypt::hmacBase64(serialize($selection_settings) . $facetsource_id . $facet_id, Settings::getHashSalt());
         if ($selection_settings_hash !== $selection_settings_key) {
@@ -117,7 +170,9 @@ class FacetApiAutocompleteController extends ControllerBase {
         // key/value store.
         throw new AccessDeniedHttpException();
       }
-      $this->setRequestStack(unserialize($selection_settings['request']));
+      $new_request = $this->createRequestFromPath($selection_settings['path']);
+      $request->attributes->add($this->router->matchRequest($new_request));
+      $this->overwriteRequestStack($new_request);
 
       $facets = $this->facetManager->getFacetsByFacetSourceId($facetsource_id);
       foreach ($facets as $facet) {
@@ -142,12 +197,29 @@ class FacetApiAutocompleteController extends ControllerBase {
   }
 
   /**
+   * Creates a new request object from a path.
+   *
+   * @param string $path
+   *   A path with facet arguments.
+   *
+   * @return \Symfony\Component\HttpFoundation\Request
+   *   A new request object.
+   */
+  protected function createRequestFromPath($path) {
+    $new_request = Request::create($path);
+    $processed = $this->pathProcessor->processInbound($path, $new_request);
+    $this->currentPathStack->setPath($processed);
+
+    return $new_request;
+  }
+
+  /**
    * Resets the request stack and adds one request.
    *
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The one and only request.
    */
-  protected function setRequestStack(Request $request) {
+  protected function overwriteRequestStack(Request $request) {
     while ($this->requestStack->getCurrentRequest()) {
       $this->storedRequests[] = $this->requestStack->pop();
     }

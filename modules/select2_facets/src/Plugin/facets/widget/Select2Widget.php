@@ -132,7 +132,7 @@ class Select2Widget extends WidgetPluginBase implements ContainerFactoryPluginIn
     $form = parent::buildConfigurationForm($form, $form_state, $facet);
     $form['width'] = [
       '#type' => 'textfield',
-      '#title' => t('Field width'),
+      '#title' => $this->t('Field width'),
       '#default_value' => $this->getConfiguration()['width'],
       '#description' => $this->t("Define a width for the select2 field. It can be either 'element', 'style', 'resolve' or any possible CSS unit. E.g. 500px, 50%, 200em. See the <a href='https://select2.org/appearance#container-width'>select2 documentation</a> for further explanations."),
       '#required' => TRUE,
@@ -141,16 +141,16 @@ class Select2Widget extends WidgetPluginBase implements ContainerFactoryPluginIn
     ];
     $form['autocomplete'] = [
       '#type' => 'checkbox',
-      '#title' => t('Autocomplete'),
+      '#title' => $this->t('Autocomplete'),
       '#default_value' => $this->getConfiguration()['autocomplete'],
-      '#description' => t('Options will be lazy loaded. This is recommended for lists with a lot of values.'),
+      '#description' => $this->t('Options will be lazy loaded. This is recommended for lists with a lot of values.'),
     ];
     $form['match_operator'] = [
       '#type' => 'radios',
-      '#title' => t('Autocomplete matching'),
+      '#title' => $this->t('Autocomplete matching'),
       '#default_value' => $this->getConfiguration()['match_operator'],
       '#options' => $this->getMatchOperatorOptions(),
-      '#description' => t('Select the method used to collect autocomplete suggestions. Note that <em>Contains</em> can cause performance issues on sites with thousands of entities.'),
+      '#description' => $this->t('Select the method used to collect autocomplete suggestions. Note that <em>Contains</em> can cause performance issues on sites with thousands of entities.'),
       '#states' => [
         'visible' => [
           ':input[name$="widget_config[autocomplete]"]' => ['checked' => TRUE],
@@ -169,8 +169,8 @@ class Select2Widget extends WidgetPluginBase implements ContainerFactoryPluginIn
    */
   protected function getMatchOperatorOptions() {
     return [
-      'STARTS_WITH' => t('Starts with'),
-      'CONTAINS' => t('Contains'),
+      'STARTS_WITH' => $this->t('Starts with'),
+      'CONTAINS' => $this->t('Contains'),
     ];
   }
 

@@ -37,7 +37,7 @@ class Select2Widget extends OptionsSelectWidget {
   public function settingsForm(array $form, FormStateInterface $form_state) {
     $element['width'] = [
       '#type' => 'textfield',
-      '#title' => t('Field width'),
+      '#title' => $this->t('Field width'),
       '#default_value' => $this->getSetting('width'),
       '#description' => $this->t("Define a width for the select2 field. It can be either 'element', 'style', 'resolve' or any possible CSS value. E.g. 500px, 50%, 200em. See the <a href='https://select2.org/appearance#container-width'>select2 documentation</a> for further explanations."),
       '#required' => TRUE,
@@ -52,7 +52,7 @@ class Select2Widget extends OptionsSelectWidget {
    */
   public function settingsSummary() {
     $summary = [];
-    $summary[] = t('Field width: @width', ['@width' => $this->getSetting('width')]);
+    $summary[] = $this->t('Field width: @width', ['@width' => $this->getSetting('width')]);
     return $summary;
   }
 

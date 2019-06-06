@@ -21,6 +21,7 @@ branches:
 env:
   global:
     - PATH="$PATH:$HOME/.composer/vendor/bin"
+    - DRUPAL_TRAVIS_SELENIUM_CHROME_VERSION="3.141.59-oxygen"
 
 matrix:
   allow_failures:

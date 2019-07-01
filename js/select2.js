@@ -29,13 +29,13 @@
         config = $(this).data('select2-config');
 
         // If config has a dropdownParent property, wrap it a jQuery object.
-        if (config.hasOwnProperty('dropdownParent')) {
+        if (Object.prototype.hasOwnProperty.call(config, 'dropdownParent')) {
           config.dropdownParent = $(config.dropdownParent);
         }
         $(this).select2(config);
 
         // Copied from https://github.com/woocommerce/woocommerce/blob/master/assets/js/admin/wc-enhanced-select.js#L118
-        if (config.hasOwnProperty('ajax')) {
+        if (Object.prototype.hasOwnProperty.call(config, 'ajax')) {
           var $select = $(this);
           var $list = $(this).next('.select2-container').find('ul.select2-selection__rendered');
           $list.sortable({

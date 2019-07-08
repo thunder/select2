@@ -36,6 +36,18 @@ abstract class Select2JavascriptTestBase extends WebDriverTestBase {
   }
 
   /**
+   * {@inheritdoc}
+   *
+   * @todo: Can be removed with 8.6 support.
+   */
+  protected function initFrontPage() {
+    parent::initFrontPage();
+    // Set a standard window size so that all javascript tests start with the
+    // same viewport.
+    $this->getSession()->resizeWindow(1024, 768);
+  }
+
+  /**
    * Creates a new file field.
    *
    * @param string $name

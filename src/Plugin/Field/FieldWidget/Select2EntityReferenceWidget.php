@@ -8,7 +8,6 @@ use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Form\OptGroup;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\select2\Select2Trait;
 use Drupal\user\EntityOwnerInterface;
@@ -199,7 +198,7 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
     /** @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface $handler */
     $handler = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($handler_settings);
 
-    $options = OptGroup::flattenOptions($element['#options']);
+    $options = static::getValidReferenceableEntities(array_keys($element['#options']), $handler_settings);
     $items = [];
     foreach ($values as $value) {
       if (isset($options[$value])) {

@@ -170,8 +170,19 @@ class Select2 extends Select {
       'target_type' => $element['#target_type'],
       'handler' => $element['#selection_handler'],
     ];
-    $value = is_array($element['#value']) ? $element['#value'] : [$element['#value']];
-    return static::getValidReferenceableEntities($value, $handler_settings);
+    $values = is_array($element['#value']) ? $element['#value'] : [$element['#value']];
+    $options = static::getValidReferenceableEntities($values, $handler_settings);
+    // Add back auto_create values.
+    if ($element['#autocreate'] && $element['#target_type']) {
+      foreach ($values as $key => $value) {
+        if (is_string($key) && substr($key, 0, 4) === "\$ID:") {
+          // Set option and remove ID from label.
+          $options[$key] = substr($value, 0, 4) === "\$ID:" ? substr($value, 4) : $value;
+        }
+      }
+    }
+
+    return $options;
   }
 
   /**

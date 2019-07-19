@@ -10,14 +10,18 @@ use Drupal\entity_test\Entity\EntityTestMulRevPub;
 class Select2ValidOptionsTest extends Select2KernelTestBase {
 
   /**
-   * Tests that available options are set accorging to values..
+   * Tests that available options are set according to values..
    */
   public function testAvailableOptions() {
     $entity = EntityTest::create();
-    $ref1 = EntityTestMulRevPub::create(['name' => 'Drupal']);
+    $ref1 = EntityTestMulRevPub::create(['name' => 'Drupal Temp']);
     $ref2 = EntityTestMulRevPub::create(['name' => 'Test']);
     $ref1->save();
     $ref2->save();
+
+    // Create a new revision to trigger problem.
+    $ref1->setName('Drupal')->setNewRevision();
+    $ref1->save();
 
     $entity->{$this->fieldName}->setValue([['target_id' => $ref1->id()], ['target_id' => $ref2->id()]]);
     $entity->save();

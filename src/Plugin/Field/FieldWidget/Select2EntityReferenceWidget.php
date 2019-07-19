@@ -92,11 +92,13 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
    * {@inheritdoc}
    */
   protected function getOptions(FieldableEntityInterface $entity) {
-    if (!isset($this->options) && $this->getSetting('autocomplete')) {
+    if (!isset($this->options) && ($this->getSetting('autocomplete') || $this->getSelectionHandlerSetting('auto_create'))) {
       // Get all currently selected options.
       $selected_options = [];
       foreach ($entity->get($this->fieldDefinition->getName()) as $item) {
-        $selected_options[] = $item->{$this->column};
+        if ($item->{$this->column} !== NULL) {
+          $selected_options[] = $item->{$this->column};
+        }
       }
 
       if (!$selected_options) {

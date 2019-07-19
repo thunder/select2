@@ -24,9 +24,8 @@ trait Select2Trait {
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   protected static function getValidReferenceableEntities(array $ids, array $handler_settings) {
-    $options = [];
-    $valid_ids = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($handler_settings)->validateReferenceableEntities($ids);
-    $entities = \Drupal::entityTypeManager()->getStorage($handler_settings['target_type'])->loadMultiple($valid_ids);
+    $options = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($handler_settings)->validateReferenceableEntities($ids);
+    $entities = \Drupal::entityTypeManager()->getStorage($handler_settings['target_type'])->loadMultiple($options);
     foreach ($entities as $entity_id => $entity) {
       $options[$entity_id] = Html::decodeEntities(\Drupal::service('entity.repository')->getTranslationFromContext($entity)->label());
     }

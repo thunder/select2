@@ -138,6 +138,7 @@ class Select2 extends Select {
     // entity reference field.
     if ($element['#autocreate'] && $element['#target_type']) {
       unset($element['#needs_validation']);
+      $element['#options'] = static::getValidSelectedOptions($element, $form_state);
     }
 
     if (!$element['#multiple'] && !isset($element['#options'][''])) {

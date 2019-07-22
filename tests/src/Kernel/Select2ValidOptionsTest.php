@@ -5,8 +5,9 @@ namespace Drupal\Tests\select2\Kernel;
 use Drupal\entity_test\Entity\EntityTest;
 use Drupal\entity_test\Entity\EntityTestMulRevPub;
 
-
-
+/**
+ * Class Select2ValidOptionsTest.
+ */
 class Select2ValidOptionsTest extends Select2KernelTestBase {
 
   /**

@@ -66,13 +66,27 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
     if ($autocreate) {
       $this->drupalGet($node->toUrl('edit-form'));
       $this->click('.form-item-select2 .select2-selection.select2-selection--single');
-      $page->find('css', '.select2-search__field')->setValue('New value');
+      $page->find('css', '.select2-search__field')->setValue('Preview value');
       $page->find('css', '.select2-results__option--highlighted')->click();
+
+      $page->pressButton('Preview');
+      $page->clickLink('Back to content editing');
       $page->pressButton('Save');
 
       $node = $this->getNodeByTitle('Test node', TRUE);
       $this->assertArraySubset([['target_id' => 5]], $node->select2->getValue());
       $this->assertNotEmpty(EntityTestMulRevPub::load(5));
+
+      $this->drupalGet($node->toUrl('edit-form'));
+      $this->click('.form-item-select2 .select2-selection.select2-selection--single');
+      $page->find('css', '.select2-search__field')->setValue('New value');
+      $page->find('css', '.select2-results__option--highlighted')->click();
+
+      $page->pressButton('Save');
+
+      $node = $this->getNodeByTitle('Test node', TRUE);
+      $this->assertArraySubset([['target_id' => 6]], $node->select2->getValue());
+      $this->assertNotEmpty(EntityTestMulRevPub::load(6));
     }
   }
 

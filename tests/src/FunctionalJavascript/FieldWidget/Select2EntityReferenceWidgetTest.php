@@ -67,6 +67,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
       $this->drupalGet($node->toUrl('edit-form'));
       $this->click('.form-item-select2 .select2-selection.select2-selection--single');
       $page->find('css', '.select2-search__field')->setValue('Preview value');
+      $assert_session->waitForElement('css', '.select2-results__option--highlighted');
       $page->find('css', '.select2-results__option--highlighted')->click();
 
       $page->pressButton('Preview');
@@ -80,6 +81,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
       $this->drupalGet($node->toUrl('edit-form'));
       $this->click('.form-item-select2 .select2-selection.select2-selection--single');
       $page->find('css', '.select2-search__field')->setValue('New value');
+      $assert_session->waitForElement('css', '.select2-results__option--highlighted');
       $page->find('css', '.select2-results__option--highlighted')->click();
 
       $page->pressButton('Save');

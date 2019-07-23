@@ -26,54 +26,20 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
   protected static $modules = ['entity_test'];
 
   /**
-   * Test autocomplete in a single value field.
-   */
-  public function testSingleAutocomplete() {
-    $this->createField('select2', 'node', 'test', 'entity_reference', [
-      'target_type' => 'entity_test_mulrevpub',
-    ], [
-      'handler' => 'default:entity_test_mulrevpub',
-      'handler_settings' => [
-        'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
-        'auto_create' => FALSE,
-      ],
-    ], 'select2_entity_reference', ['autocomplete' => TRUE]);
-
-    EntityTestMulRevPub::create(['name' => 'foo'])->save();
-    EntityTestMulRevPub::create(['name' => 'bar'])->save();
-    EntityTestMulRevPub::create(['name' => 'gaga'])->save();
-
-    $page = $this->getSession()->getPage();
-    $assert_session = $this->assertSession();
-
-    $this->drupalGet('/node/add/test');
-    $page->fillField('title[0][value]', 'Test node');
-    $this->click('.form-item-select2 .select2-selection.select2-selection--single');
-
-    $page->find('css', '.select2-search__field')->setValue('fo');
-    $assert_session->waitForElement('xpath', '//li[@class="select2-results__option select2-results__option--highlighted" and text()="foo"]');
-    $page->find('xpath', '//li[@class="select2-results__option select2-results__option--highlighted" and text()="foo"]')->click();
-    $page->pressButton('Save');
-
-    $node = $this->getNodeByTitle('Test node', TRUE);
-    $this->assertArraySubset([['target_id' => 1]], $node->select2->getValue());
-  }
-
-  /**
-   * Test autocomplete in a single value field.
+   * Test a single value widget.
    *
-   * @dataProvider providerTestSingleAutocompleteStartWithMatch
+   * @dataProvider providerTestSingleValueWidget
    */
-  public function testSingleAutocompleteStartWithMatch($match_operator, $count) {
+  public function testSingleValueWidget($autocomplete, $match_operator, $count, $autocreate) {
     $this->createField('select2', 'node', 'test', 'entity_reference', [
       'target_type' => 'entity_test_mulrevpub',
     ], [
       'handler' => 'default:entity_test_mulrevpub',
       'handler_settings' => [
         'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
-        'auto_create' => FALSE,
+        'auto_create' => $autocreate,
       ],
-    ], 'select2_entity_reference', ['autocomplete' => TRUE, 'match_operator' => $match_operator]);
+    ], 'select2_entity_reference', ['autocomplete' => $autocomplete, 'match_operator' => $match_operator]);
 
     EntityTestMulRevPub::create(['name' => 'foo'])->save();
     EntityTestMulRevPub::create(['name' => 'bar'])->save();
@@ -88,28 +54,50 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
     $this->click('.form-item-select2 .select2-selection.select2-selection--single');
 
     $page->find('css', '.select2-search__field')->setValue('fo');
-    $assert_session->waitForElement('xpath', '//li[@class="select2-results__option select2-results__option--highlighted" and text()="foo"]');
-
+    $assert_session->waitForElement('xpath', '//li[contains(@class, "select2-results__option") and text()="foo"]');
     $assert_session->elementsCount('xpath', '//li[contains(@class, "select2-results__option")]', $count);
+
+    $page->find('xpath', '//li[contains(@class, "select2-results__option") and text()="foo"]')->click();
+    $page->pressButton('Save');
+
+    $node = $this->getNodeByTitle('Test node', TRUE);
+    $this->assertArraySubset([['target_id' => 1]], $node->select2->getValue());
+
+    if ($autocreate) {
+      $this->drupalGet($node->toUrl('edit-form'));
+      $this->click('.form-item-select2 .select2-selection.select2-selection--single');
+      $page->find('css', '.select2-search__field')->setValue('New value');
+      $page->find('css', '.select2-results__option--highlighted')->click();
+      $page->pressButton('Save');
+
+      $node = $this->getNodeByTitle('Test node', TRUE);
+      $this->assertArraySubset([['target_id' => 5]], $node->select2->getValue());
+      $this->assertNotEmpty(EntityTestMulRevPub::load(5));
+    }
   }
 
   /**
-   * Data provider for testSingleAutocompleteStartWithMatch().
+   * Data provider for testSingleValueWidget().
    *
    * @return array
    *   The data.
    */
-  public function providerTestSingleAutocompleteStartWithMatch() {
+  public function providerTestSingleValueWidget() {
     return [
-      ['STARTS_WITH', 1],
-      ['CONTAINS', 2],
+      [TRUE, 'STARTS_WITH', 2, TRUE],
+      [FALSE, NULL, 3, TRUE],
+      [FALSE, NULL, 2, FALSE],
+      [TRUE, 'STARTS_WITH', 1, FALSE],
+      [TRUE, 'CONTAINS', 2, FALSE],
     ];
   }
 
   /**
    * Test autocomplete in a multiple value field.
+   *
+   * @dataProvider providerTestMultiValueWidget
    */
-  public function testMultipleAutocomplete() {
+  public function testMultipleValueWidget($autocomplete, $autocreate) {
     $this->createField('select2', 'node', 'test', 'entity_reference', [
       'target_type' => 'entity_test_mulrevpub',
       'cardinality' => -1,
@@ -117,9 +105,9 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
       'handler' => 'default:entity_test_mulrevpub',
       'handler_settings' => [
         'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
-        'auto_create' => FALSE,
+        'auto_create' => $autocreate,
       ],
-    ], 'select2_entity_reference', ['autocomplete' => TRUE]);
+    ], 'select2_entity_reference', ['autocomplete' => $autocomplete]);
 
     EntityTestMulRevPub::create(['name' => 'foo'])->save();
     EntityTestMulRevPub::create(['name' => 'bar'])->save();
@@ -133,13 +121,13 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
 
     $this->click('.form-item-select2 .select2-selection.select2-selection--multiple');
     $page->find('css', '.select2-search__field')->setValue('fo');
-    $assert_session->waitForElement('xpath', '//li[@class="select2-results__option select2-results__option--highlighted" and text()="foo"]');
-    $page->find('xpath', '//li[@class="select2-results__option select2-results__option--highlighted" and text()="foo"]')->click();
+    $assert_session->waitForElement('xpath', '//li[contains(@class, "select2-results__option") and text()="foo"]');
+    $page->find('xpath', '//li[contains(@class, "select2-results__option") and text()="foo"]')->click();
 
     $this->click('.form-item-select2 .select2-selection.select2-selection--multiple');
     $page->find('css', '.select2-search__field')->setValue('ga');
-    $assert_session->waitForElement('xpath', '//li[@class="select2-results__option select2-results__option--highlighted" and text()="gaga"]');
-    $page->find('xpath', '//li[@class="select2-results__option select2-results__option--highlighted" and text()="gaga"]')->click();
+    $assert_session->waitForElement('xpath', '//li[contains(@class, "select2-results__option") and text()="gaga"]');
+    $page->find('xpath', '//li[contains(@class, "select2-results__option") and text()="gaga"]')->click();
 
     $page->pressButton('Save');
 
@@ -148,33 +136,18 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
   }
 
   /**
-   * Test autocreation for a single value field.
+   * Data provider for testMultipleValueWidget().
+   *
+   * @return array
+   *   The data.
    */
-  public function testSingleAutocreation() {
-    $this->createField('select2', 'node', 'test', 'entity_reference', [
-      'target_type' => 'entity_test_mulrevpub',
-      'cardinality' => 1,
-    ], [
-      'handler' => 'default:entity_test_mulrevpub',
-      'handler_settings' => [
-        'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
-        'auto_create' => TRUE,
-      ],
-    ], 'select2_entity_reference');
-
-    $page = $this->getSession()->getPage();
-
-    $this->drupalGet('/node/add/test');
-    $page->fillField('title[0][value]', 'Test node');
-
-    $this->click('.form-item-select2 .select2-selection.select2-selection--single');
-    $page->find('css', '.select2-search__field')->setValue('New value');
-    $page->find('css', '.select2-results__option--highlighted')->click();
-    $page->pressButton('Save');
-
-    $node = $this->getNodeByTitle('Test node', TRUE);
-    $this->assertArraySubset([['target_id' => 1]], $node->select2->getValue());
-    $this->assertNotEmpty(EntityTestMulRevPub::load(1));
+  public function providerTestMultiValueWidget() {
+    return [
+      [TRUE, TRUE],
+      [TRUE, FALSE],
+      [FALSE, TRUE],
+      [FALSE, FALSE],
+    ];
   }
 
   /**

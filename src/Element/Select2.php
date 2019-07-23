@@ -146,6 +146,9 @@ class Select2 extends Select {
           // Set option and remove ID from label.
           $element['#options'][$key] = substr($value, 0, 4) === "\$ID:" ? substr($value, 4) : $value;
         }
+        elseif (!$element['#multiple'] && substr($value, 0, 4) === "\$ID:") {
+          $element['#options'][$value] = substr($value, 4);
+        }
       }
     }
 

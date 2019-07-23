@@ -94,8 +94,10 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
 
   /**
    * Test autocomplete in a multiple value field.
+   *
+   * @dataProvider providerTestMultiValueWidget
    */
-  public function testMultipleAutocomplete() {
+  public function testMultipleValueWidget($autocomplete, $autocreate) {
     $this->createField('select2', 'node', 'test', 'entity_reference', [
       'target_type' => 'entity_test_mulrevpub',
       'cardinality' => -1,
@@ -103,9 +105,9 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
       'handler' => 'default:entity_test_mulrevpub',
       'handler_settings' => [
         'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
-        'auto_create' => FALSE,
+        'auto_create' => $autocreate,
       ],
-    ], 'select2_entity_reference', ['autocomplete' => TRUE]);
+    ], 'select2_entity_reference', ['autocomplete' => $autocomplete]);
 
     EntityTestMulRevPub::create(['name' => 'foo'])->save();
     EntityTestMulRevPub::create(['name' => 'bar'])->save();
@@ -119,18 +121,33 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
 
     $this->click('.form-item-select2 .select2-selection.select2-selection--multiple');
     $page->find('css', '.select2-search__field')->setValue('fo');
-    $assert_session->waitForElement('xpath', '//li[@class="select2-results__option select2-results__option--highlighted" and text()="foo"]');
-    $page->find('xpath', '//li[@class="select2-results__option select2-results__option--highlighted" and text()="foo"]')->click();
+    $assert_session->waitForElement('xpath', '//li[contains(@class, "select2-results__option") and text()="foo"]');
+    $page->find('xpath', '//li[contains(@class, "select2-results__option") and text()="foo"]')->click();
 
     $this->click('.form-item-select2 .select2-selection.select2-selection--multiple');
     $page->find('css', '.select2-search__field')->setValue('ga');
-    $assert_session->waitForElement('xpath', '//li[@class="select2-results__option select2-results__option--highlighted" and text()="gaga"]');
-    $page->find('xpath', '//li[@class="select2-results__option select2-results__option--highlighted" and text()="gaga"]')->click();
+    $assert_session->waitForElement('xpath', '//li[contains(@class, "select2-results__option") and text()="gaga"]');
+    $page->find('xpath', '//li[contains(@class, "select2-results__option") and text()="gaga"]')->click();
 
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node', TRUE);
     $this->assertArraySubset([['target_id' => 1], ['target_id' => 3]], $node->select2->getValue());
+  }
+
+  /**
+   * Data provider for testMultipleValueWidget().
+   *
+   * @return array
+   *   The data.
+   */
+  public function providerTestMultiValueWidget() {
+    return [
+      [TRUE, TRUE],
+      [TRUE, FALSE],
+      [FALSE, TRUE],
+      [FALSE, FALSE],
+    ];
   }
 
   /**

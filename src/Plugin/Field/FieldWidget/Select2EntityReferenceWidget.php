@@ -8,6 +8,7 @@ use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Form\OptGroup;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\select2\Select2Trait;
 use Drupal\user\EntityOwnerInterface;
@@ -92,7 +93,7 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
    * {@inheritdoc}
    */
   protected function getOptions(FieldableEntityInterface $entity) {
-    if (!isset($this->options) && ($this->getSetting('autocomplete') || $this->getSelectionHandlerSetting('auto_create'))) {
+    if (!isset($this->options) && $this->getSetting('autocomplete')) {
       // Get all currently selected options.
       $selected_options = [];
       foreach ($entity->get($this->fieldDefinition->getName()) as $item) {
@@ -200,7 +201,7 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
     /** @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface $handler */
     $handler = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($handler_settings);
 
-    $options = static::getValidReferenceableEntities(array_keys($element['#options']), $handler_settings);
+    $options = static::getValidReferenceableEntities(array_keys(OptGroup::flattenOptions($element['#options'])), $handler_settings);
     $items = [];
     foreach ($values as $value) {
       if (isset($options[$value])) {

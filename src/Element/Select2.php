@@ -138,7 +138,15 @@ class Select2 extends Select {
     // entity reference field.
     if ($element['#autocreate'] && $element['#target_type']) {
       unset($element['#needs_validation']);
-      $element['#options'] = static::getValidSelectedOptions($element, $form_state);
+
+      // Add back auto_create values.
+      $values = is_array($element['#value']) ? $element['#value'] : [$element['#value']];
+      foreach ($values as $key => $value) {
+        if (is_string($key) && substr($key, 0, 4) === "\$ID:") {
+          // Set option and remove ID from label.
+          $element['#options'][$key] = substr($value, 0, 4) === "\$ID:" ? substr($value, 4) : $value;
+        }
+      }
     }
 
     if (!$element['#multiple'] && !isset($element['#options'][''])) {
@@ -171,19 +179,8 @@ class Select2 extends Select {
       'target_type' => $element['#target_type'],
       'handler' => $element['#selection_handler'],
     ];
-    $values = is_array($element['#value']) ? $element['#value'] : [$element['#value']];
-    $options = static::getValidReferenceableEntities($values, $handler_settings);
-    // Add back auto_create values.
-    if ($element['#autocreate'] && $element['#target_type']) {
-      foreach ($values as $key => $value) {
-        if (is_string($key) && substr($key, 0, 4) === "\$ID:") {
-          // Set option and remove ID from label.
-          $options[$key] = substr($value, 0, 4) === "\$ID:" ? substr($value, 4) : $value;
-        }
-      }
-    }
-
-    return $options;
+    $value = is_array($element['#value']) ? $element['#value'] : [$element['#value']];
+    return static::getValidReferenceableEntities($value, $handler_settings);
   }
 
   /**

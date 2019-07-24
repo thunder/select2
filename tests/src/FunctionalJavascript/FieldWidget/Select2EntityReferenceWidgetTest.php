@@ -148,7 +148,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node', TRUE);
-    $this->assertArraySubset([['target_id' => 1], ['target_id' => 3]], $node->select2->getValue());
+    $this->assertEquals([['target_id' => 1], ['target_id' => 3]], $node->select2->getValue());
 
     if ($autocreate) {
       $this->drupalGet($node->toUrl('edit-form'));

@@ -61,7 +61,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node', TRUE);
-    $this->assertArraySubset([['target_id' => 1]], $node->select2->getValue());
+    $this->assertEquals([['target_id' => 1]], $node->select2->getValue());
 
     if ($autocreate) {
       $this->drupalGet($node->toUrl('edit-form'));
@@ -75,7 +75,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
       $page->pressButton('Save');
 
       $node = $this->getNodeByTitle('Test node', TRUE);
-      $this->assertArraySubset([['target_id' => 5]], $node->select2->getValue());
+      $this->assertEquals([['target_id' => 5]], $node->select2->getValue());
       $this->assertNotEmpty(EntityTestMulRevPub::load(5));
 
       $this->drupalGet($node->toUrl('edit-form'));
@@ -87,7 +87,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
       $page->pressButton('Save');
 
       $node = $this->getNodeByTitle('Test node', TRUE);
-      $this->assertArraySubset([['target_id' => 6]], $node->select2->getValue());
+      $this->assertEquals([['target_id' => 6]], $node->select2->getValue());
       $this->assertNotEmpty(EntityTestMulRevPub::load(6));
     }
   }
@@ -149,6 +149,43 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
 
     $node = $this->getNodeByTitle('Test node', TRUE);
     $this->assertArraySubset([['target_id' => 1], ['target_id' => 3]], $node->select2->getValue());
+
+    if ($autocreate) {
+      $this->drupalGet($node->toUrl('edit-form'));
+      $this->click('.form-item-select2 .select2-selection.select2-selection--multiple');
+      $page->find('css', '.select2-search__field')->setValue('Preview value');
+      $assert_session->waitForElement('css', '.select2-results__option--highlighted');
+      $page->find('css', '.select2-results__option--highlighted')->click();
+
+      $page->pressButton('Preview');
+      $page->clickLink('Back to content editing');
+      $page->pressButton('Save');
+
+      $node = $this->getNodeByTitle('Test node', TRUE);
+      $this->assertEquals([
+        ['target_id' => 1],
+        ['target_id' => 3],
+        ['target_id' => 4],
+      ], $node->select2->getValue());
+      $this->assertNotEmpty(EntityTestMulRevPub::load(4));
+
+      $this->drupalGet($node->toUrl('edit-form'));
+      $this->click('.form-item-select2 .select2-selection.select2-selection--multiple');
+      $page->find('css', '.select2-search__field')->setValue('New value');
+      $assert_session->waitForElement('css', '.select2-results__option--highlighted');
+      $page->find('css', '.select2-results__option--highlighted')->click();
+
+      $page->pressButton('Save');
+
+      $node = $this->getNodeByTitle('Test node', TRUE);
+      $this->assertEquals([
+        ['target_id' => 1],
+        ['target_id' => 3],
+        ['target_id' => 4],
+        ['target_id' => 5],
+      ], $node->select2->getValue());
+      $this->assertNotEmpty(EntityTestMulRevPub::load(5));
+    }
   }
 
   /**

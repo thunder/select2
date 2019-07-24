@@ -8,7 +8,7 @@
   Drupal.behaviors.select2 = {
     attach: function (context) {
       $('.select2-widget', context).once('select2-init').each(function () {
-        var config = drupalSettings.select2[$(this).attr('data-drupal-selector')];
+        var config = $(this).data('select2-config');
         config.createTag = function (params) {
           var term = $.trim(params.term);
           if (term === '') {
@@ -28,10 +28,23 @@
             };
           };
         }
+        $(this).data('select2-config', config);
+
+        // Emit an event, that other modules have the chance to modify the
+        // select2 settings. Make sure that other JavaScript code that rely on
+        // this event will be loaded first.
+        // @see: modules/select2_publish/select2_publish.libraries.yml
+        $(this).trigger('select2-init');
+        config = $(this).data('select2-config');
+
+        // If config has a dropdownParent property, wrap it a jQuery object.
+        if (Object.prototype.hasOwnProperty.call(config, 'dropdownParent')) {
+          config.dropdownParent = $(config.dropdownParent);
+        }
         $(this).select2(config);
 
         // Copied from https://github.com/woocommerce/woocommerce/blob/master/assets/js/admin/wc-enhanced-select.js#L118
-        if (config.hasOwnProperty('ajax')) {
+        if (Object.prototype.hasOwnProperty.call(config, 'ajax')) {
           var $select = $(this);
           var $list = $(this).next('.select2-container').find('ul.select2-selection__rendered');
           $list.sortable({

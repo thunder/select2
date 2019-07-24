@@ -4,6 +4,7 @@ namespace Drupal\select2;
 
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\EntityReferenceSelection\SelectionPluginManagerInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 
 /**
  * Matcher class to get autocompletion results for entity reference.
@@ -18,13 +19,23 @@ class EntityAutocompleteMatcher {
   protected $selectionManager;
 
   /**
+   * The module handler service.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
    * Constructs a EntityAutocompleteMatcher object.
    *
    * @param \Drupal\Core\Entity\EntityReferenceSelection\SelectionPluginManagerInterface $selection_manager
    *   The entity reference selection handler plugin manager.
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The module handler service.
    */
-  public function __construct(SelectionPluginManagerInterface $selection_manager) {
+  public function __construct(SelectionPluginManagerInterface $selection_manager, ModuleHandlerInterface $module_handler) {
     $this->selectionManager = $selection_manager;
+    $this->moduleHandler = $module_handler;
   }
 
   /**
@@ -68,12 +79,14 @@ class EntityAutocompleteMatcher {
       // Loop through the entities and convert them into autocomplete output.
       foreach ($entity_labels as $values) {
         foreach ($values as $entity_id => $label) {
-          $matches[] = ['id' => $entity_id, 'text' => Html::decodeEntities($label)];
+          $matches[$entity_id] = ['id' => $entity_id, 'text' => Html::decodeEntities($label)];
         }
       }
+
+      $this->moduleHandler->alter('select2_autocomplete_matches', $matches, $options);
     }
 
-    return $matches;
+    return array_values($matches);
   }
 
 }

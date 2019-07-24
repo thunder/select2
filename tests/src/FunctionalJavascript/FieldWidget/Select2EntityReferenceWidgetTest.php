@@ -62,7 +62,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
   /**
    * Test autocomplete in a single value field.
    *
-   * @dataProvider testSingleAutocompleteStartWithMatchProvider
+   * @dataProvider providerTestSingleAutocompleteStartWithMatch
    */
   public function testSingleAutocompleteStartWithMatch($match_operator, $count) {
     $this->createField('select2', 'node', 'test', 'entity_reference', [
@@ -99,7 +99,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
    * @return array
    *   The data.
    */
-  public function testSingleAutocompleteStartWithMatchProvider() {
+  public function providerTestSingleAutocompleteStartWithMatch() {
     return [
       ['STARTS_WITH', 1],
       ['CONTAINS', 2],
@@ -353,9 +353,9 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
     EntityTestMulRevPub::create(['name' => 'gaga'])->save();
 
     $this->drupalGet('/node/add/test');
-    $url = $this->getSession()->evaluateScript("drupalSettings.select2['edit-select2'].ajax.url");
+    $settings = Json::decode($this->getSession()->getPage()->findField('select2')->getAttribute('data-select2-config'));
 
-    $url = Url::fromUserInput($url);
+    $url = Url::fromUserInput($settings['ajax']['url']);
     $url->setAbsolute(TRUE);
     $url->setRouteParameter('q', 'f');
 

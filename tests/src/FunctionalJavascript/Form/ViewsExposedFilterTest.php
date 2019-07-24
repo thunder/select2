@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\select2\FunctionalJavascript\Form;
 
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 
 /**
@@ -10,6 +11,8 @@ use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
  * @group select2
  */
 class ViewsExposedFilterTest extends WebDriverTestBase {
+
+  use StringTranslationTrait;
 
   /**
    * {@inheritdoc}
@@ -27,13 +30,13 @@ class ViewsExposedFilterTest extends WebDriverTestBase {
     $node_type = $this->createContentType();
 
     $this->drupalCreateNode([
-      'title' => t('Node1'),
+      'title' => $this->t('Node1'),
       'type' => $node_type->id(),
       'uid' => $admin->id(),
     ]);
 
     $this->drupalCreateNode([
-      'title' => t('Node2'),
+      'title' => $this->t('Node2'),
       'type' => $node_type->id(),
       'status' => FALSE,
       'uid' => $admin->id(),

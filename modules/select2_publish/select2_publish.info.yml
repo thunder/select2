@@ -1,0 +1,8 @@
+name: Select2 Publish
+type: module
+description: Indicates the status of referenced entities.
+package: User interface
+core: '8.x'
+dependencies:
+  - select2:select2
+  - form_options_attributes:form_options_attributes

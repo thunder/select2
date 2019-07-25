@@ -97,7 +97,9 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
       // Get all currently selected options.
       $selected_options = [];
       foreach ($entity->get($this->fieldDefinition->getName()) as $item) {
-        $selected_options[] = $item->{$this->column};
+        if ($item->{$this->column} !== NULL) {
+          $selected_options[] = $item->{$this->column};
+        }
       }
 
       if (!$selected_options) {
@@ -199,7 +201,7 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
     /** @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface $handler */
     $handler = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($handler_settings);
 
-    $options = OptGroup::flattenOptions($element['#options']);
+    $options = static::getValidReferenceableEntities(array_keys(OptGroup::flattenOptions($element['#options'])), $handler_settings);
     $items = [];
     foreach ($values as $value) {
       if (isset($options[$value])) {

@@ -39,7 +39,11 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
         'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
         'auto_create' => $autocreate,
       ],
-    ], 'select2_entity_reference', ['autocomplete' => $autocomplete, 'match_operator' => $match_operator]);
+    ], 'select2_entity_reference', [
+      'autocomplete' => $autocomplete,
+      'match_operator' => $match_operator,
+      'match_limit' => 10,
+    ]);
 
     EntityTestMulRevPub::create(['name' => 'foo'])->save();
     EntityTestMulRevPub::create(['name' => 'bar'])->save();
@@ -371,7 +375,11 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
         'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
         'auto_create' => FALSE,
       ],
-    ], 'select2_entity_reference', ['autocomplete' => TRUE, 'match_operator' => 'CONTAINS']);
+    ], 'select2_entity_reference', [
+      'autocomplete' => TRUE,
+      'match_operator' => 'CONTAINS',
+      'match_limit' => 10,
+    ]);
 
     EntityTestMulRevPub::create(['name' => 'foo'])->save();
     EntityTestMulRevPub::create(['name' => 'bar'])->save();

@@ -59,6 +59,7 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
     return [
       'autocomplete' => FALSE,
       'match_operator' => 'CONTAINS',
+      'match_limit' => 10,
     ] + parent::defaultSettings();
   }
 
@@ -84,6 +85,13 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
           ':input[name$="[settings_edit_form][settings][autocomplete]"]' => ['checked' => TRUE],
         ],
       ],
+    ];
+    $element['match_limit'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Number of results'),
+      '#default_value' => $this->getSetting('match_limit'),
+      '#min' => 0,
+      '#description' => $this->t('The number of suggestions that will be listed. Use <em>0</em> to remove the limit.'),
     ];
 
     return $element;
@@ -125,6 +133,8 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
     $autocomplete = $this->getSetting('autocomplete');
     $operators = $this->getMatchOperatorOptions();
     $summary[] = $this->t('Autocomplete: @autocomplete', ['@autocomplete' => $autocomplete ? $this->t('On') : $this->t('Off')]);
+    $size = $this->getSetting('match_limit') ?: $this->t('unlimited');
+    $summary[] = $this->t('Autocomplete suggestion list size: @size', ['@size' => $size]);
     if ($autocomplete) {
       $summary[] = $this->t('Autocomplete matching: @match_operator', ['@match_operator' => $operators[$this->getSetting('match_operator')]]);
     }
@@ -182,6 +192,7 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
     $label_field = $this->entityTypeManager->getDefinition($this->getFieldSetting('target_type'))->getKey('label') ?: '_none';
     return [
       'match_operator' => $this->getSetting('match_operator'),
+      'match_limit' => $this->getSetting('match_limit'),
       'sort' => ['field' => $label_field],
     ] + $this->getFieldSetting('handler_settings');
   }

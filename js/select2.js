@@ -19,7 +19,7 @@
             text: term
           };
         };
-        if (config.hasOwnProperty('ajax')) {
+        if (Object.prototype.hasOwnProperty.call(config, 'ajax')) {
           // Use pagination for ajax requests.
           config.ajax.data = function (params) {
             return {

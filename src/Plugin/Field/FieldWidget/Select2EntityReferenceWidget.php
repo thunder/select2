@@ -140,7 +140,6 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
     $element['#target_type'] = $this->getFieldSetting('target_type');
     $element['#selection_handler'] = $this->getFieldSetting('handler');
     $element['#selection_settings'] = $this->getSelectionSettings();
-
     $element['#autocomplete'] = $this->getSetting('autocomplete');
 
     if ($this->getSelectionHandlerSetting('auto_create') && ($bundle = $this->getAutocreateBundle())) {

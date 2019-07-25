@@ -7,6 +7,8 @@ use Drupal\entity_test\Entity\EntityTestMulRevPub;
 
 /**
  * Class Select2ValidOptionsTest.
+ *
+ * @group select2
  */
 class Select2ValidOptionsTest extends Select2KernelTestBase {
 

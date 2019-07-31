@@ -138,6 +138,18 @@ class Select2 extends Select {
     // entity reference field.
     if ($element['#autocreate'] && $element['#target_type']) {
       unset($element['#needs_validation']);
+
+      // Add back auto_create values.
+      $values = is_array($element['#value']) ? $element['#value'] : [$element['#value']];
+      foreach ($values as $key => $value) {
+        if (is_string($key) && substr($key, 0, 4) === "\$ID:") {
+          // Set option and remove ID from label.
+          $element['#options'][$key] = substr($value, 0, 4) === "\$ID:" ? substr($value, 4) : $value;
+        }
+        elseif (!$element['#multiple'] && substr($value, 0, 4) === "\$ID:") {
+          $element['#options'][$value] = substr($value, 4);
+        }
+      }
     }
 
     if (!$element['#multiple'] && !isset($element['#options'][''])) {

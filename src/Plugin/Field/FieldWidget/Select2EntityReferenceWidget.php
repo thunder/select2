@@ -69,16 +69,16 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
     $element = parent::settingsForm($form, $form_state);
     $element['autocomplete'] = [
       '#type' => 'checkbox',
-      '#title' => t('Autocomplete'),
+      '#title' => $this->t('Autocomplete'),
       '#default_value' => $this->getSetting('autocomplete'),
-      '#description' => t('Options will be lazy loaded. This is recommended for lists with a lot of values.'),
+      '#description' => $this->t('Options will be lazy loaded. This is recommended for lists with a lot of values.'),
     ];
     $element['match_operator'] = [
       '#type' => 'radios',
-      '#title' => t('Autocomplete matching'),
+      '#title' => $this->t('Autocomplete matching'),
       '#default_value' => $this->getSetting('match_operator'),
       '#options' => $this->getMatchOperatorOptions(),
-      '#description' => t('Select the method used to collect autocomplete suggestions. Note that <em>Contains</em> can cause performance issues on sites with thousands of entities.'),
+      '#description' => $this->t('Select the method used to collect autocomplete suggestions. Note that <em>Contains</em> can cause performance issues on sites with thousands of entities.'),
       '#states' => [
         'visible' => [
           ':input[name$="[settings_edit_form][settings][autocomplete]"]' => ['checked' => TRUE],
@@ -97,7 +97,9 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
       // Get all currently selected options.
       $selected_options = [];
       foreach ($entity->get($this->fieldDefinition->getName()) as $item) {
-        $selected_options[] = $item->{$this->column};
+        if ($item->{$this->column} !== NULL) {
+          $selected_options[] = $item->{$this->column};
+        }
       }
 
       if (!$selected_options) {
@@ -122,9 +124,9 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
     $summary = parent::settingsSummary();
     $autocomplete = $this->getSetting('autocomplete');
     $operators = $this->getMatchOperatorOptions();
-    $summary[] = t('Autocomplete: @autocomplete', ['@autocomplete' => $autocomplete ? $this->t('On') : $this->t('Off')]);
+    $summary[] = $this->t('Autocomplete: @autocomplete', ['@autocomplete' => $autocomplete ? $this->t('On') : $this->t('Off')]);
     if ($autocomplete) {
-      $summary[] = t('Autocomplete matching: @match_operator', ['@match_operator' => $operators[$this->getSetting('match_operator')]]);
+      $summary[] = $this->t('Autocomplete matching: @match_operator', ['@match_operator' => $operators[$this->getSetting('match_operator')]]);
     }
     return $summary;
   }
@@ -199,7 +201,7 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
     /** @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface $handler */
     $handler = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($handler_settings);
 
-    $options = OptGroup::flattenOptions($element['#options']);
+    $options = static::getValidReferenceableEntities(array_keys(OptGroup::flattenOptions($element['#options'])), $handler_settings);
     $items = [];
     foreach ($values as $value) {
       if (isset($options[$value])) {
@@ -275,8 +277,8 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
    */
   protected function getMatchOperatorOptions() {
     return [
-      'STARTS_WITH' => t('Starts with'),
-      'CONTAINS' => t('Contains'),
+      'STARTS_WITH' => $this->t('Starts with'),
+      'CONTAINS' => $this->t('Contains'),
     ];
   }
 

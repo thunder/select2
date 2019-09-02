@@ -268,7 +268,7 @@ class Select2 extends Select {
       $element['#attributes']['data-select2-config'] += [
         'minimumInputLength' => 1,
         'ajax' => [
-          'delay' => 10,
+          'delay' => 250,
           'url' => $url->getGeneratedUrl(),
         ],
       ];

@@ -32,7 +32,12 @@ class Select2 extends FilterWidgetBase {
       if (in_array($filter->operator, ['in', 'or', 'and', 'not'])) {
         $is_applicable = TRUE;
       }
-      if (in_array($filter->operator, ['empty', 'not empty'])) {
+    }
+    if (is_a($filter, 'Drupal\taxonomy\Plugin\views\filter\TaxonomyIndexTid')) {
+      // Autocomplete and dropdown taxonomy filter are both instances of
+      // TaxonomyIndexTid, but we can't show BEF options for the autocomplete
+      // widget.
+      if ($filter_options['type'] == 'select') {
         $is_applicable = TRUE;
       }
     }

@@ -45,9 +45,7 @@
             tolerance: 'pointer',
             stop: function () {
               $($list.find('.select2-selection__choice').get().reverse()).each(function () {
-                var id = $(this).data('data').id;
-                var option = $select.find('option[value="' + id + '"]')[0];
-                $select.prepend(option);
+                $select.prepend($select.find('option:contains(' + $(this).attr('title') + ')').first());
               });
             }
           });

@@ -394,7 +394,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
   }
 
   /**
-   * Tests that the autocomplete ordering is alphabetically.
+   * Tests the autocomplete drag n drop.
    */
   public function testAutocompleteDragnDrop() {
     $this->createField('select2', 'node', 'test', 'entity_reference', [

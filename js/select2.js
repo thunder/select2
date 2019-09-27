@@ -22,7 +22,7 @@
         config.templateSelection = function (option, container) {
           // Add option value to selection container for sorting.
           $(container).data('optionValue', option.element.value);
-          return option.text
+          return option.text;
         };
         $(this).data('select2-config', config);
 

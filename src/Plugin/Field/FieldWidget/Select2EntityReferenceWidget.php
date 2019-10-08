@@ -182,7 +182,6 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
     $label_field = $this->entityTypeManager->getDefinition($this->getFieldSetting('target_type'))->getKey('label') ?: '_none';
     return [
       'match_operator' => $this->getSetting('match_operator'),
-      'match_limit' => 10,
       'sort' => ['field' => $label_field],
     ] + $this->getFieldSetting('handler_settings');
   }

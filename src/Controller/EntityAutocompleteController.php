@@ -84,7 +84,18 @@ class EntityAutocompleteController extends ControllerBase {
       }
 
       $matches['results'] = $this->matcher->getMatches($target_type, $selection_handler, $selection_settings, mb_strtolower($input), $request->query->get('page') - 1);
-      $matches['pagination']['more'] = count($matches['results']) == $selection_settings['match_limit'];
+
+      // Remove reflection in Drupal 9.0.0.
+      $options = $selection_settings + [
+        'target_type' => $target_type,
+        'handler' => $selection_handler,
+      ];
+      $handler = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($options);
+      $method = new \ReflectionMethod($handler, 'getReferenceableEntities');
+      $parameters = $method->getParameters();
+      if (count($parameters) > 3 && $parameters[3]->getName() === 'offset') {
+        $matches['pagination']['more'] = count($matches['results']) == 10;
+      }
     }
 
     return new JsonResponse($matches);

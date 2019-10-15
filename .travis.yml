@@ -21,6 +21,7 @@ branches:
 env:
   global:
     - PATH="$PATH:$HOME/.composer/vendor/bin"
+    - COMPOSER_MEMORY_LIMIT=-1
 
 matrix:
   allow_failures:

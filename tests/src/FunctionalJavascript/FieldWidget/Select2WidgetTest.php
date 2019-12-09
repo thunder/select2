@@ -101,14 +101,14 @@ class Select2WidgetTest extends Select2JavascriptTestBase {
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node');
-    $this->assertArraySubset([['value' => 'foo'], ['value' => 'gaga']], $node->select2->getValue());
+    $this->assertSame([['value' => 'foo'], ['value' => 'gaga']], $node->select2->getValue());
 
     $this->drupalGet($node->toUrl('edit-form'));
     $this->selectOption('edit-select2', []);
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node', TRUE);
-    $this->assertArraySubset([], $node->select2->getValue());
+    $this->assertSame([], $node->select2->getValue());
 
     $this->drupalGet($node->toUrl('edit-form'));
     $this->selectOption('edit-select2', ['bar']);

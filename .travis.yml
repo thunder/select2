@@ -35,7 +35,7 @@ matrix:
 
 
 before_install:
-  - composer global require thunder/travis
+  - composer global require thunder/travis:dev-fix/drupal-version
 
 install:
   - test-drupal-project prepare_build

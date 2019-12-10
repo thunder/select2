@@ -2,7 +2,7 @@ name: 'Select2 facets test'
 type: module
 description: 'Support module for select2 facets tests.'
 package: Testing
-core: 8.x
+core_version_requirement: ^8.8 || ^9
 dependencies:
   - facets:facets
   - search_api:search_api_db

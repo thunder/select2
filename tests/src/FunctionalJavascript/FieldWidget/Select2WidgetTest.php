@@ -145,7 +145,7 @@ class Select2WidgetTest extends Select2JavascriptTestBase {
 
     $this->scrollElementInView('.form-item-select2 .select2-selection.select2-selection--multiple');
     $this->click('.form-item-select2 .select2-selection.select2-selection--multiple');
-    $this->assertSession()->elementTextContains('css', '.select2-dropdown.select2-dropdown--above', 'You can only select 2 items');
+    $this->assertSession()->elementTextContains('css', '.select2-dropdown .select2-results', 'You can only select 2 items');
   }
 
 }

@@ -32,7 +32,7 @@ class Select2WidgetTest extends Select2JavascriptTestBase {
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node');
-    $this->assertArraySubset([['value' => 'foo']], $node->select2->getValue());
+    $this->assertSame([['value' => 'foo']], $node->select2->getValue());
 
     $this->drupalGet($node->toUrl('edit-form'));
     $this->assertSession()->elementExists('css', '.form-item-select2 .select2-selection__clear');
@@ -40,14 +40,14 @@ class Select2WidgetTest extends Select2JavascriptTestBase {
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node', TRUE);
-    $this->assertArraySubset([], $node->select2->getValue());
+    $this->assertSame([], $node->select2->getValue());
 
     $this->drupalGet($node->toUrl('edit-form'));
     $this->selectOption('edit-select2', ['bar']);
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node', TRUE);
-    $this->assertArraySubset([['value' => 'bar']], $node->select2->getValue());
+    $this->assertSame([['value' => 'bar']], $node->select2->getValue());
   }
 
   /**
@@ -69,7 +69,7 @@ class Select2WidgetTest extends Select2JavascriptTestBase {
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node');
-    $this->assertArraySubset([['value' => 'foo']], $node->select2->getValue());
+    $this->assertSame([['value' => 'foo']], $node->select2->getValue());
 
     $this->drupalGet($node->toUrl('edit-form'));
     $this->assertSession()->elementNotExists('css', '.form-item-select2 .select2-selection__clear');
@@ -77,7 +77,7 @@ class Select2WidgetTest extends Select2JavascriptTestBase {
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node', TRUE);
-    $this->assertArraySubset([['value' => 'bar']], $node->select2->getValue());
+    $this->assertSame([['value' => 'bar']], $node->select2->getValue());
   }
 
   /**
@@ -101,21 +101,21 @@ class Select2WidgetTest extends Select2JavascriptTestBase {
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node');
-    $this->assertArraySubset([['value' => 'foo'], ['value' => 'gaga']], $node->select2->getValue());
+    $this->assertSame([['value' => 'foo'], ['value' => 'gaga']], $node->select2->getValue());
 
     $this->drupalGet($node->toUrl('edit-form'));
     $this->selectOption('edit-select2', []);
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node', TRUE);
-    $this->assertArraySubset([], $node->select2->getValue());
+    $this->assertSame([], $node->select2->getValue());
 
     $this->drupalGet($node->toUrl('edit-form'));
     $this->selectOption('edit-select2', ['bar']);
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node', TRUE);
-    $this->assertArraySubset([['value' => 'bar']], $node->select2->getValue());
+    $this->assertSame([['value' => 'bar']], $node->select2->getValue());
   }
 
   /**
@@ -139,13 +139,13 @@ class Select2WidgetTest extends Select2JavascriptTestBase {
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node');
-    $this->assertArraySubset([['value' => 'foo'], ['value' => 'gaga']], $node->select2->getValue());
+    $this->assertSame([['value' => 'foo'], ['value' => 'gaga']], $node->select2->getValue());
 
     $this->drupalGet($node->toUrl('edit-form'));
 
     $this->scrollElementInView('.form-item-select2 .select2-selection.select2-selection--multiple');
     $this->click('.form-item-select2 .select2-selection.select2-selection--multiple');
-    $this->assertSession()->elementTextContains('css', '.select2-dropdown.select2-dropdown--above', 'You can only select 2 items');
+    $this->assertSession()->elementTextContains('css', '.select2-dropdown .select2-results', 'You can only select 2 items');
   }
 
 }

@@ -17,6 +17,11 @@ class FacetsTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
+  protected $defaultTheme = 'stark';
+
+  /**
+   * {@inheritdoc}
+   */
   protected static $modules = ['select2_facets_test'];
 
   /**
@@ -63,7 +68,14 @@ class FacetsTest extends WebDriverTestBase {
     $this->drupalGet('/test-entity-view');
 
     $settings = $this->getSession()->getPage()->findField('Referenced[]')->getAttribute('data-select2-config');
-    $this->assertArraySubset($expected_settings, Json::decode($settings));
+    foreach ($expected_settings as $key => $value) {
+      if ($key == 'ajax') {
+        $this->assertArrayHasKey($key, Json::decode($settings));
+      }
+      else {
+        $this->assertSame(Json::decode($settings)[$key], $value);
+      }
+    }
 
     $page = $this->getSession()->getPage();
     $assert_session = $this->assertSession();

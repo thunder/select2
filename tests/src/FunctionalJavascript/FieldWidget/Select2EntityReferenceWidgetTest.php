@@ -246,7 +246,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node', TRUE);
-    $this->assertArraySubset([['target_id' => 1], ['target_id' => 2]], $node->select2->getValue());
+    $this->assertEquals([['target_id' => 1], ['target_id' => 2]], $node->select2->getValue());
     $entity = EntityTestWithBundle::load(1);
     $this->assertNotEmpty($entity);
     $this->assertSame('test2', $entity->bundle());
@@ -323,7 +323,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node', TRUE);
-    $this->assertArraySubset([['target_id' => 1], ['target_id' => 2]], $node->select2->getValue());
+    $this->assertEquals([['target_id' => 1], ['target_id' => 2]], $node->select2->getValue());
   }
 
   /**

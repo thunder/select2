@@ -232,20 +232,25 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
    */
   protected function getAutocreateBundle() {
     $bundle = NULL;
-    if ($this->getSelectionHandlerSetting('auto_create') && $target_bundles = $this->getSelectionHandlerSetting('target_bundles')) {
-      // If there's only one target bundle, use it.
-      if (count($target_bundles) == 1) {
-        $bundle = reset($target_bundles);
+    if ($this->getSelectionHandlerSetting('auto_create')) {
+      if ($target_bundles = $this->getSelectionHandlerSetting('target_bundles')) {
+        // If there's only one target bundle, use it.
+        if (count($target_bundles) == 1) {
+          $bundle = reset($target_bundles);
+        }
+        // Otherwise use the target bundle stored in selection handler settings.
+        elseif (!$bundle = $this->getSelectionHandlerSetting('auto_create_bundle')) {
+          // If no bundle has been set as auto create target means that there is
+          // an inconsistency in entity reference field settings.
+          trigger_error(sprintf(
+            "The 'Create referenced entities if they don't already exist' option is enabled but a specific destination bundle is not set. You should re-visit and fix the settings of the '%s' (%s) field.",
+            $this->fieldDefinition->getLabel(),
+            $this->fieldDefinition->getName()
+          ), E_USER_WARNING);
+        }
       }
-      // Otherwise use the target bundle stored in selection handler settings.
-      elseif (!$bundle = $this->getSelectionHandlerSetting('auto_create_bundle')) {
-        // If no bundle has been set as auto create target means that there is
-        // an inconsistency in entity reference field settings.
-        trigger_error(sprintf(
-          "The 'Create referenced entities if they don't already exist' option is enabled but a specific destination bundle is not set. You should re-visit and fix the settings of the '%s' (%s) field.",
-          $this->fieldDefinition->getLabel(),
-          $this->fieldDefinition->getName()
-        ), E_USER_WARNING);
+      else {
+        $bundle = $this->getFieldSetting('target_type');
       }
     }
 

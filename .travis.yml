@@ -37,7 +37,6 @@ before_install:
 
 install:
   - test-drupal-project prepare_build
-  - composer require symfony/yaml:^4.4 --no-update --working-dir=/tmp/test/select2/install
   - composer require npm-asset/select2:^4.0.7 --working-dir=/tmp/test/select2/install
 
 script:

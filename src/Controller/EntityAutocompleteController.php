@@ -65,7 +65,8 @@ class EntityAutocompleteController extends ControllerBase {
   public function handleAutocomplete(Request $request, $target_type, $selection_handler, $selection_settings_key) {
     $matches['results'] = [];
     // Get the typed string from the URL, if it exists.
-    if ($input = $request->query->get('q')) {
+    $input = $request->query->get('q');
+    if ($input !== NULL) {
       // Selection settings are passed in as a hashed key of a serialized array
       // stored in the key/value store.
       $selection_settings = $this->keyValue('entity_autocomplete')->get($selection_settings_key, FALSE);

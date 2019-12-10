@@ -224,6 +224,8 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
   /**
    * Returns the name of the bundle which will be used for autocreated entities.
    *
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   *
    * @uses \Drupal\Core\Field\Plugin\Field\FieldWidget\EntityReferenceAutocompleteWidget::getAutocreateBundle().
    *   This is copied from core.
    *
@@ -250,7 +252,10 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
         }
       }
       else {
-        $bundle = $this->getFieldSetting('target_type');
+        $entity_definition = $this->entityTypeManager->getDefinition($this->getFieldSetting('target_type'));
+        if (!$entity_definition->getBundleEntityType()) {
+          $bundle = $this->getFieldSetting('target_type');
+        }
       }
     }
 

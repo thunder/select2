@@ -25,9 +25,13 @@ class Select2 extends FilterWidgetBase {
     parent::exposedFormAlter($form, $form_state);
 
     if (!empty($form[$field_id])) {
+      $filter = $this->handler;
+
       $form[$field_id]['#type'] = 'select2';
+      $form[$field_id]['#autocomplete'] = !empty($filter->options['type']) && $filter->options['type'] === 'textfield';
+      $form[$field_id]['#multiple'] = !empty($filter->options['expose']['multiple']) && $filter->options['expose']['multiple'];
       $form[$field_id]['#select2'] = [
-        'width' => 'element',
+        'width' => '100%',
       ];
     }
   }

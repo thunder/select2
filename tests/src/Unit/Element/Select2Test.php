@@ -78,7 +78,7 @@ class Select2Test extends UnitTestCase {
     $element = Select2::preRenderSelect($element);
     $element = Select2::preRenderAutocomplete($element);
     $element = Select2::preRenderOverwrites($element);
-    $this->assertArraySubset($expected, $element);
+    $this->assertEquals($expected, array_intersect_key($element['#attributes'], $expected));
   }
 
   /**
@@ -88,105 +88,95 @@ class Select2Test extends UnitTestCase {
     $data = [];
     $data[] = [TRUE, TRUE, [],
       [
-        '#attributes' => [
-          'multiple' => 'multiple',
-          'name' => 'field_foo[]',
-          'data-select2-config' => Json::encode([
-            'multiple' => TRUE,
-            'placeholder' => '',
-            'allowClear' => FALSE,
-            'dir' => 'rtl',
-            'language' => 'en',
-            'tags' => FALSE,
-            'theme' => 'seven',
-            'maximumSelectionLength' => 0,
-            'tokenSeparators' => [],
-            'selectOnClose' => FALSE,
-            'width' => '100%',
-          ]),
-        ],
+        'multiple' => 'multiple',
+        'name' => 'field_foo[]',
+        'data-select2-config' => Json::encode([
+          'multiple' => TRUE,
+          'placeholder' => '',
+          'allowClear' => FALSE,
+          'dir' => 'rtl',
+          'language' => 'en',
+          'tags' => FALSE,
+          'theme' => 'seven',
+          'maximumSelectionLength' => 0,
+          'tokenSeparators' => [],
+          'selectOnClose' => FALSE,
+          'width' => '100%',
+        ]),
       ],
     ];
     $data[] = [FALSE, TRUE, [],
       [
-        '#attributes' => [
-          'name' => 'field_foo',
-          'data-select2-config' => Json::encode([
-            'multiple' => FALSE,
-            'placeholder' => '',
-            'allowClear' => FALSE,
-            'dir' => 'rtl',
-            'language' => 'en',
-            'tags' => FALSE,
-            'theme' => 'seven',
-            'maximumSelectionLength' => 0,
-            'tokenSeparators' => [],
-            'selectOnClose' => FALSE,
-            'width' => '100%',
-          ]),
-        ],
+        'name' => 'field_foo',
+        'data-select2-config' => Json::encode([
+          'multiple' => FALSE,
+          'placeholder' => '',
+          'allowClear' => FALSE,
+          'dir' => 'rtl',
+          'language' => 'en',
+          'tags' => FALSE,
+          'theme' => 'seven',
+          'maximumSelectionLength' => 0,
+          'tokenSeparators' => [],
+          'selectOnClose' => FALSE,
+          'width' => '100%',
+        ]),
       ],
     ];
     $data[] = [TRUE, FALSE, [],
       [
-        '#attributes' => [
-          'multiple' => 'multiple',
-          'name' => 'field_foo[]',
-          'data-select2-config' => Json::encode([
-            'multiple' => TRUE,
-            'placeholder' => '',
-            'allowClear' => FALSE,
-            'dir' => 'rtl',
-            'language' => 'en',
-            'tags' => FALSE,
-            'theme' => 'seven',
-            'maximumSelectionLength' => 0,
-            'tokenSeparators' => [],
-            'selectOnClose' => FALSE,
-            'width' => '100%',
-          ]),
-        ],
+        'multiple' => 'multiple',
+        'name' => 'field_foo[]',
+        'data-select2-config' => Json::encode([
+          'multiple' => TRUE,
+          'placeholder' => '',
+          'allowClear' => FALSE,
+          'dir' => 'rtl',
+          'language' => 'en',
+          'tags' => FALSE,
+          'theme' => 'seven',
+          'maximumSelectionLength' => 0,
+          'tokenSeparators' => [],
+          'selectOnClose' => FALSE,
+          'width' => '100%',
+        ]),
       ],
     ];
     $data[] = [FALSE, FALSE, [],
       [
-        '#attributes' => [
-          'name' => 'field_foo',
-          'data-select2-config' => Json::encode([
-            'multiple' => FALSE,
-            'placeholder' => '',
-            'allowClear' => TRUE,
-            'dir' => 'rtl',
-            'language' => 'en',
-            'tags' => FALSE,
-            'theme' => 'seven',
-            'maximumSelectionLength' => 0,
-            'tokenSeparators' => [],
-            'selectOnClose' => FALSE,
-            'width' => '100%',
-          ]),
-        ],
+        'name' => 'field_foo',
+        'data-select2-config' => Json::encode([
+          'multiple' => FALSE,
+          'placeholder' => '',
+          'allowClear' => TRUE,
+          'dir' => 'rtl',
+          'language' => 'en',
+          'tags' => FALSE,
+          'theme' => 'seven',
+          'maximumSelectionLength' => 0,
+          'tokenSeparators' => [],
+          'selectOnClose' => FALSE,
+          'width' => '100%',
+        ]),
       ],
     ];
     // Test overwriting of the default setting.
     $data[] = [FALSE, FALSE, ['allowClear' => FALSE, 'multiple' => TRUE],
       [
-        '#attributes' => [
-          'name' => 'field_foo',
-          'data-select2-config' => Json::encode([
-            'multiple' => TRUE,
-            'placeholder' => '',
-            'allowClear' => FALSE,
-            'dir' => 'rtl',
-            'language' => 'en',
-            'tags' => FALSE,
-            'theme' => 'seven',
-            'maximumSelectionLength' => 0,
-            'tokenSeparators' => [],
-            'selectOnClose' => FALSE,
-            'width' => '100%',
-          ]),
-        ],
+        'name' => 'field_foo',
+        'data-select2-config' => Json::encode([
+          'multiple' => TRUE,
+          'placeholder' => '',
+          'allowClear' => FALSE,
+          'dir' => 'rtl',
+          'language' => 'en',
+          'tags' => FALSE,
+          'theme' => 'seven',
+          'maximumSelectionLength' => 0,
+          'tokenSeparators' => [],
+          'selectOnClose' => FALSE,
+          'width' => '100%',
+        ]),
       ],
     ];
 

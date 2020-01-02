@@ -104,7 +104,7 @@ class PublishTest extends Select2JavascriptTestBase {
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node', TRUE);
-    $this->assertArraySubset([['target_id' => 4]], $node->select2->getValue());
+    $this->assertEquals([['target_id' => 4]], $node->select2->getValue());
   }
 
 }

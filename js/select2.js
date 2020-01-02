@@ -19,6 +19,14 @@
             text: term
           };
         };
+        config.templateSelection = function (option, container) {
+          // The placeholder doesn't have value.
+          if ('element' in option && 'value' in option.element) {
+            // Add option value to selection container for sorting.
+            $(container).data('optionValue', option.element.value);
+          }
+          return option.text;
+        };
         $(this).data('select2-config', config);
 
         // Emit an event, that other modules have the chance to modify the
@@ -45,9 +53,7 @@
             tolerance: 'pointer',
             stop: function () {
               $($list.find('.select2-selection__choice').get().reverse()).each(function () {
-                var id = $(this).data('data').id;
-                var option = $select.find('option[value="' + id + '"]')[0];
-                $select.prepend(option);
+                $select.prepend($select.find('option[value="' + $(this).data('optionValue') + '"]').first());
               });
             }
           });

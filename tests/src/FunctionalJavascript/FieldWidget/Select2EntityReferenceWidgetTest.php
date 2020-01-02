@@ -246,7 +246,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node', TRUE);
-    $this->assertArraySubset([['target_id' => 1], ['target_id' => 2]], $node->select2->getValue());
+    $this->assertEquals([['target_id' => 1], ['target_id' => 2]], $node->select2->getValue());
     $entity = EntityTestWithBundle::load(1);
     $this->assertNotEmpty($entity);
     $this->assertSame('test2', $entity->bundle());
@@ -323,7 +323,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node', TRUE);
-    $this->assertArraySubset([['target_id' => 1], ['target_id' => 2]], $node->select2->getValue());
+    $this->assertEquals([['target_id' => 1], ['target_id' => 2]], $node->select2->getValue());
   }
 
   /**
@@ -391,6 +391,59 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
 
     $expected = [['id' => 3, 'text' => 'bar foo'], ['id' => 1, 'text' => 'foo']];
     $this->assertSame($expected, $results);
+  }
+
+  /**
+   * Tests the autocomplete drag n drop.
+   */
+  public function testAutocompleteDragnDrop() {
+    $this->createField('select2', 'node', 'test', 'entity_reference', [
+      'target_type' => 'entity_test_mulrevpub',
+      'cardinality' => -1,
+    ], [
+      'handler' => 'default:entity_test_mulrevpub',
+      'handler_settings' => [
+        'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
+        'auto_create' => FALSE,
+      ],
+    ], 'select2_entity_reference', ['autocomplete' => TRUE, 'match_operator' => 'CONTAINS']);
+
+    EntityTestMulRevPub::create(['name' => 'foo'])->save();
+    EntityTestMulRevPub::create(['name' => 'bar'])->save();
+    EntityTestMulRevPub::create(['name' => 'gaga'])->save();
+
+    $page = $this->getSession()->getPage();
+    $assert_session = $this->assertSession();
+
+    $this->drupalGet('/node/add/test');
+    $page->fillField('title[0][value]', 'Test node');
+
+    $this->click('.form-item-select2 .select2-selection.select2-selection--multiple');
+    $page->find('css', '.select2-search__field')->setValue('fo');
+    $assert_session->waitForElement('xpath', '//li[contains(@class, "select2-results__option") and text()="foo"]');
+    $page->find('xpath', '//li[contains(@class, "select2-results__option") and text()="foo"]')->click();
+
+    $this->click('.form-item-select2 .select2-selection.select2-selection--multiple');
+    $page->find('css', '.select2-search__field')->setValue('ba');
+    $assert_session->waitForElement('xpath', '//li[contains(@class, "select2-results__option") and text()="bar"]');
+    $page->find('xpath', '//li[contains(@class, "select2-results__option") and text()="bar"]')->click();
+
+    $this->click('.form-item-select2 .select2-selection.select2-selection--multiple');
+    $page->find('css', '.select2-search__field')->setValue('ga');
+    $assert_session->waitForElement('xpath', '//li[contains(@class, "select2-results__option") and text()="gaga"]');
+    $page->find('xpath', '//li[contains(@class, "select2-results__option") and text()="gaga"]')->click();
+
+    $this->dragDropElement($page->find('xpath', '//li[contains(@class, "select2-selection__choice") and text()="gaga"]'), -100, 0);
+    $this->dragDropElement($page->find('xpath', '//li[contains(@class, "select2-selection__choice") and text()="foo"]'), 50, 0);
+
+    $page->pressButton('Save');
+
+    $node = $this->getNodeByTitle('Test node', TRUE);
+    $this->assertEquals([
+      ['target_id' => 3],
+      ['target_id' => 2],
+      ['target_id' => 1],
+    ], $node->select2->getValue());
   }
 
 }

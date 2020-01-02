@@ -12,6 +12,24 @@ use Drupal\Tests\select2\FunctionalJavascript\Select2JavascriptTestBase;
 class Select2WidgetTest extends Select2JavascriptTestBase {
 
   /**
+   * Test rendering of an empty field.
+   *
+   * @group select2
+   */
+  public function testEmptyField() {
+    $this->createField('select2', 'node', 'test', 'list_string', [], [], 'select2', []);
+
+    $this->drupalGet('/node/add/test');
+
+    // Without the placeholder field is the widget not correctly initialized.
+    $this->assertSession()->elementExists('css', '.form-item-select2 .select2-selection__placeholder');
+
+    $this->scrollElementInView('.form-item-select2 .select2-selection.select2-selection--single');
+    $this->click('.form-item-select2 .select2-selection.select2-selection--single');
+    $this->assertSession()->elementTextContains('css', '.select2-dropdown .select2-results', 'No results found');
+  }
+
+  /**
    * Test single field selection.
    *
    * @group select2

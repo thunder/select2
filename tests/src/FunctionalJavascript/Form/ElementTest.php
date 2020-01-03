@@ -97,7 +97,7 @@ class ElementTest extends WebDriverTestBase {
 
     $page->pressButton('Submit');
     $json = json_decode($this->getSession()->getPage()->getText(), TRUE);
-    $this->assertEquals(3, $json['select2_autocomplete']);
+    $this->assertEquals([['target_id' => 3]], $json['select2_autocomplete']);
   }
 
 }

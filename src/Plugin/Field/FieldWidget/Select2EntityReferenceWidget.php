@@ -224,6 +224,8 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
   /**
    * Returns the name of the bundle which will be used for autocreated entities.
    *
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   *
    * @uses \Drupal\Core\Field\Plugin\Field\FieldWidget\EntityReferenceAutocompleteWidget::getAutocreateBundle().
    *   This is copied from core.
    *
@@ -232,20 +234,28 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
    */
   protected function getAutocreateBundle() {
     $bundle = NULL;
-    if ($this->getSelectionHandlerSetting('auto_create') && $target_bundles = $this->getSelectionHandlerSetting('target_bundles')) {
-      // If there's only one target bundle, use it.
-      if (count($target_bundles) == 1) {
-        $bundle = reset($target_bundles);
+    if ($this->getSelectionHandlerSetting('auto_create')) {
+      if ($target_bundles = $this->getSelectionHandlerSetting('target_bundles')) {
+        // If there's only one target bundle, use it.
+        if (count($target_bundles) == 1) {
+          $bundle = reset($target_bundles);
+        }
+        // Otherwise use the target bundle stored in selection handler settings.
+        elseif (!$bundle = $this->getSelectionHandlerSetting('auto_create_bundle')) {
+          // If no bundle has been set as auto create target means that there is
+          // an inconsistency in entity reference field settings.
+          trigger_error(sprintf(
+            "The 'Create referenced entities if they don't already exist' option is enabled but a specific destination bundle is not set. You should re-visit and fix the settings of the '%s' (%s) field.",
+            $this->fieldDefinition->getLabel(),
+            $this->fieldDefinition->getName()
+          ), E_USER_WARNING);
+        }
       }
-      // Otherwise use the target bundle stored in selection handler settings.
-      elseif (!$bundle = $this->getSelectionHandlerSetting('auto_create_bundle')) {
-        // If no bundle has been set as auto create target means that there is
-        // an inconsistency in entity reference field settings.
-        trigger_error(sprintf(
-          "The 'Create referenced entities if they don't already exist' option is enabled but a specific destination bundle is not set. You should re-visit and fix the settings of the '%s' (%s) field.",
-          $this->fieldDefinition->getLabel(),
-          $this->fieldDefinition->getName()
-        ), E_USER_WARNING);
+      else {
+        $entity_definition = $this->entityTypeManager->getDefinition($this->getFieldSetting('target_type'));
+        if (!$entity_definition->getBundleEntityType()) {
+          $bundle = $this->getFieldSetting('target_type');
+        }
       }
     }
 

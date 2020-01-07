@@ -123,6 +123,21 @@ class Select2 extends Select {
   /**
    * {@inheritdoc}
    */
+  public static function valueCallback(&$element, $input, FormStateInterface $form_state) {
+    // Potentially the #value is set directly, so it contains the 'target_id'
+    // array structure instead of a string.
+    if ($input !== FALSE && is_array($input)) {
+      return array_map(function ($item) {
+        return isset($item['target_id']) ? $item['target_id'] : $item;
+      }, $input);
+    }
+
+    return parent::valueCallback($element, $input, $form_state);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public static function processSelect(&$element, FormStateInterface $form_state, &$complete_form) {
     // Fill the options, because in autocomplete we cleared them and for the
     // validation the at least selected options are needed.
@@ -322,7 +337,7 @@ class Select2 extends Select {
    *   The form array.
    */
   public static function validateEntityAutocomplete(array &$element, FormStateInterface $form_state, array &$complete_form) {
-    if ($element['#autocomplete']) {
+    if ($element['#target_type'] && !$element['#autocreate']) {
       $value_callable = isset($element['#autocomplete_options_callback']) ? $element['#autocomplete_options_callback'] : NULL;
       if (!$value_callable || !is_callable($value_callable)) {
         $value_callable = '\Drupal\select2\Element\Select2::getValidSelectedOptions';

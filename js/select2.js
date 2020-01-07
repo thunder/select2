@@ -2,7 +2,7 @@
  * @file
  * Select2 integration.
  */
-(function ($, drupalSettings) {
+(function ($, drupalSettings, Sortable) {
   'use strict';
 
   Drupal.behaviors.select2 = {
@@ -46,12 +46,10 @@
         if (Object.prototype.hasOwnProperty.call(config, 'ajax')) {
           var $select = $(this);
           var $list = $(this).next('.select2-container').find('ul.select2-selection__rendered');
-          $list.sortable({
-            placeholder: 'ui-state-highlight select2-selection__choice',
-            forcePlaceholderSize: true,
-            items: 'li:not(.select2-search__field)',
-            tolerance: 'pointer',
-            stop: function () {
+          Sortable.create($list[0], {
+            draggable: 'li:not(.select2-search)',
+            forceFallback: true,
+            onEnd: function () {
               $($list.find('.select2-selection__choice').get().reverse()).each(function () {
                 $select.prepend($select.find('option[value="' + $(this).data('optionValue') + '"]').first());
               });
@@ -62,4 +60,4 @@
     }
   };
 
-})(jQuery, drupalSettings);
+})(jQuery, drupalSettings, Sortable);

@@ -36,7 +36,6 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
     ], [
       'handler' => 'default:entity_test_mulrevpub',
       'handler_settings' => [
-        'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
         'auto_create' => $autocreate,
       ],
     ], 'select2_entity_reference', ['autocomplete' => $autocomplete, 'match_operator' => $match_operator]);
@@ -120,7 +119,6 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
     ], [
       'handler' => 'default:entity_test_mulrevpub',
       'handler_settings' => [
-        'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
         'auto_create' => $autocreate,
       ],
     ], 'select2_entity_reference', ['autocomplete' => $autocomplete]);
@@ -338,7 +336,6 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
     ], [
       'handler' => 'default:entity_test_mulrevpub',
       'handler_settings' => [
-        'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
         'auto_create' => FALSE,
       ],
     ], 'select2_entity_reference', ['autocomplete' => TRUE]);
@@ -368,7 +365,6 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
     ], [
       'handler' => 'default:entity_test_mulrevpub',
       'handler_settings' => [
-        'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
         'auto_create' => FALSE,
       ],
     ], 'select2_entity_reference', ['autocomplete' => TRUE, 'match_operator' => 'CONTAINS']);
@@ -403,7 +399,6 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
     ], [
       'handler' => 'default:entity_test_mulrevpub',
       'handler_settings' => [
-        'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
         'auto_create' => FALSE,
       ],
     ], 'select2_entity_reference', ['autocomplete' => TRUE, 'match_operator' => 'CONTAINS']);

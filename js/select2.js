@@ -20,8 +20,11 @@
           };
         };
         config.templateSelection = function (option, container) {
-          // Add option value to selection container for sorting.
-          $(container).data('optionValue', option.element.value);
+          // The placeholder doesn't have value.
+          if ('element' in option && 'value' in option.element) {
+            // Add option value to selection container for sorting.
+            $(container).data('optionValue', option.element.value);
+          }
           return option.text;
         };
         $(this).data('select2-config', config);

@@ -42,7 +42,7 @@ install:
   - composer require npm-asset/select2:^4.0.7 --working-dir=/tmp/test/select2/install
 
 script:
-  - test-drupal-project
+  - test-drupal-project -v
 
 notifications:
   email: false

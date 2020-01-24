@@ -54,3 +54,4 @@ jobs:
 
     - name: Install drupal and run the tests
       run: test-drupal-project
+

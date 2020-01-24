@@ -48,6 +48,7 @@ jobs:
         echo "::add-path::$HOME/.composer/vendor/bin"
         echo "::set-env name=DRUPAL_TRAVIS_USE_SELENIUM::true"
         echo "::set-env name=DRUPAL_TRAVIS_TEST_FILTER::foo"
+        echo '::set-env name=DRUPAL_TRAVIS_DRUPAL_VERSION::${{ matrix.DRUPAL_TRAVIS_DRUPAL_VERSION }}'
 
     - name: Get build environment
       run: composer global require thunder/travis
@@ -60,5 +61,3 @@ jobs:
 
     - name: Install drupal and run the tests
       run: test-drupal-project
-      env:
-        DRUPAL_TRAVIS_DRUPAL_VERSION: ${{ matrix.DRUPAL_TRAVIS_DRUPAL_VERSION }}

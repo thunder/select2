@@ -10,8 +10,7 @@ jobs:
     strategy:
       matrix:
         php-versions: [ '7.2', '7.3' ]
-        env:
-          DRUPAL_TRAVIS_DRUPAL_VERSION: [ '~8.7.0', '~8.8.0' ]
+        env: ['DRUPAL_TRAVIS_DRUPAL_VERSION::~8.7.0', 'DRUPAL_TRAVIS_DRUPAL_VERSION::~8.8.0']
 
     steps:
     - uses: actions/checkout@v1

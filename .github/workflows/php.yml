@@ -18,27 +18,20 @@ jobs:
       with:
         php-version: '7.3'
         coverage: none
-
-    - uses: nanasess/setup-chromedriver@master
-      with:
-        # Optional: do not specify to match Chrome's version
-        chromedriver-version: '77.0.3865.40'
-    - run: |
-        export DISPLAY=:99
-        chromedriver --port=4444 --url-base=/wd/hub &
-        sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
     
-    - name: Add composer to PATH var
-      run: echo "::add-path::$HOME/.composer/vendor/bin"
+    - name: Add composer's bin directory to the PATH environment variable
+      run: |
+        echo "::add-path::$HOME/.composer/vendor/bin"
+        echo "::set-env name=DRUPAL_TRAVIS_USE_SELENIUM::true"
       
     - name: Get build environment
       run: composer global require thunder/travis
 
-    - name: Install dependencies
+    - name: Check coding styles
       run: test-drupal-project prepare_build
 
-    - name: Get select2 library
+    - name: Add select2 library to the composer dependencies
       run: composer require npm-asset/select2:^4.0.7 --working-dir=/tmp/test/select2/install --no-update
 
-    - name: Run tests
+    - name: Install drupal and run the tests
       run: test-drupal-project

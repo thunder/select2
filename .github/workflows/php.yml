@@ -23,7 +23,7 @@ jobs:
       id: composer-cache
       uses: actions/cache@v1
       with:
-        path: ~/.cache/composer/cache
+        path: ~/.composer/cache
         key: ${{ runner.os }}-composer-cache
       
     - name: Add composer's bin directory to the PATH environment variable

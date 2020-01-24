@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        php: [ '7.2', '7.3' ]
+        php-versions: [ '7.2', '7.3' ]
 
     steps:
     - uses: actions/checkout@v1
@@ -21,6 +21,7 @@ jobs:
     - uses: shivammathur/setup-php@master
       with:
         coverage: none
+        php-version: ${{ matrix.php-versions }}
 
     - name: Get Composer Cache Directory
       id: composer-cache

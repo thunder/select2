@@ -36,6 +36,7 @@ jobs:
       with:
         path: ~/.npm
         key: ${{ runner.os }}-npm-cache
+        restore-keys: ${{ runner.os }}-npm-cache
 
     - name: Add composer's bin directory to the PATH environment variable
       run: |

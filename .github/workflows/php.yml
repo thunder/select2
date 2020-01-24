@@ -19,12 +19,16 @@ jobs:
         php-version: '7.3'
         coverage: none
 
-    - name: Setup composer cache
+    - name: Get Composer Cache Directory
       id: composer-cache
+      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+    - name: Cache dependencies
       uses: actions/cache@v1
       with:
-        path: ~/.composer/cache
-        key: ${{ runner.os }}-composer-cache
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }} 
+        restore-keys: ${{ runner.os }}-composer-
       
     - name: Setup NPM cache
       id: npm-cache

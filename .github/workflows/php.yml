@@ -10,6 +10,9 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
+    - name: Add composer to PATH var
+      run: echo "::add-path::$HOME/.composer/vendor/bin"
+      
     - name: Get build environment
       run: composer global require thunder/travis
 

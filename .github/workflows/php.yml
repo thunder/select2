@@ -41,7 +41,8 @@ jobs:
       run: |
         echo "::add-path::$HOME/.composer/vendor/bin"
         echo "::set-env name=DRUPAL_TRAVIS_USE_SELENIUM::true"
-      
+        echo "::set-env name=DRUPAL_TRAVIS_TEST_FILTER::foo"
+
     - name: Get build environment
       run: composer global require thunder/travis
 

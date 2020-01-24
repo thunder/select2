@@ -1,0 +1,23 @@
+name: PHP Composer
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Get build environment
+      run: composer global require thunder/travis
+
+    - name: Install dependencies
+      run: test-drupal-project prepare_build
+
+    - name: Get select2 library
+      run: composer require npm-asset/select2:^4.0.7 --working-dir=/tmp/test/select2/install --no-update
+
+    - name: Run tests
+      run: test-drupal-project

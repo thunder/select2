@@ -19,13 +19,20 @@ jobs:
         php-version: '7.3'
         coverage: none
 
-    - name: Cache composer
+    - name: Setup composer cache
       id: composer-cache
       uses: actions/cache@v1
       with:
         path: ~/.composer/cache
         key: ${{ runner.os }}-composer-cache
       
+    - name: Setup NPM cache
+      id: npm-cache
+      uses: actions/cache@v1
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-npm-cache
+
     - name: Add composer's bin directory to the PATH environment variable
       run: |
         echo "::add-path::$HOME/.composer/vendor/bin"

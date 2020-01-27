@@ -9,12 +9,11 @@ jobs:
 
     strategy:
       matrix:
-        php: [ '7.3' ]
-        include:
-          - php: '7.3'
-            DRUPAL_TRAVIS_DRUPAL_VERSION: ['~8.7.0']
-          - php: '7.3'
-            DRUPAL_TRAVIS_TEST_DEPRECATION: ['false']
+        DRUPAL_TRAVIS_DRUPAL_VERSION: ['~8.7.0', '~8.8.0']
+        DRUPAL_TRAVIS_TEST_DEPRECATION: ['true', 'false']
+        exclude:
+          - DRUPAL_TRAVIS_DRUPAL_VERSION: '~8.8.0'
+            DRUPAL_TRAVIS_TEST_DEPRECATION: 'true'
 
     steps:
     - uses: actions/checkout@v1
@@ -26,7 +25,7 @@ jobs:
     - uses: shivammathur/setup-php@master
       with:
         coverage: none
-        php-version: ${{ matrix.php }}
+        php-version: '7.3'
 
     - name: Get Composer Cache Directory
       id: composer-cache
@@ -53,6 +52,7 @@ jobs:
         echo "::set-env name=DRUPAL_TRAVIS_USE_SELENIUM::true"
         echo "::set-env name=DRUPAL_TRAVIS_TEST_FILTER::foo"
         echo '::set-env name=DRUPAL_TRAVIS_DRUPAL_VERSION::${{ matrix.DRUPAL_TRAVIS_DRUPAL_VERSION }}'
+        echo '::set-env name=DRUPAL_TRAVIS_TEST_DEPRECATION::${{ matrix.DRUPAL_TRAVIS_TEST_DEPRECATION }}'
 
     - name: Get build environment
       run: composer global require thunder/travis:dev-update-phpstan

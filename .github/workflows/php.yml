@@ -14,9 +14,14 @@ jobs:
         exclude:
           - DRUPAL_TRAVIS_DRUPAL_VERSION: '~8.8.0'
             DRUPAL_TRAVIS_TEST_DEPRECATION: 'true'
+          - DRUPAL_TRAVIS_DRUPAL_VERSION: '~8.7.0'
+            DRUPAL_TRAVIS_TEST_DEPRECATION: 'false'
 
     steps:
     - uses: actions/checkout@v1
+
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v1
 
     - uses: actions/setup-node@v1
       with:

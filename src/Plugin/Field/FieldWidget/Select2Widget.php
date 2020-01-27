@@ -103,7 +103,7 @@ class Select2Widget extends OptionsSelectWidget {
 
     $items = static::prepareFieldValues($values, $element);
     $form_state->setValueForElement($element, $items);
-    drupal_set_message('dd');
+    drupal_set_message(t('dd'));
   }
 
   /**

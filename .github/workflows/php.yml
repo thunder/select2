@@ -71,6 +71,3 @@ jobs:
 
     - name: Install drupal and run the tests
       run: test-drupal-project
-
-    - name: Test deprecations again
-      run: test-drupal-project deprecation

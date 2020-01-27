@@ -66,8 +66,11 @@ jobs:
     - name: Build the docroot
       run: test-drupal-project build
 
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v1
+#    - name: Setup tmate session
+#      uses: mxschmitt/action-tmate@v1
 
     - name: Install drupal and run the tests
       run: test-drupal-project
+
+    - name: Test deprecations again
+      run: test-drupal-project deprecation

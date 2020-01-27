@@ -12,16 +12,11 @@ jobs:
         DRUPAL_TRAVIS_DRUPAL_VERSION: ['~8.7.0', '~8.8.0']
         DRUPAL_TRAVIS_TEST_DEPRECATION: ['true', 'false']
         exclude:
-          - DRUPAL_TRAVIS_DRUPAL_VERSION: '~8.8.0'
-            DRUPAL_TRAVIS_TEST_DEPRECATION: 'true'
           - DRUPAL_TRAVIS_DRUPAL_VERSION: '~8.7.0'
             DRUPAL_TRAVIS_TEST_DEPRECATION: 'false'
 
     steps:
     - uses: actions/checkout@v1
-
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v1
 
     - uses: actions/setup-node@v1
       with:
@@ -67,6 +62,12 @@ jobs:
 
     - name: Add select2 library to the composer dependencies
       run: composer require npm-asset/select2:^4.0.7 --working-dir=/tmp/test/select2/install --no-update
+
+    - name: Build the docroot
+      run: test-drupal-project build
+
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v1
 
     - name: Install drupal and run the tests
       run: test-drupal-project

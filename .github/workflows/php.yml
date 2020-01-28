@@ -50,24 +50,17 @@ jobs:
       run: |
         echo "::add-path::$HOME/.composer/vendor/bin"
         echo "::set-env name=DRUPAL_TRAVIS_USE_SELENIUM::true"
-        echo "::set-env name=DRUPAL_TRAVIS_TEST_FILTER::foo"
         echo '::set-env name=DRUPAL_TRAVIS_DRUPAL_VERSION::${{ matrix.DRUPAL_TRAVIS_DRUPAL_VERSION }}'
         echo '::set-env name=DRUPAL_TRAVIS_TEST_DEPRECATION::${{ matrix.DRUPAL_TRAVIS_TEST_DEPRECATION }}'
 
     - name: Get build environment
       run: composer global require thunder/travis:dev-stan-twice
 
-    - name: Check coding styles
+    - name: Check coding styles and setup the environment
       run: test-drupal-project prepare_build
 
     - name: Add select2 library to the composer dependencies
       run: composer require npm-asset/select2:^4.0.7 --working-dir=/tmp/test/select2/install --no-update
 
-    - name: Build the docroot
-      run: test-drupal-project build
-
-#    - name: Setup tmate session
-#      uses: mxschmitt/action-tmate@v1
-
-    - name: Install drupal and run the tests
+    - name: Build docroot, test for deprecations, install drupal and run the tests
       run: test-drupal-project

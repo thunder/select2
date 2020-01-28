@@ -27,7 +27,7 @@
           }
           return option.text;
         };
-        $(this).data('select2-config', config);
+        $(this).data('select2-config', config)
 
         // Emit an event, that other modules have the chance to modify the
         // select2 settings. Make sure that other JavaScript code that rely on

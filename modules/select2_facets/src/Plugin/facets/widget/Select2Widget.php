@@ -44,6 +44,7 @@ class Select2Widget extends WidgetPluginBase implements ContainerFactoryPluginIn
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->request = $request;
     $this->keyValueStore = $key_value_store;
+    $foo = $_REQUEST;
   }
 
   /**

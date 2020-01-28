@@ -58,7 +58,7 @@ jobs:
     - name: Check PHP coding styles
       run: test-drupal-project coding_style
       env:
-        DRUPAL_TRAVIS_TEST_JAVASCRIPT: false
+        DRUPAL_TRAVIS_TEST_CODING_STYLES: false
 
     - name: Check coding styles and setup the environment
       run: test-drupal-project prepare_build

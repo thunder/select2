@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v1
 
       - name: phpcs
-        uses: hrysd/action-php_codesniffer@master
+        uses: chrfritsch/action-drupal-coder@test
         with:
           github_token: ${{ secrets.github_token }}
-          target_directory: .
+          level: warning

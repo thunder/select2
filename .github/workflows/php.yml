@@ -53,7 +53,7 @@ jobs:
         echo '::set-env name=DRUPAL_TRAVIS_TEST_DEPRECATION::${{ matrix.DRUPAL_TRAVIS_TEST_DEPRECATION }}'
 
     - name: Get build environment
-      run: composer global require thunder/travis:dev-stan-twice
+      run: composer global require thunder/travis
 
     - name: Check coding styles and setup the environment
       run: test-drupal-project prepare_build

@@ -1,4 +1,4 @@
-name: PHP Composer
+name: Run module tests
 
 on:
   pull_request:
@@ -30,18 +30,14 @@ jobs:
         coverage: none
         php-version: '7.3'
 
-    - name: Get Composer Cache Directory
-      id: composer-cache
-      run: echo "::set-output name=dir::$(composer config cache-dir)"
-
-    - name: Cache dependencies
+    - name: Cache composer dependencies
       uses: actions/cache@v1
       with:
-        path: ${{ steps.composer-cache.outputs.dir }}
+        path: ~/.composer/cache
         key: ${{ runner.os }}-composer-cache-${{ hashFiles('**/composer.json') }}
         restore-keys: ${{ runner.os }}-composer-cache-
 
-    - name: Setup NPM cache
+    - name: Cache NPM dependencies
       id: npm-cache
       uses: actions/cache@v1
       with:
@@ -49,7 +45,7 @@ jobs:
         key: ${{ runner.os }}-npm-cache
         restore-keys: ${{ runner.os }}-npm-cache
 
-    - name: Add composer's bin directory to the PATH environment variable
+    - name: Setup environment variables
       run: |
         echo "::add-path::$HOME/.composer/vendor/bin"
         echo "::set-env name=DRUPAL_TRAVIS_USE_SELENIUM::true"

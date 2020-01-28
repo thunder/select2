@@ -1,0 +1,17 @@
+name: Check coding styles
+
+on:
+  pull_request:
+    branches:
+      - 8.x-[1-9]+.x
+
+jobs:
+  eslint:
+    name: runner / eslint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: eslint
+        uses: reviewdog/action-eslint@v1
+        with:
+          github_token: ${{ secrets.github_token }}

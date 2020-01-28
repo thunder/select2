@@ -60,11 +60,6 @@ jobs:
       env:
         DRUPAL_TRAVIS_TEST_JAVASCRIPT: false
 
-    - name: Check eslint coding styles
-      uses: reviewdog/action-eslint@v1
-      with:
-        github_token: ${{ secrets.github_token }}
-
     - name: Check coding styles and setup the environment
       run: test-drupal-project prepare_build
 

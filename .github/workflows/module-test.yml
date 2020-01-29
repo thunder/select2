@@ -50,9 +50,6 @@ jobs:
     - name: Setup environment variables
       run: |
         echo "::add-path::$HOME/.composer/vendor/bin"
-        echo "::set-env name=DRUPAL_TRAVIS_USE_SELENIUM::true"
-        echo '::set-env name=DRUPAL_TRAVIS_DRUPAL_VERSION::${{ matrix.DRUPAL_TRAVIS_DRUPAL_VERSION }}'
-        echo '::set-env name=DRUPAL_TRAVIS_TEST_DEPRECATION::${{ matrix.DRUPAL_TRAVIS_TEST_DEPRECATION }}'
 
     - name: Get build environment
       run: composer global require thunder/travis
@@ -62,11 +59,29 @@ jobs:
       env:
         DRUPAL_TRAVIS_TEST_CODING_STYLES: false
 
-    - name: Check coding styles and setup the environment
+    - name: Setup the environment
+      run: test-drupal-project setup
+      env:
+        DRUPAL_TRAVIS_USE_SELENIUM: true
+
+    - name: Prepare the build
       run: test-drupal-project prepare_build
+      env:
+        DRUPAL_TRAVIS_DRUPAL_VERSION: ${{ matrix.DRUPAL_TRAVIS_DRUPAL_VERSION }}
 
     - name: Add select2 library to the composer dependencies
       run: composer require npm-asset/select2:^4.0.7 --working-dir=/tmp/test/select2/install --no-update
 
-    - name: Build docroot, test for deprecations, install drupal and run the tests
+    - name: Build the docroot
+      run: test-drupal-project build
+
+    - name: Test for deprecations
+      run: test-drupal-project deprecation
+      env:
+        DRUPAL_TRAVIS_TEST_DEPRECATION: ${{ matrix.DRUPAL_TRAVIS_TEST_DEPRECATION }}
+
+    - name: Install drupal
+      run: test-drupal-project install
+
+    - name: Start webserver and run the tests
       run: test-drupal-project

@@ -51,7 +51,7 @@ jobs:
     - name: Setup environment variables
       run: |
         echo "::add-path::$HOME/.composer/vendor/bin"
-        echo "::set-env name=DRUPAL_TRAVIS_DATABASE_ENGINE::sqlite"
+        echo "::set-env name=DRUPAL_TESTING_DATABASE_ENGINE::sqlite"
 
     - name: Get build environment
       run: composer global require thunder/drupal-testing:dev-task/rename

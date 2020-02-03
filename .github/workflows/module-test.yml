@@ -61,8 +61,6 @@ jobs:
 
     - name: Setup the environment
       run: test-drupal-project setup
-      env:
-        DRUPAL_TRAVIS_USE_SELENIUM: true
 
     - name: Prepare the build
       run: test-drupal-project prepare_build

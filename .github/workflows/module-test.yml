@@ -14,11 +14,11 @@ jobs:
 
     strategy:
       matrix:
-        DRUPAL_TRAVIS_DRUPAL_VERSION: ['~8.7.0', '~8.8.0']
-        DRUPAL_TRAVIS_TEST_DEPRECATION: ['true', 'false']
+        DRUPAL_TESTING_DRUPAL_VERSION: ['~8.7.0', '~8.8.0']
+        DRUPAL_TESTING_TEST_DEPRECATION: ['true', 'false']
         exclude:
-          - DRUPAL_TRAVIS_DRUPAL_VERSION: '~8.7.0'
-            DRUPAL_TRAVIS_TEST_DEPRECATION: 'false'
+          - DRUPAL_TESTING_DRUPAL_VERSION: '~8.7.0'
+            DRUPAL_TESTING_TEST_DEPRECATION: 'false'
 
     steps:
     - uses: actions/checkout@v1
@@ -52,12 +52,12 @@ jobs:
         echo "::add-path::$HOME/.composer/vendor/bin"
 
     - name: Get build environment
-      run: composer global require thunder/travis
+      run: composer global require thunder/drupal-testing:dev-task/rename
 
     - name: Check PHP coding styles
       run: test-drupal-project coding_style
       env:
-        DRUPAL_TRAVIS_TEST_CODING_STYLES: false
+        DRUPAL_TESTING_TEST_CODING_STYLES: false
 
     - name: Setup the environment
       run: test-drupal-project setup
@@ -67,7 +67,7 @@ jobs:
     - name: Prepare the build
       run: test-drupal-project prepare_build
       env:
-        DRUPAL_TRAVIS_DRUPAL_VERSION: ${{ matrix.DRUPAL_TRAVIS_DRUPAL_VERSION }}
+        DRUPAL_TESTING_DRUPAL_VERSION: ${{ matrix.DRUPAL_TESTING_DRUPAL_VERSION }}
 
     - name: Add select2 library to the composer dependencies
       run: composer require npm-asset/select2:^4.0.7 --working-dir=/tmp/test/select2/install --no-update
@@ -78,7 +78,7 @@ jobs:
     - name: Test for deprecations
       run: test-drupal-project deprecation
       env:
-        DRUPAL_TRAVIS_TEST_DEPRECATION: ${{ matrix.DRUPAL_TRAVIS_TEST_DEPRECATION }}
+        DRUPAL_TESTING_TEST_DEPRECATION: ${{ matrix.DRUPAL_TESTING_TEST_DEPRECATION }}
 
     - name: Install drupal
       run: test-drupal-project install

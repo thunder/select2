@@ -15,17 +15,8 @@ jobs:
     strategy:
       matrix:
         DRUPAL_TESTING_DRUPAL_VERSION: ['~8.7.0', '~8.8.0']
-        DRUPAL_TESTING_TEST_DEPRECATION: ['true', 'false']
-        exclude:
-          - DRUPAL_TESTING_DRUPAL_VERSION: '~8.7.0'
-            DRUPAL_TESTING_TEST_DEPRECATION: 'false'
-        include:
-          - DRUPAL_TESTING_DRUPAL_VERSION: '~8.8.0'
-            DRUPAL_TESTING_TEST_DEPRECATION: 'true'
-            CONTINUE_ON_ERROR: 'true'
 
     steps:
-    - continue-on-error: ${{ matrix.CONTINUE_ON_ERROR }}
     - uses: actions/checkout@v1
 
     - uses: actions/setup-node@v1
@@ -80,8 +71,7 @@ jobs:
 
     - name: Test for deprecations
       run: test-drupal-project deprecation
-      env:
-        DRUPAL_TESTING_TEST_DEPRECATION: ${{ matrix.DRUPAL_TESTING_TEST_DEPRECATION }}
+      continue-on-error: ${{ matrix.DRUPAL_TESTING_DRUPAL_VERSION == '~8.8.0' }}
 
     - name: Install drupal
       run: test-drupal-project install

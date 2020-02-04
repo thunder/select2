@@ -75,6 +75,8 @@ jobs:
 
     - name: Install drupal
       run: test-drupal-project install
+      env:
+        DRUPAL_TESTING_TEST_DEPRECATION: false
 
     - name: Start webserver and run the tests
       run: test-drupal-project

@@ -48,7 +48,7 @@ jobs:
         echo "::add-path::$HOME/.composer/vendor/bin"
 
     - name: Get build environment
-      run: composer global require thunder/drupal-testing:dev-master
+      run: composer global require thunder/drupal-testing:dev-task/remove-libraries-handling
 
     - name: Check PHP coding styles
       run: test-drupal-project coding_style

@@ -72,7 +72,7 @@ jobs:
 
     - name: Test for deprecations
       run: test-drupal-project deprecation
-      continue-on-error: ${{ matrix.DRUPAL_TESTING_DRUPAL_VERSION == '~8.8.0' }}
+      continue-on-error: true
 
     - name: Install drupal
       run: test-drupal-project install

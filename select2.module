@@ -9,14 +9,26 @@
  * Implements hook_library_info_alter().
  */
 function select2_library_info_alter(&$libraries, $extension) {
-  if ($extension === 'select2' && function_exists('libraries_get_path')) {
-    $libraries['select2.min']['js'] = ['/' . libraries_get_path('select2') . '/dist/js/select2.min.js' => ['minified' => TRUE]];
-    $libraries['select2.min']['css']['component'] = ['/' . libraries_get_path('select2') . '/dist/css/select2.min.css' => []];
+  if ($extension === 'select2') {
+    $different_libraries_path = '';
+    if (function_exists('libraries_get_path')) {
+      $different_libraries_path = libraries_get_path('select2');
+    } elseif (\Drupal::hasService('library.libraries_directory_file_finder')) {
+      /** @var \Drupal\Core\Asset\LibrariesDirectoryFileFinder $library_file_finder */
+      $library_file_finder = \Drupal::service('library.libraries_directory_file_finder');
+      $different_libraries_path = $library_file_finder->find('dist/js/select2.min.js');
+    }
+
+    if (!$different_libraries_path) {
+      return;
+    }
+    $libraries['select2.min']['js'] = ['/' . $different_libraries_path. '/dist/js/select2.min.js' => ['minified' => TRUE]];
+    $libraries['select2.min']['css']['component'] = ['/' . $different_libraries_path . '/dist/css/select2.min.css' => []];
     foreach (\Drupal::languageManager()->getLanguages() as $language) {
-      if (file_exists(libraries_get_path('select2') . '/dist/js/i18n/' . $language->getId() . '.js')) {
+      if (file_exists($different_libraries_path. '/dist/js/i18n/' . $language->getId() . '.js')) {
         $libraries['select2.i18n.' . $language->getId()] = [
           'js' => [
-            '/' . libraries_get_path('select2') . '/dist/js/i18n/' . $language->getId() . '.js' => ['minified' => TRUE],
+            '/' . $different_libraries_path . '/dist/js/i18n/' . $language->getId() . '.js' => ['minified' => TRUE],
           ],
           'dependencies' => [
             'select2/select2',

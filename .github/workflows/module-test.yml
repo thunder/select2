@@ -69,6 +69,10 @@ jobs:
     - name: Build the docroot
       run: test-drupal-project build
 
+      #   Start a debug session.
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v1
+
     - name: Test for deprecations
       run: test-drupal-project deprecation
       continue-on-error: ${{ matrix.DRUPAL_TESTING_DRUPAL_VERSION == '~8.8.0' }}

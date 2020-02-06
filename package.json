@@ -1,0 +1,18 @@
+{
+  "name": "select2",
+  "version": "1.0.0",
+  "description": "This is a [select2](https://select2.org/) integration for Drupal 8. It provides a render element (for usage in forms) and two field widgets. One for simple select fields and another for entity reference fields.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thunder/select2.git"
+  },
+  "author": "Christian Fritsch",
+  "license": "GPL-2.0-or-later",
+  "bugs": {
+    "url": "https://github.com/thunder/select2/issues"
+  },
+  "homepage": "https://github.com/thunder/select2#readme",
+  "devDependencies": {
+    "eslint": "^6.8.0"
+  }
+}

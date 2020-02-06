@@ -14,7 +14,20 @@ function select2_requirements($phase) {
   if ($phase == 'runtime') {
     /** @var \Drupal\Core\Asset\LibraryDiscovery $lib */
     $lib = \Drupal::service('library.discovery');
-    if ((function_exists('libraries_get_path') && libraries_get_path('select2')) || (file_exists($lib->getLibraryByName('select2', 'select2.min')['js'][0]['data']))) {
+
+    if (\Drupal::hasService('library.libraries_directory_file_finder')) {
+      /** @var \Drupal\Core\Asset\LibrariesDirectoryFileFinder $library_file_finder */
+      $library_file_finder = \Drupal::service('library.libraries_directory_file_finder');
+      $library_found = $library_file_finder->find('select2');
+    }
+    elseif (function_exists('libraries_get_path')) {
+      $library_found = libraries_get_path('select2');
+    }
+    else {
+      $library_found = file_exists($lib->getLibraryByName('select2', 'select2.min')['js'][0]['data']);
+    }
+
+    if ($library_found) {
       $requirements['select2'] = [
         'title' => 'select2',
         'value' => t('Select2 library found'),

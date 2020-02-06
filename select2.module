@@ -19,7 +19,6 @@ function select2_library_info_alter(&$libraries, $extension) {
     elseif (function_exists('libraries_get_path')) {
       $different_libraries_path = libraries_get_path('select2');
     }
-
     if (!$different_libraries_path) {
       return;
     }

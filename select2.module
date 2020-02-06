@@ -5,9 +5,6 @@
  * This is the Select2 module.
  */
 
-use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
-use Drupal\select2\Plugin\Field\FieldWidget\Select2EntityReferenceWidget;
-
 /**
  * Implements hook_library_info_alter().
  */

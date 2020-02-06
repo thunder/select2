@@ -17,11 +17,11 @@ jobs:
       matrix:
         DRUPAL_TESTING_DRUPAL_VERSION: ['~8.7.0', '~8.8.0', '8.9.x-dev']
         PHP: ['7.3', '7.4']
-      exclude:
-        - DRUPAL_TESTING_DRUPAL_VERSION: '~8.7.0'
-          PHP: '7.4'
-        - DRUPAL_TESTING_DRUPAL_VERSION: '~8.8.0'
-          PHP: '7.4'
+        exclude:
+          - DRUPAL_TESTING_DRUPAL_VERSION: '~8.7.0'
+            PHP: '7.4'
+          - DRUPAL_TESTING_DRUPAL_VERSION: '~8.8.0'
+            PHP: '7.4'
 
     steps:
     - uses: actions/checkout@v1

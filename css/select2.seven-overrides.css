@@ -3,6 +3,22 @@
 .select2-container--seven .select2-selection--single .select2-selection__arrow {
   height: 31px;
 }
+.select2-container--seven .select2-selection--single .select2-selection__arrow b,
+.select2-container--seven.select2-container--open .select2-selection--single .select2-selection__arrow b {
+  margin-left: -7px;
+  margin-top: -3px;
+}
+
+.select2-container--seven .select2-selection--single .select2-selection__arrow b {
+  border-color: #333333 transparent transparent transparent;
+  border-width: 6px 4px 0 4px;
+}
+
+.select2-container--seven.select2-container--open .select2-selection--single .select2-selection__arrow b {
+  border-color: transparent transparent #333333 transparent;
+  border-width: 0 4px 6px 4px;
+}
+
 .select2-container--seven .select2-selection--multiple {
   height: auto;
 }

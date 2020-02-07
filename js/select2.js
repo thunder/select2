@@ -2,47 +2,48 @@
  * @file
  * Select2 integration.
  */
+
 (function ($, drupalSettings) {
   'use strict';
 
-  var passIt = function () {
-    function SelectAll() {}
+  $.fn.select2.amd.define("CustomDropdownAdapter", [
+      'select2/utils',
+      'select2/dropdown',
+      'select2/dropdown/attachBody'
+    ],
+    function (Utils, Dropdown, AttachBody) {
 
-    SelectAll.prototype.render = function (decorated) {
-      var $rendered = decorated.call(this);
-      var self = this;
+      let dropdownWithButton = Utils.Decorate(Dropdown, AttachBody);
 
-      var $selectAll = $(
-        '<button type="button">Select All</button>'
-      );
+      dropdownWithButton.prototype.render = function () {
+        var $rendered = Dropdown.prototype.render.call(this);
 
-      $rendered.find('.select2-dropdown').prepend($selectAll);
+        var $selectAll = $(
+          '<button type="button">Select All</button>'
+        );
 
-      $selectAll.on('click', function (e) {
-        var $results = $rendered.find('.select2-results__option[aria-selected=false]');
+        var self = this;
 
-        // Get all results that aren't selected
-        $results.each(function () {
-          var $result = $(this);
+        $selectAll.on('click', function (e) {
+          // Get all results that aren't selected.
+          let $results = $rendered.find('.select2-results__option[aria-selected=false]');
 
-          // Get the data object for it
-          var data = $result.data('data');
-
-          // Trigger the select event
-          self.trigger('select', {
-            data: data
+          $results.each(function (foo, bar) {
+            // Trigger the select event.
+            self.trigger('select', {
+              data: Utils.GetData(bar, 'data')
+            });
           });
+          self.trigger('close');
         });
 
-        self.trigger('close');
-      });
+        $rendered.prepend($selectAll);
 
-      return $rendered;
-    }
+        return $rendered;
+      };
 
-    return SelectAll;
-  }
-
+      return Utils.Decorate(dropdownWithButton, AttachBody);
+    });
 
   Drupal.behaviors.select2 = {
     attach: function (context) {
@@ -59,6 +60,8 @@
             text: term
           };
         };
+        config.dropdownAdapter = $.fn.select2.amd.require("CustomDropdownAdapter")
+
         config.templateSelection = function (option, container) {
           // The placeholder doesn't have value.
           if ('element' in option && 'value' in option.element) {
@@ -68,20 +71,6 @@
           return option.text;
         };
 
-        $.fn.select2.amd.require([
-          'select2/utils',
-          'select2/dropdown',
-          'select2/dropdown/attachBody'
-        ], function (Utils, Dropdown, AttachBody) {
-          config.dropdownAdapter = Utils.Decorate(
-            Utils.Decorate(
-              Dropdown,
-              AttachBody
-            ),
-            passIt()
-          );
-
-        });
 
         $(this).data('select2-config', config);
 
@@ -98,7 +87,8 @@
         }
         $(this).select2(config);
 
-        // Copied from https://github.com/woocommerce/woocommerce/blob/master/assets/js/admin/wc-enhanced-select.js#L118
+        // Copied from
+        // https://github.com/woocommerce/woocommerce/blob/master/assets/js/admin/wc-enhanced-select.js#L118
         if (Object.prototype.hasOwnProperty.call(config, 'ajax')) {
           var $select = $(this);
           var $list = $(this).next('.select2-container').find('ul.select2-selection__rendered');

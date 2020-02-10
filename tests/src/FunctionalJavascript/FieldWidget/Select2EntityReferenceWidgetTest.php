@@ -398,6 +398,42 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
   }
 
   /**
+   * Tests that the autocomplete ordering is alphabetically.
+   */
+  public function testAutocompleteMatchLimit() {
+    $this->createField('select2', 'node', 'test', 'entity_reference', [
+      'target_type' => 'entity_test_mulrevpub',
+    ], [
+      'handler' => 'default:entity_test_mulrevpub',
+      'handler_settings' => [
+        'auto_create' => FALSE,
+      ],
+    ], 'select2_entity_reference', [
+      'autocomplete' => TRUE,
+      'match_operator' => 'CONTAINS',
+      'match_limit' => 3,
+    ]);
+
+    EntityTestMulRevPub::create(['name' => 'foo'])->save();
+    EntityTestMulRevPub::create(['name' => 'foo bar'])->save();
+    EntityTestMulRevPub::create(['name' => 'bar foo'])->save();
+    EntityTestMulRevPub::create(['name' => 'foooo'])->save();
+
+    $this->drupalGet('/node/add/test');
+    $settings = Json::decode($this->getSession()->getPage()->findField('select2')->getAttribute('data-select2-config'));
+
+    $url = Url::fromUserInput($settings['ajax']['url']);
+    $url->setAbsolute(TRUE);
+    $url->setRouteParameter('q', 'f');
+
+    $response = \Drupal::httpClient()->get($url->toString());
+
+    $results = Json::decode($response->getBody()->getContents())['results'];
+
+    $this->assertCount(3, count($results));
+  }
+
+  /**
    * Tests the autocomplete drag n drop.
    */
   public function testAutocompleteDragnDrop() {

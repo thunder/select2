@@ -428,9 +428,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
 
     $response = \Drupal::httpClient()->get($url->toString());
 
-    $results = Json::decode($response->getBody()->getContents())['results'];
-
-    $this->assertCount(3, count($results));
+    $this->assertCount(3, Json::decode($response->getBody()->getContents())['results']);
   }
 
   /**

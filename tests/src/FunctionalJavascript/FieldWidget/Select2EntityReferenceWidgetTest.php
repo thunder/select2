@@ -38,7 +38,11 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
       'handler_settings' => [
         'auto_create' => $autocreate,
       ],
-    ], 'select2_entity_reference', ['autocomplete' => $autocomplete, 'match_operator' => $match_operator]);
+    ], 'select2_entity_reference', [
+      'autocomplete' => $autocomplete,
+      'match_operator' => $match_operator,
+      'match_limit' => 10,
+    ]);
 
     EntityTestMulRevPub::create(['name' => 'foo'])->save();
     EntityTestMulRevPub::create(['name' => 'bar'])->save();
@@ -367,7 +371,11 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
       'handler_settings' => [
         'auto_create' => FALSE,
       ],
-    ], 'select2_entity_reference', ['autocomplete' => TRUE, 'match_operator' => 'CONTAINS']);
+    ], 'select2_entity_reference', [
+      'autocomplete' => TRUE,
+      'match_operator' => 'CONTAINS',
+      'match_limit' => 10,
+    ]);
 
     EntityTestMulRevPub::create(['name' => 'foo'])->save();
     EntityTestMulRevPub::create(['name' => 'bar'])->save();
@@ -387,6 +395,40 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
 
     $expected = [['id' => 3, 'text' => 'bar foo'], ['id' => 1, 'text' => 'foo']];
     $this->assertSame($expected, $results);
+  }
+
+  /**
+   * Tests that the autocomplete ordering is alphabetically.
+   */
+  public function testAutocompleteMatchLimit() {
+    $this->createField('select2', 'node', 'test', 'entity_reference', [
+      'target_type' => 'entity_test_mulrevpub',
+    ], [
+      'handler' => 'default:entity_test_mulrevpub',
+      'handler_settings' => [
+        'auto_create' => FALSE,
+      ],
+    ], 'select2_entity_reference', [
+      'autocomplete' => TRUE,
+      'match_operator' => 'CONTAINS',
+      'match_limit' => 3,
+    ]);
+
+    EntityTestMulRevPub::create(['name' => 'foo'])->save();
+    EntityTestMulRevPub::create(['name' => 'foo bar'])->save();
+    EntityTestMulRevPub::create(['name' => 'bar foo'])->save();
+    EntityTestMulRevPub::create(['name' => 'foooo'])->save();
+
+    $this->drupalGet('/node/add/test');
+    $settings = Json::decode($this->getSession()->getPage()->findField('select2')->getAttribute('data-select2-config'));
+
+    $url = Url::fromUserInput($settings['ajax']['url']);
+    $url->setAbsolute(TRUE);
+    $url->setRouteParameter('q', 'f');
+
+    $response = \Drupal::httpClient()->get($url->toString());
+
+    $this->assertCount(3, Json::decode($response->getBody()->getContents())['results']);
   }
 
   /**

@@ -10,6 +10,7 @@
         }
     ],
     "require-dev": {
+        "drupal/facets": "^1.4",
         "drupal/form_options_attributes": "^1.1"
     }
 }

@@ -152,8 +152,9 @@ class Select2 extends Select {
       }
     }
 
-    if (!$element['#multiple'] && !isset($element['#options'][''])) {
-      $empty_option = ['' => ''];
+    $empty_value = isset($element['#empty_value']) ? $element['#empty_value'] : '';
+    if (!$element['#multiple'] && !isset($element['#options'][$empty_value])) {
+      $empty_option = [$empty_value => isset($element['#empty_option']) ? $element['#empty_option'] : ''];
       $element['#options'] = $empty_option + $element['#options'];
     }
 
@@ -202,10 +203,25 @@ class Select2 extends Select {
     $current_language = \Drupal::languageManager()->getCurrentLanguage();
     $current_theme = \Drupal::theme()->getActiveTheme()->getName();
     $select2_theme_exists = \Drupal::service('library.discovery')->getLibraryByName($current_theme, 'select2.theme');
+
+    // placeholder should be taken from #placeholder property if it set, otherwise we can take it from '#empty_option' property
+    if(isset($element['#placeholder']))
+    {
+      $placeholder = $element['#placeholder'];
+    }
+    elseif(isset($element['#empty_option']))
+    {
+      $placeholder = $element['#empty_option'];
+    }
+    else
+    {
+      $placeholder = $required ? new TranslatableMarkup('- Select -') : new TranslatableMarkup('- None -');
+    }
+
     // Defining the select2 configuration.
     $settings = [
       'multiple' => $multiple,
-      'placeholder' => $required ? new TranslatableMarkup('- Select -') : new TranslatableMarkup('- None -'),
+      'placeholder' => $placeholder,
       // @TODO: Enable allowClear for multiple fields. https://github.com/select2/select2/issues/3335.
       'allowClear' => !$multiple && !$required,
       'dir' => $current_language->getDirection(),

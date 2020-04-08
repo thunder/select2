@@ -36,8 +36,8 @@ jobs:
         php-version: '7.3'
 
     - name: Start MySql service
-       run: |
-         sudo /etc/init.d/mysql start
+      run: |
+        sudo /etc/init.d/mysql start
 
     - name: Cache composer dependencies
       uses: actions/cache@v1

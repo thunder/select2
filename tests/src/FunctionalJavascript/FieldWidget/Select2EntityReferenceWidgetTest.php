@@ -435,6 +435,10 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
    * Tests the autocomplete drag n drop.
    */
   public function testAutocompleteDragnDrop() {
+    $this->markTestSkipped(
+      'Testing drag and drop is currently not possible due to a bug in chromedriver. See https://www.drupal.org/node/3084730.'
+    );
+
     $this->createField('select2', 'node', 'test', 'entity_reference', [
       'target_type' => 'entity_test_mulrevpub',
       'cardinality' => -1,

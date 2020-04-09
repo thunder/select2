@@ -15,11 +15,9 @@ jobs:
 
     strategy:
       matrix:
-        DRUPAL_TESTING_DRUPAL_VERSION: ['~8.7.0', '~8.8.0', '8.9.x-dev']
+        DRUPAL_TESTING_DRUPAL_VERSION: ['~8.8.0', '~8.9.0']
         PHP: ['7.3', '7.4']
         exclude:
-          - DRUPAL_TESTING_DRUPAL_VERSION: '~8.7.0'
-            PHP: '7.4'
           - DRUPAL_TESTING_DRUPAL_VERSION: '~8.8.0'
             PHP: '7.4'
 
@@ -61,9 +59,6 @@ jobs:
       run: test-drupal-project coding_style
       env:
         DRUPAL_TESTING_TEST_CODING_STYLES: false
-
-    - name: Setup the environment
-      run: test-drupal-project setup
 
     - name: Prepare the build
       run: test-drupal-project prepare_build

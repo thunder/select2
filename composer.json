@@ -16,9 +16,6 @@
     },
     "extra": {
         "patches": {
-            "drupal/facets": {
-                "Tests are failing on D9": "https://www.drupal.org/files/issues/2020-04-09/3126196-2.patch"
-            },
             "drupal/form_options_attributes": {
                 "Add missing core_version_requirement in tests": "https://www.drupal.org/files/issues/2020-04-09/3126225-2.patch"
             }

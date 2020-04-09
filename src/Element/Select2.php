@@ -204,17 +204,15 @@ class Select2 extends Select {
     $current_theme = \Drupal::theme()->getActiveTheme()->getName();
     $select2_theme_exists = \Drupal::service('library.discovery')->getLibraryByName($current_theme, 'select2.theme');
 
-    // placeholder should be taken from #placeholder property if it set, otherwise we can take it from '#empty_option' property
-    if(isset($element['#placeholder']))
-    {
+    // Placeholder should be taken from #placeholder property if it set.
+    // Otherwise we can take it from '#empty_option' property.
+    if (isset($element['#placeholder'])) {
       $placeholder = $element['#placeholder'];
     }
-    elseif(isset($element['#empty_option']))
-    {
+    elseif (isset($element['#empty_option'])) {
       $placeholder = $element['#empty_option'];
     }
-    else
-    {
+    else {
       $placeholder = $required ? new TranslatableMarkup('- Select -') : new TranslatableMarkup('- None -');
     }
 

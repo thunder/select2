@@ -8,6 +8,12 @@ on:
   schedule:
     - cron:  '0 6 * * *'
 
+env:
+   DRUPAL_TESTING_TEST_CODING_STYLES: false
+   DRUPAL_TESTING_DATABASE_USER: root
+   DRUPAL_TESTING_DATABASE_PASSWORD: root
+   DRUPAL_TESTING_DATABASE_ENGINE: mysql
+
 jobs:
   build:
 
@@ -15,11 +21,13 @@ jobs:
 
     strategy:
       matrix:
-        DRUPAL_TESTING_DRUPAL_VERSION: ['~8.8.0', '~8.9.0']
+        DRUPAL_TESTING_DRUPAL_VERSION: ['~8.8.0', '~8.9.0', '~9.0.0']
         PHP: ['7.3', '7.4']
         exclude:
           - DRUPAL_TESTING_DRUPAL_VERSION: '~8.8.0'
             PHP: '7.4'
+          - DRUPAL_TESTING_DRUPAL_VERSION: '~9.0.0'
+            PHP: '7.3'
 
     steps:
     - uses: actions/checkout@v1
@@ -32,6 +40,10 @@ jobs:
       with:
         coverage: none
         php-version: ${{ matrix.PHP }}
+
+    - name: Start MySql service
+      run: |
+        sudo /etc/init.d/mysql start
 
     - name: Cache composer dependencies
       uses: actions/cache@v1
@@ -73,7 +85,7 @@ jobs:
 
     - name: Test for deprecations
       run: test-drupal-project deprecation
-      continue-on-error: ${{ matrix.DRUPAL_TESTING_DRUPAL_VERSION == '~8.8.0' }}
+      continue-on-error: true
 
     - name: Install drupal
       run: test-drupal-project install

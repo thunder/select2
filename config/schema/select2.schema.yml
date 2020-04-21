@@ -16,3 +16,6 @@ field.widget.settings.select2_entity_reference:
     match_operator:
       type: string
       label: 'Autocomplete matching'
+    match_limit:
+      type: integer
+      label: 'Maximum number of autocomplete suggestions.'

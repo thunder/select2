@@ -17,6 +17,11 @@ class ViewsExposedFilterTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
+  protected $defaultTheme = 'stark';
+
+  /**
+   * {@inheritdoc}
+   */
   protected static $modules = ['select2_form_test', 'node', 'views'];
 
   /**

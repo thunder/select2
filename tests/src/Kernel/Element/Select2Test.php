@@ -59,6 +59,17 @@ class Select2Test extends KernelTestBase {
     ];
     $this->render($select);
     $this->assertOptionNotExists('field-foo', '');
+
+    // #empty_value and #empty_option properties check
+    $select = [
+      '#type' => 'select2',
+      '#options' => [1 => 'One', 2 => 'Two'],
+      '#empty_option' => 'zero',
+      '#empty_value' => 'Zero option value',
+      '#attributes' => ['data-drupal-selector' => 'field-foo'],
+    ];
+    $this->render($select);
+    $this->assertOptionExists('field-foo', 'zero');
   }
 
   /**

@@ -191,6 +191,8 @@ class Select2Test extends UnitTestCase {
     $element = [
       '#name' => 'field_foo',
       '#options' => [],
+      '#multiple' => false,
+      '#required' => false,
       '#attributes' => ['data-drupal-selector' => 'field-foo'],
       '#placeholder' => 'test-placeholder',
       '#select2' => [],

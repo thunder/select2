@@ -18,6 +18,11 @@ class ElementTest extends WebDriverTestBase {
   protected static $modules = ['select2_form_test', 'entity_test'];
 
   /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'stark';
+
+  /**
    * Tests select2 optgroups.
    */
   public function testOptgroups() {

@@ -183,4 +183,40 @@ class Select2Test extends UnitTestCase {
     return $data;
   }
 
+
+  /**
+   * checks #placeholder property
+   */
+  public function testPlaceholderPropertyRendering() {
+    $element = [
+      '#name' => 'field_foo',
+      '#options' => [],
+      '#attributes' => ['data-drupal-selector' => 'field-foo'],
+      '#placeholder' => 'test-placeholder',
+      '#select2' => [],
+    ];
+
+    $element = Select2::preRenderSelect($element);
+    $element = Select2::preRenderAutocomplete($element);
+    $element = Select2::preRenderOverwrites($element);
+
+    $expected = [
+      'name' => 'field_foo',
+      'data-select2-config' => Json::encode([
+        'multiple' => FALSE,
+        'placeholder' => 'test-placeholder',
+        'allowClear' => TRUE,
+        'dir' => 'rtl',
+        'language' => 'en',
+        'tags' => FALSE,
+        'theme' => 'seven',
+        'maximumSelectionLength' => 0,
+        'tokenSeparators' => [],
+        'selectOnClose' => FALSE,
+        'width' => '100%',
+      ]),
+    ];
+
+    $this->assertEquals($expected, array_intersect_key($element['#attributes'], $expected));
+  }
 }

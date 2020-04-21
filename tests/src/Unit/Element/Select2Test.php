@@ -185,7 +185,7 @@ class Select2Test extends UnitTestCase {
 
 
   /**
-   * checks #placeholder property
+   * Checks #placeholder property.
    */
   public function testPlaceholderPropertyRendering() {
     $element = [
@@ -219,4 +219,5 @@ class Select2Test extends UnitTestCase {
 
     $this->assertEquals($expected, array_intersect_key($element['#attributes'], $expected));
   }
+
 }

@@ -63,6 +63,7 @@ class Select2Test extends KernelTestBase {
     // #empty_value and #empty_option properties check
     $select = [
       '#type' => 'select2',
+      '#required' => FALSE,
       '#options' => [1 => 'One', 2 => 'Two'],
       '#empty_option' => 'zero',
       '#empty_value' => 'Zero option value',

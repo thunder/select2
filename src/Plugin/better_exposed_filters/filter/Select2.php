@@ -32,6 +32,7 @@ class Select2 extends FilterWidgetBase {
       $form[$field_id]['#multiple'] = !empty($filter->options['expose']['multiple']) && $filter->options['expose']['multiple'];
       $form[$field_id]['#select2'] = [
         'width' => '100%',
+        'allowClear' => FALSE,
       ];
     }
   }

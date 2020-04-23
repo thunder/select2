@@ -152,7 +152,7 @@ class Select2 extends Select {
       }
     }
 
-    $empty_value = isset($element['#empty_value']) ? $element['#empty_value'] : '';
+    $empty_value = $element['#empty_value'] ?? '';
     if (!$element['#multiple'] && !isset($element['#options'][$empty_value])) {
       $empty_option = [$empty_value => isset($element['#empty_option']) ? $element['#empty_option'] : ''];
       $element['#options'] = $empty_option + $element['#options'];

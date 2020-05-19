@@ -22,7 +22,7 @@ jobs:
     strategy:
       matrix:
         DRUPAL_TESTING_DRUPAL_VERSION: ['~8.8.0', '~8.9.0', '~9.0.0']
-        PHP: ['7.3', '7.4']
+        PHP: ['7.3.16', '7.4']
         exclude:
           - DRUPAL_TESTING_DRUPAL_VERSION: '~8.8.0'
             PHP: '7.4'

@@ -36,14 +36,13 @@ jobs:
       with:
         node-version: '12.x'
 
-    - uses: shivammathur/setup-php@master
+    - uses: shivammathur/setup-php@v2
       with:
         coverage: none
         php-version: ${{ matrix.PHP }}
 
     - name: Start MySql service
-      run: |
-        sudo /etc/init.d/mysql start
+      run: sudo /etc/init.d/mysql start
 
     - name: Cache composer dependencies
       uses: actions/cache@v1
@@ -60,17 +59,8 @@ jobs:
         key: ${{ runner.os }}-npm-cache
         restore-keys: ${{ runner.os }}-npm-cache
 
-    - name: Setup environment variables
-      run: |
-        echo "::add-path::$HOME/.composer/vendor/bin"
-
     - name: Get build environment
       run: composer global require thunder/drupal-testing
-
-    - name: Check PHP coding styles
-      run: test-drupal-project coding_style
-      env:
-        DRUPAL_TESTING_TEST_CODING_STYLES: false
 
     - name: Prepare the build
       run: test-drupal-project prepare_build
@@ -78,14 +68,15 @@ jobs:
         DRUPAL_TESTING_DRUPAL_VERSION: ${{ matrix.DRUPAL_TESTING_DRUPAL_VERSION }}
 
     - name: Add select2 library to the composer dependencies
-      run: composer require npm-asset/select2:^4.0.7 --working-dir=/tmp/test/select2/install --no-update
+      run: composer require npm-asset/select2:^4.0.7 --no-update
+      working-directory: /tmp/test/select2/install
 
     - name: Build the docroot
       run: test-drupal-project build
 
     - name: Test for deprecations
       run: test-drupal-project deprecation
-      continue-on-error: true
+      if: ${{ matrix.DRUPAL_TESTING_DRUPAL_VERSION != '~9.0.0' }}
 
     - name: Install drupal
       run: test-drupal-project install

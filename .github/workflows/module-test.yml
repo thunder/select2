@@ -76,6 +76,7 @@ jobs:
 
     - name: Test for deprecations
       run: test-drupal-project deprecation
+      if: ${{ matrix.DRUPAL_TESTING_DRUPAL_VERSION }} != '~9.0.0'
 
     - name: Install drupal
       run: test-drupal-project install

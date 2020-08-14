@@ -312,6 +312,11 @@ class Select2 extends Select {
    * Allows to modify the select2 settings.
    */
   public static function preRenderOverwrites($element) {
+    if (!$element['#multiple']) {
+      $empty_option = [$element['#empty_value'] => ''];
+      $element['#options'] = $empty_option + $element['#options'];
+    }
+
     // Allow to overwrite the default settings and set additional settings.
     foreach ($element["#select2"] as $key => $value) {
       $element['#attributes']['data-select2-config'][$key] = $value;

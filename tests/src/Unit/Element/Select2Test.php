@@ -73,6 +73,7 @@ class Select2Test extends UnitTestCase {
       '#autocreate' => [],
       '#autocomplete' => FALSE,
       '#cardinality' => 0,
+      '#empty_value' => '',
       '#select2' => $settings,
     ];
 

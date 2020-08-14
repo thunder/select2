@@ -80,3 +80,8 @@
 .select2-container--seven .select2-selection--multiple .select2-selection__choice {
   white-space: normal;
 }
+
+/* Fixes the display of the select2 dropdown in the modal. */
+.ui-widget-overlay + .select2-container--seven {
+  z-index: 1260;
+}

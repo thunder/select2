@@ -10,9 +10,9 @@
         }
     ],
     "require-dev": {
-        "drupal/facets": "1.x-dev",
-        "drupal/search_api": "1.x-dev",
-        "drupal/form_options_attributes": "^1.2",
-        "drupal/better_exposed_filters": "^4.0"
+        "drupal/facets": "^1.5",
+        "drupal/search_api": "^1.17",
+        "drupal/form_options_attributes": "^1.2"
+        "drupal/better_exposed_filters": "^5.0"
     }
 }

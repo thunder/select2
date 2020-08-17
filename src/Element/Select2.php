@@ -206,8 +206,8 @@ class Select2 extends Select {
 
     // Placeholder should be taken from #placeholder property if it set.
     // Otherwise we can take it from '#empty_option' property.
-    $placeholder = $required ? new TranslatableMarkup('- Select -') : new TranslatableMarkup('- None -');
-    $placeholder = ['id' => '', 'text' => $placeholder];
+    $placeholder_text = $required ? new TranslatableMarkup('- Select -') : new TranslatableMarkup('- None -');
+    $placeholder = ['id' => '', 'text' => $placeholder_text];
     if (!empty($element['#empty_value'])) {
       $placeholder['id'] = $element['#empty_value'];
     }

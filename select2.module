@@ -45,6 +45,17 @@ function select2_library_info_alter(&$libraries, $extension) {
       ],
     ];
   }
+  if ($extension === 'claro') {
+    $module_path = \Drupal::moduleHandler()->getModule('select2')->getPath();
+    $libraries['select2.theme'] = [
+      'css' => [
+        'component' => [
+          "/$module_path/css/select2.claro.css" => [],
+          "/$module_path/css/select2.claro-overrides.css" => [],
+        ],
+      ],
+    ];
+  }
 }
 
 /**

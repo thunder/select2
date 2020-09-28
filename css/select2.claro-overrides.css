@@ -13,8 +13,12 @@
 
 }
 
+/*
+ * 1. Custom line height 21px, see figma.
+ */
 .select2-container--claro .select2-selection--multiple {
   border: 1px solid #8e929c; /* --input-border-color */
+  line-height: 1.3125rem; /* line-height acc. to figma */
   padding: 0;
 }
 
@@ -33,7 +37,7 @@
   font-size: 0.889rem; /* 4 */ /* --font-size-s */
   font-weight: 700;
   margin: 5px 0.35rem 0 0;
-  padding: calc(0.35rem - 1px) calc(0.5rem - 1px);
+  padding: calc(0.5rem - 1px);
 }
 
 [dir="rtl"] .select2-container--claro .select2-selection--multiple .select2-selection__choice {
@@ -41,15 +45,16 @@
 }
 
 /*
- * 1. Additional color see figma.
+ * 1. Custom line height 21px, see figma.
+ * 2. Additional color see figma.
  */
 .select2-container--claro .select2-selection--multiple .select2-selection__choice__remove {
   float: right;
   border-radius: 50%;
-  line-height: 1rem;
-  color: #e9ecf1; /* 1 */
+  line-height: 1.3125rem; /* 1 */
+  color: #e9ecf1; /* 2 */
   font-size: 0;
-  margin-top: 0.3rem;
+  margin-right: 0;
   margin-left: 0.35rem;
   width: 1rem;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28px' height='28px' viewBox='0 0 28 28'%3E%3Cpath stroke='%23D4D4D8' stroke-width='4' d='M19,9L9,19'/%3E%3Cpath stroke='%23D4D4D8' stroke-width='4 ' d='M19,19L9,9'/%3E%3C/svg%3E%0A") 50% 50% / 100% 100% no-repeat;

@@ -60,7 +60,7 @@ jobs:
         restore-keys: ${{ runner.os }}-npm-cache
 
     - name: Get build environment
-      run: composer global require thunder/drupal-testing
+      run: composer global require thunder/drupal-testing:dev-task/downgrade-phpstan
 
     - name: Prepare the build
       run: test-drupal-project prepare_build

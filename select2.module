@@ -50,8 +50,7 @@ function select2_library_info_alter(&$libraries, $extension) {
     $libraries['select2.theme'] = [
       'css' => [
         'component' => [
-          "/$module_path/css/select2.claro.css" => [],
-          "/$module_path/css/select2.claro-overrides.css" => [],
+          "/$module_path/dist/select2.claro.css" => [],
         ],
       ],
     ];

@@ -1,25 +1,24 @@
 .select2-container--claro {
   @import "../../../libraries/select2/src/scss/theme/default/_single.scss";
   @import "../../../libraries/select2/src/scss/theme/default/_multiple.scss";
-  //@import "default";
+  @import "default";
 }
 
 .select2-container--claro {
-  border-radius: var(--input-border-radius-size);
   line-height: var(--input-line-height);
-  min-height: calc(((var(--input-padding-vertical) + var(--input-border-size)) * 2) + var(--input-line-height)); /* iOS. */ /* 1 */
+  border-radius: var(--input-border-radius-size);
 
   /*
    * 1. See form-element.
    */
   .select2-selection {
-    border: var(--input-border-size) solid var(--input-border-color); /* 1 */
-    min-height: calc(((var(--input-padding-vertical) + var(--input-border-size)) * 2) + var(--input-line-height)); /* iOS. */ /* 1 */
-    //padding: var(--input-padding-vertical) var(--input-padding-horizontal); /* 1 */
+    border: var(--input-border-size) solid var(--input-border-color);
+    border-radius: var(--input-border-radius-size);
   }
 
   .select2-selection--multiple {
-    //border: var(--input-border-size) solid var(--input-border-color);
+
+    //border: none;
     line-height: 1.3125rem; /* line-height acc. to figma */
     //padding: 0;
 
@@ -70,11 +69,54 @@
     }
 
     .select2-search--inline {
-      margin: 5px 0.35rem 0 0;
+      margin-top: 0.5rem;
+    }
+  }
+  /*
+
+   * 1. See claro form-text .form-element.
+   */
+  .select2-selection--single {
+    min-height: calc(((var(--input-padding-vertical) + var(--input-border-size)) * 2) + var(--input-line-height)); /* iOS. */ /* 1 */
+    padding: calc(0.75rem - 1px) calc(1rem - 1px); /* 1 */
+
+    /*
+     * 1. See claro form-text .form-element.
+     * 2. Reset select2 styles.
+     */
+    .select2-selection__rendered {
+      color: var(--input-fg-color); /* 1 */
+      padding-left: 0;  /* 2" */
+      padding-right: 12px; /* 2 */
+      line-height: var(--input-line-height); /* 1 */
+    }
+
+    /*
+     * 1. Vertically align arrow.
+    */
+    .select2-selection__arrow {
+      min-height: calc(((var(--input-padding-vertical) + var(--input-border-size)) * 2) + var(--input-line-height)); /* iOS. */ /* 1 */
+      width: 25px;
+
+      b {
+        border-color: var(--input-fg-color) transparent transparent transparent; /* #222330 */
+      }
     }
   }
 
-  .select2-search__field:focus  {
+  &.select2-container--open .select2-selection--single .select2-selection__arrow b {
+    border-color: transparent transparent var(--input-fg-color) transparent; /* #222330 */
+  }
+
+  /*
+   * Reset select2 border.
+   */
+  &.select2-container--focus .select2-selection--multiple {
+    border: var(--input-border-size) solid var(--input--hover-border-color);
+
+  }
+
+  .select2-search__field:focus {
     box-shadow: none;
   }
 
@@ -84,7 +126,6 @@
   .select2-search--dropdown .select2-search__field {
     min-height: calc(((var(--input-padding-vertical) + var(--input-border-size)) * 2) + var(--input-line-height)); /* iOS. */ /* 1 */
     padding: var(--input-padding-vertical) var(--input-padding-horizontal); /* 1 */
-
     border-color: var(--input--focus-border-color); /* #222330 */
     border-radius: var(--input-border-radius-size); /* 0.125rem */
   }
@@ -105,38 +146,22 @@
     box-shadow: 0 0 0 2px var(--color-white), 0 0 0 5px var(--color-focus), inset 0 0 0 var(--input-border-size) var(--input--hover-border-color);
   }
 
-  .select2-selection--single .select2-selection__rendered {
-    padding-left: 0;
-    padding-right: 12px;
-  }
 
   /*
-   * See .form-element
+   * 1. See .form-element
    */
   .select2-results__option {
     box-sizing: border-box;
     min-height: calc(((var(--input-padding-vertical) + var(--input-border-size)) * 2) + var(--input-line-height)); /* iOS. */ /* 1 */
     padding: var(--input-padding-vertical) var(--input-padding-horizontal); /* 1 */
-  }
 
+    &[aria-selected=true] {
+      background-color: #e9ecf1; /* Additional color, see figma */
+    }
+  }
   .select2-results__option--highlighted[aria-selected] {
     background-color: var(--color-absolutezero); /* #003cc5  */
-  }
-
-  /*
-   * 1. Vertically align arrow.
-   */
-  .select2-selection--single .select2-selection__arrow {
-     min-height: calc(((var(--input--extrasmall-padding-vertical) + var(--input-border-size)) * 2) + var(--input--extrasmall-line-height)); /* 1 */
-     width: 25px;
-  }
-
-  .select2-selection--single .select2-selection__arrow b {
-    border-color: var(--input-fg-color) transparent transparent transparent; /* #222330 */
-  }
-
-  &.select2-container--open .select2-selection--single .select2-selection__arrow b {
-    border-color: transparent transparent var(--input-fg-color) transparent; /* #222330 */
+    color: var(--color-white);
   }
 
 }

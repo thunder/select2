@@ -13,9 +13,9 @@
   },
   "homepage": "https://github.com/thunder/select2#readme",
   "scripts": {
-    "build:css": "node-sass --output-style expanded -o dist sass",
+    "build:css": "node-sass --output-style expanded -o css sass",
     "lint:css": "stylelint sass/*",
-    "postbuild:css": "postcss --no-map --remove-all --config postcss.config.json -r dist",
+    "postbuild:css": "postcss --no-map --remove-all --config postcss.config.json -r css",
     "watch:css": "onchange \"sass\" -- npm run build:css"
   },
   "devDependencies": {

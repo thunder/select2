@@ -34,23 +34,12 @@ function select2_library_info_alter(&$libraries, $extension) {
     }
   }
 
-  if ($extension === 'seven') {
-    $module_path = \Drupal::moduleHandler()->getModule('select2')->getPath();
+  $module_path = \Drupal::moduleHandler()->getModule('select2')->getPath();
+  if (file_exists("$module_path/css/select2.$extension.css")) {
     $libraries['select2.theme'] = [
       'css' => [
         'component' => [
-          "/$module_path/css/select2.seven.css" => [],
-          "/$module_path/css/select2.seven-overrides.css" => [],
-        ],
-      ],
-    ];
-  }
-  if ($extension === 'claro') {
-    $module_path = \Drupal::moduleHandler()->getModule('select2')->getPath();
-    $libraries['select2.theme'] = [
-      'css' => [
-        'component' => [
-          "/$module_path/dist/select2.claro.css" => [],
+          "/$module_path/css/select2.$extension.css" => [],
         ],
       ],
     ];

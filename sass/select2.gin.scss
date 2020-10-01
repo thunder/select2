@@ -1,19 +1,19 @@
-.select2-container--claro {
+.select2-container--gin {
   @import "../../../libraries/select2/src/scss/theme/default/_single.scss";
   @import "../../../libraries/select2/src/scss/theme/default/_multiple.scss";
   @import "default";
 }
 
-.select2-container--claro {
+.select2-container--gin {
   line-height: var(--input-line-height);
-  border-radius: var(--input-border-radius-size);
+  border-radius: 6px; /* gin $borderDefault */
 
   /*
-   * See form-element.
+   * 1. See form-element.
    */
   .select2-selection {
-    border: var(--input-border-size) solid var(--input-border-color);
-    border-radius: var(--input-border-radius-size);
+    border: var(--input-border-size) solid var(--colorGinFormElementBorder);
+    border-radius: 6px; /* gin $borderDefault */
   }
 
   .select2-selection--multiple {
@@ -59,8 +59,8 @@
         background-color: #999aa3; /* 2 */
 
         &:hover {
-          background-color: var(--color-text); /* #222330 */
-          color: #e9ecf1; /* 2 */
+          background-color: var(--colorGinText);
+          // color: #e9ecf1; /* 2 */
         }
       }
     }
@@ -82,7 +82,7 @@
      * 2. Reset select2 styles.
      */
     .select2-selection__rendered {
-      color: var(--input-fg-color); /* 1 */
+      color: var(--colorGinText); /* 1 */
       padding-left: 0;  /* 2" */
       padding-right: 12px; /* 2 */
       line-height: var(--input-line-height); /* 1 */
@@ -96,20 +96,20 @@
       width: 25px;
 
       b {
-        border-color: var(--input-fg-color) transparent transparent transparent; /* #222330 */
+        border-color: var(--colorGinText) transparent transparent transparent; /* #222330 */
       }
     }
   }
 
   &.select2-container--open .select2-selection--single .select2-selection__arrow b {
-    border-color: transparent transparent var(--input-fg-color) transparent; /* #222330 */
+    border-color: transparent transparent var(--colorGinText) transparent; /* #222330 */
   }
 
   /*
    * Reset select2 border.
    */
   &.select2-container--focus .select2-selection--multiple {
-    border: var(--input-border-size) solid var(--input--hover-border-color);
+    border: var(--input-border-size) solid var(--colorGinText);
   }
 
   .select2-search__field:focus {
@@ -128,13 +128,13 @@
 
   .select2-search--dropdown .select2-search__field:hover,
   .select2-selection:hover {
-    border-color: var(--input--hover-border-color);
-    box-shadow: inset 0 0 0 var(--input-border-size) var(--input--hover-border-color);
+    border-color: var(--colorGinText);
+    box-shadow: inset 0 0 0 var(--input-border-size) var(--colorGinText);
   }
 
   .select2-search--dropdown .select2-search__field:focus,
   &.select2-container--focus {
-    box-shadow: 0 0 0 2px var(--color-white), 0 0 0 5px var(--color-focus);
+    box-shadow: 0 0 0 2px var(--color-white), 0 0 0 5px var(--colorGinFocus);
     outline: 0;
   }
   /* .form-element:hoiver:focus */
@@ -155,7 +155,25 @@
     }
   }
   .select2-results__option--highlighted[aria-selected] {
-    background-color: var(--color-absolutezero); /* #003cc5  */
+    background-color: var(--colorGinPrimaryActive); /* #003cc5  */
     color: var(--color-white);
+  }
+
+  .gin--dark-mode & {
+
+    .select2-selection--single,
+    .select2-selection--multiple,
+    .select2-search__field,
+    .select2-dropdown {
+      background-color: var(--colorGinLayer2Background);
+      color: var(--colorGinText);
+    }
+    .select2-results__option[aria-selected=true] {
+      background-color: var(--colorGinLayer4Background);
+    }
+    .select2-selection__choice,
+    .select2-results__option--highlighted[aria-selected] {
+      background: var(--colorGinLayerBackground);
+    }
   }
 }

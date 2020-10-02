@@ -229,7 +229,6 @@
 }
 
 .select2-container--gin{
-  line-height:1.5rem;
   border-radius:6px;
 }
 
@@ -239,7 +238,23 @@
 }
 
 .select2-container--gin .select2-selection--multiple{
-  line-height:1.3125rem;
+}
+
+.select2-container--gin .select2-selection--multiple .select2-selection__rendered{
+  display:block;
+  padding:0 0.5rem;
+}
+
+.select2-container--gin .select2-selection--multiple .select2-search--inline{
+  box-sizing:border-box;
+  color:var(--colorGinText);
+  min-height:3rem;
+  padding:calc(0.75rem - 1px) 0;
+  line-height:1.5rem;
+}
+
+.select2-container--gin .select2-selection--multiple .select2-search--inline .select2-search__field{
+  margin-top:0;
 }
 
 .select2-container--gin .select2-selection--multiple .select2-selection__choice{
@@ -248,7 +263,9 @@
   border-radius:1.5rem;
   font-size:0.889rem;
   font-weight:700;
-  margin:5px 0.35rem 0 0;
+  line-height:1rem;
+  margin-top:0.5rem;
+  margin-right:0.5rem;
   padding:calc(0.5rem - 1px);
 }
 
@@ -259,7 +276,6 @@
 .select2-container--gin .select2-selection--multiple .select2-selection__choice .select2-selection__choice__remove{
   float:right;
   border-radius:50%;
-  line-height:1.3125rem;
   color:#e9ecf1;
   font-size:0;
   margin-right:0;
@@ -271,10 +287,6 @@
 
 .select2-container--gin .select2-selection--multiple .select2-selection__choice .select2-selection__choice__remove:hover{
   background-color:var(--colorGinText);
-}
-
-.select2-container--gin .select2-selection--multiple .select2-search--inline{
-  margin-top:0.5rem;
 }
 
 .select2-container--gin .select2-selection--single{
@@ -313,7 +325,7 @@
 .select2-container--gin .select2-search--dropdown .select2-search__field{
   min-height:3rem;
   padding:calc(0.75rem - 1px) calc(1rem - 1px);
-  border-color:#003cc5;
+  border-color:var(--colorGinFocus);
   border-radius:0.125rem;
 }
 
@@ -329,7 +341,7 @@
 }
 
 .select2-container--gin .select2-search--dropdown .select2-search__field:hover:focus{
-  box-shadow:0 0 0 2px #fff, 0 0 0 5px #26a769, inset 0 0 0 1px #222330;
+  box-shadow:0 0 0 2px #fff, 0 0 0 5px var(--colorGinFocus), inset 0 0 0 1px var(--colorGinFocus);
 }
 
 .select2-container--gin .select2-results__option{

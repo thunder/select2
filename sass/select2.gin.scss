@@ -5,7 +5,6 @@
 }
 
 .select2-container--gin {
-  line-height: var(--input-line-height);
   border-radius: 6px; /* gin $borderDefault */
 
   /*
@@ -17,7 +16,26 @@
   }
 
   .select2-selection--multiple {
-    line-height: 1.3125rem; /* line-height acc. to figma */
+
+    .select2-selection__rendered {
+      display: block; /* reset select2 */
+      padding: 0 0.5rem;
+    }
+    /*
+     * See claro form-text .form-element.
+     * 1. No left / right padding because of select2-selection__choice.
+     */
+    .select2-search--inline {
+      box-sizing: border-box;
+      color: var(--colorGinText);
+      min-height: calc(((var(--input-padding-vertical) + var(--input-border-size)) * 2) + var(--input-line-height)); /* iOS. */
+      padding: calc(0.75rem - 1px) 0; /* 1 */
+      line-height: var(--input-line-height);
+
+      .select2-search__field {
+        margin-top: 0;
+      }
+    }
 
     /*
      * Claro chips design according to figma
@@ -35,7 +53,9 @@
       border-radius: 1.5rem; /* 3 */
       font-size: var(--font-size-s); /* 0.889rem */ /* 4 */
       font-weight: 700; /* 4 */
-      margin: 5px 0.35rem 0 0; /* 5 */
+      line-height: 1rem;
+      margin-top: 0.5rem;
+      margin-right: 0.5rem;
       padding: calc(0.5rem - 1px); /* 6 */
 
       [dir=rtl] & {
@@ -43,30 +63,23 @@
       }
 
       /*
-       * 1. Custom line height 21px, see figma.
-       * 2. Additional color see figma.
+       * 1. Additional color see figma.
        */
       .select2-selection__choice__remove {
         float: right;
         border-radius: 50%;
-        line-height: 1.3125rem; /* 1 */
-        color: #e9ecf1; /* 2 */
+        color: #e9ecf1; /* 1 */
         font-size: 0;
         margin-right: 0;
         margin-left: 0.35rem;
         width: 1rem;
         background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28px' height='28px' viewBox='0 0 28 28'%3E%3Cpath stroke='%23D4D4D8' stroke-width='4' d='M19,9L9,19'/%3E%3Cpath stroke='%23D4D4D8' stroke-width='4 ' d='M19,19L9,9'/%3E%3C/svg%3E%0A") 50% 50% / 100% 100% no-repeat;
-        background-color: #999aa3; /* 2 */
+        background-color: #999aa3; /* 1 */
 
         &:hover {
           background-color: var(--colorGinText);
-          // color: #e9ecf1; /* 2 */
         }
       }
-    }
-
-    .select2-search--inline {
-      margin-top: 0.5rem;
     }
   }
 
@@ -122,7 +135,7 @@
   .select2-search--dropdown .select2-search__field {
     min-height: calc(((var(--input-padding-vertical) + var(--input-border-size)) * 2) + var(--input-line-height)); /* iOS. */ /* 1 */
     padding: var(--input-padding-vertical) var(--input-padding-horizontal); /* 1 */
-    border-color: var(--input--focus-border-color); /* #222330 */
+    border-color: var(--colorGinFocus); /* #222330 */
     border-radius: var(--input-border-radius-size); /* 0.125rem */
   }
 
@@ -139,7 +152,7 @@
   }
   /* .form-element:hoiver:focus */
   .select2-search--dropdown .select2-search__field:hover:focus {
-    box-shadow: 0 0 0 2px var(--color-white), 0 0 0 5px var(--color-focus), inset 0 0 0 var(--input-border-size) var(--input--hover-border-color);
+    box-shadow: 0 0 0 2px var(--color-white), 0 0 0 5px var(--colorGinFocus), inset 0 0 0 var(--input-border-size) var(--colorGinFocus);
   }
 
   /*

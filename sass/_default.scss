@@ -95,3 +95,9 @@
   display: block;
   padding: 6px;
 }
+/*
+ * See https://www.drupal.org/i/3114589.
+ */
+.ui-widget-overlay + & {
+  z-index: 1260;
+}

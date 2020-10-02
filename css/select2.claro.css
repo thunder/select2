@@ -228,6 +228,10 @@
   padding:6px;
 }
 
+.ui-widget-overlay + .select2-container--claro{
+  z-index:1260;
+}
+
 .select2-container--claro{
   border-radius:0.125rem;
 }

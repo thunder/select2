@@ -228,6 +228,10 @@
   padding:6px;
 }
 
+.ui-widget-overlay + .select2-container--gin{
+  z-index:1260;
+}
+
 .select2-container--gin{
   border-radius:6px;
 }

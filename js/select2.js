@@ -43,7 +43,7 @@
         $(this).select2(config);
 
         // Copied from https://github.com/woocommerce/woocommerce/blob/master/assets/js/admin/wc-enhanced-select.js#L118
-        if (Object.prototype.hasOwnProperty.call(config, 'ajax') && config.multiple) {
+        if (config.multiple) {
           var $select = $(this);
           var $list = $select.next('.select2-container').find('ul.select2-selection__rendered');
           Sortable.create($list[0], {

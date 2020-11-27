@@ -27,10 +27,24 @@ trait Select2Trait {
     $options = [];
     $valid_ids = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($handler_settings)->validateReferenceableEntities($ids);
     $entities = \Drupal::entityTypeManager()->getStorage($handler_settings['target_type'])->loadMultiple($valid_ids);
+    $display = \Drupal::entityTypeManager()
+      ->getStorage('view')
+      ->load($handler_settings['view']['view_name'])
+      ->getDisplay($handler_settings['view']['display_name']);
+
+    $fields = $display['display_options']['row']['options']['inline'];
+    $seperator = $display['display_options']['row']['options']['separator'];
     foreach ($entities as $entity_id => $entity) {
-      $options[$entity_id] = Html::decodeEntities(\Drupal::service('entity.repository')->getTranslationFromContext($entity)->label());
+      $context_entity = \Drupal::service('entity.repository')->getTranslationFromContext($entity);
+      $output = "";
+      foreach($fields as $field){
+        if($context_entity->hasField($field)){
+          $output .= "{$context_entity->get($field)->getString()}{$seperator}";
+        }
+      }
+      $output = rtrim($output, $seperator);
+      $options[$entity_id] = Html::decodeEntities($output);
     }
     return $options;
   }
-
 }

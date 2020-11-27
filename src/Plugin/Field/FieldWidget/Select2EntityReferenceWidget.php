@@ -219,7 +219,7 @@ class Select2EntityReferenceWidget extends Select2Widget {
     /** @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface $handler */
     $handler = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($handler_settings);
 
-    $options = static::getValidReferenceableEntities(array_keys(OptGroup::flattenOptions($element['#options'])), $handler_settings);
+    $options = empty($element['#options']) ? [] : static::getValidReferenceableEntities(array_keys(OptGroup::flattenOptions($element['#options'])), $handler_settings);
     $items = [];
     foreach ($values as $value) {
       if (isset($options[$value])) {

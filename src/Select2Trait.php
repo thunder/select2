@@ -5,7 +5,7 @@ namespace Drupal\select2;
 use Drupal\Component\Utility\Html;
 
 /**
- * Trait Select2Trait.
+ * Trait with functions that are used in the element and the field widget.
  */
 trait Select2Trait {
 

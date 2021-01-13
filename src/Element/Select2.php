@@ -155,7 +155,10 @@ class Select2 extends Select {
       }
 
       $value = [];
-      $input_values = call_user_func_array($value_callable, [$element, $form_state]);
+      $input_values = call_user_func_array($value_callable, [
+        $element,
+        $form_state,
+      ]);
       foreach ($input_values as $id => $input) {
         $value[] = [
           'target_id' => $id,
@@ -176,7 +179,10 @@ class Select2 extends Select {
       if (!$value_callable || !is_callable($value_callable)) {
         $value_callable = '\Drupal\select2\Element\Select2::getValidSelectedOptions';
       }
-      $element['#options'] = call_user_func_array($value_callable, [$element, $form_state]);
+      $element['#options'] = call_user_func_array($value_callable, [
+        $element,
+        $form_state,
+      ]);
     }
 
     // We need to disable form validation, because with autocreation the options
@@ -267,7 +273,7 @@ class Select2 extends Select {
     $settings = [
       'multiple' => $multiple,
       'placeholder' => $placeholder,
-      // @TODO: Enable allowClear for multiple fields. https://github.com/select2/select2/issues/3335.
+      // @todo Enable allowClear for multiple fields. https://github.com/select2/select2/issues/3335.
       'allowClear' => !$multiple && !$required,
       'dir' => $current_language->getDirection(),
       'language' => $current_language->getId(),

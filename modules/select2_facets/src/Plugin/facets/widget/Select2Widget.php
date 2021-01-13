@@ -120,7 +120,10 @@ class Select2Widget extends WidgetPluginBase implements ContainerFactoryPluginIn
     ];
 
     if ($element['#autocomplete']) {
-      $element['#autocomplete_route_callback'] = [$this, 'processFacetAutocomplete'];
+      $element['#autocomplete_route_callback'] = [
+        $this,
+        'processFacetAutocomplete',
+      ];
     }
 
     return $element;

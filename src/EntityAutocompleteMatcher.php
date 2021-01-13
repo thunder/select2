@@ -77,7 +77,10 @@ class EntityAutocompleteMatcher {
       // Loop through the entities and convert them into autocomplete output.
       foreach ($entity_labels as $values) {
         foreach ($values as $entity_id => $label) {
-          $matches[$entity_id] = ['id' => $entity_id, 'text' => Html::decodeEntities($label)];
+          $matches[$entity_id] = [
+            'id' => $entity_id,
+            'text' => Html::decodeEntities($label),
+          ];
         }
       }
 

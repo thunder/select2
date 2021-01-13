@@ -30,7 +30,10 @@ class ViewsExposedFilterTest extends WebDriverTestBase {
   public function testContentListWithSelect2Filter() {
     $page = $this->getSession()->getPage();
 
-    $admin = $this->createUser(['access content overview', 'view own unpublished content']);
+    $admin = $this->createUser([
+      'access content overview',
+      'view own unpublished content',
+    ]);
 
     $node_type = $this->createContentType();
 

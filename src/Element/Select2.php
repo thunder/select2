@@ -209,6 +209,17 @@ class Select2 extends Select {
       $element['#options'] = $empty_option + $element['#options'];
     }
 
+    if ($element['#multiple']) {
+      $values = isset($element['#value']) ? $element['#value'] : $element['#default_value'];
+      $values = is_array($values) ? $values : [$values];
+
+      // Apply field values order on the options.
+      if (!empty($values)) {
+        $flipped_keys = array_intersect_key(array_flip($values), $element['#options']);
+        $element['#options'] = array_replace($flipped_keys, $element['#options']);
+      }
+    }
+
     // Set the type from select2 to select to get proper form validation.
     $element['#type'] = 'select';
 
@@ -310,18 +321,6 @@ class Select2 extends Select {
       $value_callable = '\Drupal\select2\Element\Select2::setAutocompleteRouteParameters';
     }
     $element = call_user_func_array($value_callable, [&$element]);
-
-    // Reduce options to the preselected ones and bring them in the correct
-    // order.
-    $options = OptGroup::flattenOptions($element['#options']);
-    $values = isset($element['#value']) ? $element['#value'] : $element['#default_value'];
-    $values = is_array($values) ? $values : [$values];
-    $element['#options'] = [];
-    foreach ($values as $value) {
-      if (isset($options[$value])) {
-        $element['#options'][$value] = $options[$value];
-      }
-    }
 
     /** @var \Drupal\Core\Access\AccessManagerInterface $access_manager */
     $access_manager = \Drupal::service('access_manager');

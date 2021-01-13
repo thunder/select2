@@ -21,15 +21,7 @@ jobs:
 
     runs-on: ubuntu-20.04
 
-    strategy:
-      matrix:
-        DRUPAL_TESTING_DRUPAL_VERSION: ['~8.8.0', '~8.9.0', '~9.0.0']
-        PHP: ['7.3', '7.4']
-        exclude:
-          - DRUPAL_TESTING_DRUPAL_VERSION: '~8.8.0'
-            PHP: '7.4'
-          - DRUPAL_TESTING_DRUPAL_VERSION: '~9.0.0'
-            PHP: '7.3'
+
 
     steps:
     - uses: actions/checkout@v1

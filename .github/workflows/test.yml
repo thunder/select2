@@ -23,13 +23,8 @@ jobs:
 
     strategy:
       matrix:
-        DRUPAL_TESTING_DRUPAL_VERSION: ['~8.8.0', '~8.9.0', '~9.0.0']
+        DRUPAL_TESTING_DRUPAL_VERSION: ['~8.9.0', '~9.1.0']
         PHP: ['7.3', '7.4']
-        exclude:
-          - DRUPAL_TESTING_DRUPAL_VERSION: '~8.8.0'
-            PHP: '7.4'
-          - DRUPAL_TESTING_DRUPAL_VERSION: '~9.0.0'
-            PHP: '7.3'
 
     steps:
     - uses: actions/checkout@v1
@@ -78,7 +73,7 @@ jobs:
 
     - name: Test for deprecations
       run: test-drupal-project deprecation
-      if: ${{ matrix.DRUPAL_TESTING_DRUPAL_VERSION != '~9.0.0' }}
+      if: ${{ matrix.DRUPAL_TESTING_DRUPAL_VERSION != '~9.1.0' }}
 
     - name: Install drupal
       run: test-drupal-project install

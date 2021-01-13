@@ -84,9 +84,14 @@ class EntityAutocompleteController extends ControllerBase {
         throw new AccessDeniedHttpException();
       }
 
-      $matches['results'] = $this->matcher->getMatches($target_type, $selection_handler, $selection_settings, mb_strtolower($input));
+      $results = $this->matcher->getMatches($target_type, $selection_handler, $selection_settings, mb_strtolower($input));
+      $matches['results'] = array_map(function($row){
+        return [
+          'id' => $row['id'],
+          'text' => strip_tags($row['text'])
+        ];
+      }, $results);
     }
-
     return new JsonResponse($matches);
   }
 

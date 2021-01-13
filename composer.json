@@ -10,15 +10,9 @@
         }
     ],
     "require-dev": {
-        "drupal/facets": "1.x-dev",
-        "drupal/search_api": "1.x-dev",
-        "drupal/form_options_attributes": "^1.1"
-    },
-    "extra": {
-        "patches": {
-            "drupal/form_options_attributes": {
-                "Add missing core_version_requirement in tests": "https://www.drupal.org/files/issues/2020-04-09/3126225-2.patch"
-            }
-        }
+        "drupal/facets": "^1.5",
+        "drupal/search_api": "^1.17",
+        "drupal/form_options_attributes": "^1.2",
+        "drupal/better_exposed_filters": "^5.0"
     }
 }

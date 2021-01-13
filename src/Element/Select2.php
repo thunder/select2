@@ -111,12 +111,61 @@ class Select2 extends Select {
     $info['#selection_settings'] = [];
     $info['#autocomplete'] = FALSE;
     $info['#autocreate'] = [];
+    $info['#empty_value'] = '';
     $info['#cardinality'] = 0;
     $info['#pre_render'][] = [$class, 'preRenderAutocomplete'];
     $info['#pre_render'][] = [$class, 'preRenderOverwrites'];
+    $info['#element_validate'][] = [$class, 'validateEntityAutocomplete'];
     $info['#select2'] = [];
 
     return $info;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function valueCallback(&$element, $input, FormStateInterface $form_state) {
+    // Potentially the #value is set directly, so it contains the 'target_id'
+    // array structure instead of a string.
+    if ($input !== FALSE && is_array($input)) {
+      $input = array_map(function ($item) {
+        return isset($item['target_id']) ? $item['target_id'] : $item;
+      }, $input);
+      return array_combine($input, $input);
+    }
+
+    return parent::valueCallback($element, $input, $form_state);
+  }
+
+  /**
+   * Form element validation handler for entity_autocomplete elements.
+   *
+   * @param array $element
+   *   The render element.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state object.
+   * @param array $complete_form
+   *   The form array.
+   */
+  public static function validateEntityAutocomplete(array &$element, FormStateInterface $form_state, array &$complete_form) {
+    if ($element['#target_type'] && !$element['#autocreate']) {
+      $value_callable = isset($element['#autocomplete_options_callback']) ? $element['#autocomplete_options_callback'] : NULL;
+      if (!$value_callable || !is_callable($value_callable)) {
+        $value_callable = '\Drupal\select2\Element\Select2::getValidSelectedOptions';
+      }
+
+      $value = [];
+      $input_values = call_user_func_array($value_callable, [
+        $element,
+        $form_state,
+      ]);
+      foreach ($input_values as $id => $input) {
+        $value[] = [
+          'target_id' => $id,
+        ];
+      }
+      $form_state->setValueForElement($element, $value);
+    }
   }
 
   /**
@@ -130,7 +179,10 @@ class Select2 extends Select {
       if (!$value_callable || !is_callable($value_callable)) {
         $value_callable = '\Drupal\select2\Element\Select2::getValidSelectedOptions';
       }
-      $element['#options'] = call_user_func_array($value_callable, [$element, $form_state]);
+      $element['#options'] = call_user_func_array($value_callable, [
+        $element,
+        $form_state,
+      ]);
     }
 
     // We need to disable form validation, because with autocreation the options
@@ -152,8 +204,8 @@ class Select2 extends Select {
       }
     }
 
-    if (!$element['#multiple'] && !isset($element['#options'][''])) {
-      $empty_option = ['' => ''];
+    if (!$element['#multiple'] && !isset($element['#options'][$element['#empty_value']])) {
+      $empty_option = [$element['#empty_value'] => ''];
       $element['#options'] = $empty_option + $element['#options'];
     }
 
@@ -202,11 +254,26 @@ class Select2 extends Select {
     $current_language = \Drupal::languageManager()->getCurrentLanguage();
     $current_theme = \Drupal::theme()->getActiveTheme()->getName();
     $select2_theme_exists = \Drupal::service('library.discovery')->getLibraryByName($current_theme, 'select2.theme');
+
+    // Placeholder should be taken from #placeholder property if it set.
+    // Otherwise we can take it from '#empty_option' property.
+    $placeholder_text = $required ? new TranslatableMarkup('- Select -') : new TranslatableMarkup('- None -');
+    $placeholder = ['id' => '', 'text' => $placeholder_text];
+    if (!empty($element['#empty_value'])) {
+      $placeholder['id'] = $element['#empty_value'];
+    }
+    if (!empty($element['#placeholder'])) {
+      $placeholder['text'] = $element['#placeholder'];
+    }
+    elseif (!empty($element['#empty_option'])) {
+      $placeholder['text'] = $element['#empty_option'];
+    }
+
     // Defining the select2 configuration.
     $settings = [
       'multiple' => $multiple,
-      'placeholder' => $required ? new TranslatableMarkup('- Select -') : new TranslatableMarkup('- None -'),
-      // @TODO: Enable allowClear for multiple fields. https://github.com/select2/select2/issues/3335.
+      'placeholder' => $placeholder,
+      // @todo Enable allowClear for multiple fields. https://github.com/select2/select2/issues/3335.
       'allowClear' => !$multiple && !$required,
       'dir' => $current_language->getDirection(),
       'language' => $current_language->getId(),
@@ -297,7 +364,7 @@ class Select2 extends Select {
    */
   public static function preRenderOverwrites($element) {
     if (!$element['#multiple']) {
-      $empty_option = ['' => ''];
+      $empty_option = [$element['#empty_value'] => ''];
       $element['#options'] = $empty_option + $element['#options'];
     }
 

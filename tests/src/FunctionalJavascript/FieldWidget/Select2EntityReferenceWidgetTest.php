@@ -356,7 +356,10 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
     $test_file = current($this->getTestFiles('text'));
     $page->attachFileToField("files[file_0]", \Drupal::service('file_system')->realpath($test_file->uri));
 
-    $assert_session->waitForElement('named', ['id_or_name', 'file_0_remove_button']);
+    $assert_session->waitForElement('named', [
+      'id_or_name',
+      'file_0_remove_button',
+    ]);
     $assert_session->elementNotExists('css', '.messages--error');
   }
 
@@ -447,7 +450,10 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
       'handler_settings' => [
         'auto_create' => FALSE,
       ],
-    ], 'select2_entity_reference', ['autocomplete' => TRUE, 'match_operator' => 'CONTAINS']);
+    ], 'select2_entity_reference', [
+      'autocomplete' => TRUE,
+      'match_operator' => 'CONTAINS',
+    ]);
 
     EntityTestMulRevPub::create(['name' => 'foo'])->save();
     EntityTestMulRevPub::create(['name' => 'bar'])->save();

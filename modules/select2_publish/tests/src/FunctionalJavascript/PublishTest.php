@@ -68,7 +68,10 @@ class PublishTest extends Select2JavascriptTestBase {
         'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
         'auto_create' => FALSE,
       ],
-    ], 'select2_entity_reference', ['autocomplete' => TRUE, 'match_operator' => 'CONTAINS']);
+    ], 'select2_entity_reference', [
+      'autocomplete' => TRUE,
+      'match_operator' => 'CONTAINS',
+    ]);
 
     EntityTestMulRevPub::create(['name' => 'foo', 'status' => FALSE])->save();
     EntityTestMulRevPub::create(['name' => 'bar'])->save();

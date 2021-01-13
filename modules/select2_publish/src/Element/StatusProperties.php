@@ -6,9 +6,7 @@ use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Security\TrustedCallbackInterface;
 
 /**
- * Class StatusProperties.
- *
- * @package Drupal\select2_publish\Element
+ * Additional callbacks to render the status properties.
  */
 class StatusProperties implements TrustedCallbackInterface {
 

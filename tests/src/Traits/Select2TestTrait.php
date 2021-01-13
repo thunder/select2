@@ -6,7 +6,7 @@ use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 
 /**
- * Trait Select2TestTrait.
+ * Test trait with helper functions.
  */
 trait Select2TestTrait {
 

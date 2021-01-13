@@ -37,6 +37,7 @@ jobs:
       with:
         coverage: none
         php-version: ${{ matrix.PHP }}
+        extensions: Imagick, gd, pdo_mysql
 
     - name: Start MySql service
       run: sudo /etc/init.d/mysql start

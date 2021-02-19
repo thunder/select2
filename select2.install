@@ -24,7 +24,7 @@ function select2_requirements($phase) {
     return $requirements;
   }
 
-  // TODO: This code can be removed when we drop D8.8 support.
+  // @todo This code can be removed when we drop D8.8 support.
   if (function_exists('libraries_get_path') && libraries_get_path('select2')) {
     return $requirements;
   }

@@ -6,7 +6,7 @@ use Drupal\entity_test\Entity\EntityTest;
 use Drupal\entity_test\Entity\EntityTestMulRevPub;
 
 /**
- * Class Select2ValidOptionsTest.
+ * Test the options of the select2 element.
  *
  * @group select2
  */
@@ -42,11 +42,17 @@ class Select2ValidOptionsTest extends Select2KernelTestBase {
     $ref1->setName('Drupal')->setNewRevision();
     $ref1->save();
 
-    $entity->$name->setValue([['target_id' => $ref1->id()], ['target_id' => $ref2->id()]]);
+    $entity->$name->setValue([
+      ['target_id' => $ref1->id()],
+      ['target_id' => $ref2->id()],
+    ]);
     $entity->save();
 
     $form = \Drupal::service('entity.form_builder')->getForm($entity);
-    $this->assertEquals([$ref1->id() => $ref1->getName(), $ref2->id() => $ref2->getName()], $form[$name]['widget']['#options'], 'Option values differ from expected values.');
+    $this->assertEquals([
+      $ref1->id() => $ref1->getName(),
+      $ref2->id() => $ref2->getName(),
+    ], $form[$name]['widget']['#options'], 'Option values differ from expected values.');
   }
 
 }

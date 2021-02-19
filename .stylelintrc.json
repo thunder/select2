@@ -1,8 +1,6 @@
 {
   "extends": "stylelint-config-standard",
-  "plugins": [
-    "stylelint-no-browser-hacks/lib"
-  ],
+  "plugins": [],
   "rules": {
     "at-rule-empty-line-before": null,
     "at-rule-no-unknown": [true, {
@@ -32,14 +30,6 @@
       ]
     }],
     "number-leading-zero": "always",
-    "plugin/no-browser-hacks": [true, {
-      "browsers": [
-        "> 1%",
-        "Firefox ESR",
-        "last 2 versions",
-        "not dead"
-      ]
-    }],
     "property-no-unknown": null,
     "rule-empty-line-before": null,
     "selector-list-comma-newline-after": null,

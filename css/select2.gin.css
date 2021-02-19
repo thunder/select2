@@ -379,3 +379,9 @@
 .gin--dark-mode .select2-container--gin .select2-results__option--highlighted[aria-selected]{
   background:var(--colorGinLayerBackground);
 }
+
+.gin--dark-mode .select2-container--gin .select2-selection__choice .select2-selection__choice__remove,
+.gin--dark-mode .select2-container--gin .select2-results__option--highlighted[aria-selected] .select2-selection__choice__remove{
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28px' height='28px' viewBox='0 0 28 28'%3E%3Cpath stroke='%232A2A2D' stroke-width='4' d='M19,9L9,19'/%3E%3Cpath stroke='%232A2A2D' stroke-width='4 ' d='M19,19L9,9'/%3E%3C/svg%3E%0A") 50% 50%/100% 100% no-repeat;
+  background-color:#999aa3;
+}

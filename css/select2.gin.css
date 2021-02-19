@@ -279,14 +279,28 @@
 
 .select2-container--gin .select2-selection--multiple .select2-selection__choice .select2-selection__choice__remove{
   float:right;
+  position:relative;
   border-radius:50%;
   color:#e9ecf1;
   font-size:0;
   margin-right:0;
   margin-left:0.35rem;
   width:1rem;
-  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28px' height='28px' viewBox='0 0 28 28'%3E%3Cpath stroke='%23D4D4D8' stroke-width='4' d='M19,9L9,19'/%3E%3Cpath stroke='%23D4D4D8' stroke-width='4 ' d='M19,19L9,9'/%3E%3C/svg%3E%0A") 50% 50%/100% 100% no-repeat;
   background-color:#999aa3;
+}
+
+.select2-container--gin .select2-selection--multiple .select2-selection__choice .select2-selection__choice__remove:before{
+  content:"";
+  position:absolute;
+  width:100%;
+  height:100%;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18px' height='18px' viewBox='0 0 28 28'%3E%3Cpath stroke='%23000000' stroke-width='2.25' d='M19,9L9,19'/%3E%3Cpath stroke='%23000000' stroke-width='2.25' d='M19,19L9,9'/%3E%3C/svg%3E%0A");
+          mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18px' height='18px' viewBox='0 0 28 28'%3E%3Cpath stroke='%23000000' stroke-width='2.25' d='M19,9L9,19'/%3E%3Cpath stroke='%23000000' stroke-width='2.25' d='M19,19L9,9'/%3E%3C/svg%3E%0A");
+  -webkit-mask-repeat:no-repeat;
+          mask-repeat:no-repeat;
+  -webkit-mask-position:center center;
+          mask-position:center center;
+  background-color:#e9ecf1;
 }
 
 .select2-container--gin .select2-selection--multiple .select2-selection__choice .select2-selection__choice__remove:hover{
@@ -377,5 +391,9 @@
 
 .gin--dark-mode .select2-container--gin .select2-selection__choice,
 .gin--dark-mode .select2-container--gin .select2-results__option--highlighted[aria-selected]{
+  background:var(--colorGinLayerBackground);
+}
+
+.gin--dark-mode .select2-container--gin .select2-selection--multiple .select2-selection__choice .select2-selection__choice__remove:before{
   background:var(--colorGinLayerBackground);
 }

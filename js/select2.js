@@ -27,6 +27,14 @@
           }
           return option.text;
         };
+        if (Object.prototype.hasOwnProperty.call(config, 'ajax')) {
+          config.ajax.data = function(params) {
+            return $.extend({}, params, {
+              q: params.term,
+              selected: $(this).val().filter(selected => !selected.startsWith('$ID:'))
+            });
+          }
+        }
         $(this).data('select2-config', config);
 
         // Emit an event, that other modules have the chance to modify the

@@ -31,7 +31,9 @@
           config.ajax.data = function(params) {
             return $.extend({}, params, {
               q: params.term,
-              selected: $(this).val().filter(selected => !selected.startsWith('$ID:'))
+              selected: $(this).val().filter(function (selected) {
+                 return !selected.startsWith('$ID:')
+              })
             });
           }
         }

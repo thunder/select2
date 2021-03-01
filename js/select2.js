@@ -27,6 +27,23 @@
           }
           return option.text;
         };
+        if (Object.prototype.hasOwnProperty.call(config, 'ajax')) {
+          config.ajax.data = function (params) {
+            var selected = [];
+            if (Array.isArray($(this).val())) {
+              selected = $(this).val();
+            }
+            else if ($(this).val() !== '') {
+              selected = [$(this).val()];
+            }
+            return $.extend({}, params, {
+              q: params.term,
+              selected: selected.filter(function (selected) {
+                return !selected.startsWith('$ID:');
+              })
+            });
+          };
+        }
         $(this).data('select2-config', config);
 
         // Emit an event, that other modules have the chance to modify the

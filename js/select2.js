@@ -38,6 +38,7 @@
             }
             return $.extend({}, params, {
               q: params.term,
+              page: params.page || 1
               selected: selected.filter(function (selected) {
                 return !selected.startsWith('$ID:');
               })

@@ -51,6 +51,8 @@ class EntityAutocompleteMatcher {
    *   (optional) The label of the entity to query by.
    * @param array $selected
    *   (optional) An array of already selected items.
+   * @param int $page
+   *   (optional) An offset for the results.
    *
    * @return array
    *   An array of matched entity labels, in the format required by the AJAX
@@ -61,7 +63,7 @@ class EntityAutocompleteMatcher {
    *
    * @see \Drupal\system\Controller\EntityAutocompleteController
    */
-  public function getMatches($target_type, $selection_handler, array $selection_settings, $string = '', array $selected = []) {
+  public function getMatches($target_type, $selection_handler, array $selection_settings, $string = '', array $selected = [], $page = 0) {
     $matches = [];
 
     $options = $selection_settings + [
@@ -73,9 +75,10 @@ class EntityAutocompleteMatcher {
     if (isset($string)) {
       // Get an array of matching entities.
       $match_operator = !empty($selection_settings['match_operator']) ? $selection_settings['match_operator'] : 'CONTAINS';
-      $match_limit = isset($selection_settings['match_limit']) ? (int) $selection_settings['match_limit'] : 10;
-      $entity_labels = $handler->getReferenceableEntities($string, $match_operator, $match_limit + count($selected));
 
+      $match_limit = isset($selection_settings['match_limit']) ? (int) $selection_settings['match_limit'] : 10;
+      $entity_labels = $handler->getReferenceableEntities($string, $match_operator, $match_limit + count($selected), $page * 10);
+      
       // Loop through the entities and convert them into autocomplete output.
       foreach ($entity_labels as $values) {
         foreach ($values as $entity_id => $label) {

@@ -83,7 +83,20 @@ class EntityAutocompleteController extends ControllerBase {
         // key/value store.
         throw new AccessDeniedHttpException();
       }
-      $matches['results'] = $this->matcher->getMatches($target_type, $selection_handler, $selection_settings, mb_strtolower($input), $request->query->get('selected', []));
+      
+      $matches['results'] = $this->matcher->getMatches($target_type, $selection_handler, $selection_settings, mb_strtolower($input), $request->query->get('selected', []), $request->query->get('page') - 1);
+
+      // Remove reflection in Drupal 10.0.0.
+      $options = $selection_settings + [
+        'target_type' => $target_type,
+        'handler' => $selection_handler,
+      ];
+      $handler = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($options);
+      $method = new \ReflectionMethod($handler, 'getReferenceableEntities');
+      $parameters = $method->getParameters();
+      if (count($parameters) > 3 && $parameters[3]->getName() === 'offset') {
+        $matches['pagination']['more'] = count($matches['results']) == 10;
+      }
     }
 
     return new JsonResponse($matches);

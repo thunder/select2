@@ -6,7 +6,7 @@ use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 
 /**
- * Trait Select2TestTrait.
+ * Test trait with helper functions.
  */
 trait Select2TestTrait {
 
@@ -52,7 +52,9 @@ trait Select2TestTrait {
     ];
     FieldConfig::create($field)->save();
 
-    entity_get_form_display($entity_type, $bundle, 'default')
+    /** @var \Drupal\Core\Entity\EntityDisplayRepositoryInterface $entity_display_repository */
+    $entity_display_repository = \Drupal::service('entity_display.repository');
+    $entity_display_repository->getFormDisplay($entity_type, $bundle, 'default')
       ->setComponent($name, [
         'type' => $widget_type,
         'settings' => $widget_settings,

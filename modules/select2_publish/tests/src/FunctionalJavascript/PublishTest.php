@@ -68,7 +68,10 @@ class PublishTest extends Select2JavascriptTestBase {
         'target_bundles' => ['entity_test_mulrevpub' => 'entity_test_mulrevpub'],
         'auto_create' => FALSE,
       ],
-    ], 'select2_entity_reference', ['autocomplete' => TRUE, 'match_operator' => 'CONTAINS']);
+    ], 'select2_entity_reference', [
+      'autocomplete' => TRUE,
+      'match_operator' => 'CONTAINS',
+    ]);
 
     EntityTestMulRevPub::create(['name' => 'foo', 'status' => FALSE])->save();
     EntityTestMulRevPub::create(['name' => 'bar'])->save();
@@ -104,7 +107,7 @@ class PublishTest extends Select2JavascriptTestBase {
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node', TRUE);
-    $this->assertArraySubset([['target_id' => 4]], $node->select2->getValue());
+    $this->assertEquals([['target_id' => 4]], $node->select2->getValue());
   }
 
 }

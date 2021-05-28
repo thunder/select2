@@ -18,6 +18,11 @@ class ElementTest extends WebDriverTestBase {
   protected static $modules = ['select2_form_test', 'entity_test'];
 
   /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'stark';
+
+  /**
    * Tests select2 optgroups.
    */
   public function testOptgroups() {
@@ -97,7 +102,7 @@ class ElementTest extends WebDriverTestBase {
 
     $page->pressButton('Submit');
     $json = json_decode($this->getSession()->getPage()->getText(), TRUE);
-    $this->assertEquals(3, $json['select2_autocomplete']);
+    $this->assertEquals([['target_id' => 3]], $json['select2_autocomplete']);
   }
 
 }

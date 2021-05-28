@@ -49,6 +49,8 @@ class EntityAutocompleteMatcher {
    *   An array of settings that will be passed to the selection handler.
    * @param string $string
    *   (optional) The label of the entity to query by.
+   * @param array $selected
+   *   (optional) An array of already selected items.
    * @param int $page
    *   (optional) An offset for the results.
    *
@@ -61,7 +63,7 @@ class EntityAutocompleteMatcher {
    *
    * @see \Drupal\system\Controller\EntityAutocompleteController
    */
-  public function getMatches($target_type, $selection_handler, array $selection_settings, $string = '', $page = 0) {
+  public function getMatches($target_type, $selection_handler, array $selection_settings, $string = '', array $selected = [], $page = 0) {
     $matches = [];
 
     $options = $selection_settings + [
@@ -73,14 +75,25 @@ class EntityAutocompleteMatcher {
     if (isset($string)) {
       // Get an array of matching entities.
       $match_operator = !empty($selection_settings['match_operator']) ? $selection_settings['match_operator'] : 'CONTAINS';
-      $entity_labels = $handler->getReferenceableEntities($string, $match_operator, 10, $page * 10);
 
+      $match_limit = isset($selection_settings['match_limit']) ? (int) $selection_settings['match_limit'] : 10;
+      $entity_labels = $handler->getReferenceableEntities($string, $match_operator, $match_limit + count($selected), $page * 10);
+      
       // Loop through the entities and convert them into autocomplete output.
       foreach ($entity_labels as $values) {
         foreach ($values as $entity_id => $label) {
-          $matches[$entity_id] = ['id' => $entity_id, 'text' => Html::decodeEntities($label)];
+          // Filter out already selected items.
+          if (in_array($entity_id, $selected)) {
+            continue;
+          }
+
+          $matches[$entity_id] = [
+            'id' => $entity_id,
+            'text' => Html::decodeEntities($label),
+          ];
         }
       }
+      $matches = array_slice($matches, 0, $match_limit, TRUE);
 
       $this->moduleHandler->alter('select2_autocomplete_matches', $matches, $options);
     }

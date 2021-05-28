@@ -1,3 +1,9 @@
+.select2-container--seven {
+  @import "../../../../libraries/select2/src/scss/theme/default/_single.scss";
+  @import "../../../../libraries/select2/src/scss/theme/default/_multiple.scss";
+  @import "default";
+}
+
 /* Overrides */
 .select2-container--seven .select2-selection--single,
 .select2-container--seven .select2-selection--single .select2-selection__arrow {
@@ -43,7 +49,7 @@
   font-size: 0.95em;
 }
 .select2-container--seven ul li.select2-results__option {
-  padding: 3px 1em 3px .4em;
+  padding: 3px 1em 3px 0.4em;
 }
 .select2-container--seven .select2-search--dropdown .select2-search__field {
   border: 1px solid #b8b8b8;
@@ -79,4 +85,9 @@
 
 .select2-container--seven .select2-selection--multiple .select2-selection__choice {
   white-space: normal;
+}
+
+/* Fixes the display of the select2 dropdown in the modal. */
+.ui-widget-overlay + .select2-container--seven {
+  z-index: 1260;
 }

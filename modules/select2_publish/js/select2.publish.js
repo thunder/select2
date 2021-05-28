@@ -8,6 +8,9 @@
   Drupal.behaviors.select2_publish = {
     attach: function (context) {
       $('.select2-widget', context).on('select2-init', function (e) {
+        if (typeof $(e.target).data('select2-publish-default') === 'undefined') {
+          return;
+        }
         var config = $(e.target).data('select2-config');
 
         var parentCreateTagHandler = config.createTag;

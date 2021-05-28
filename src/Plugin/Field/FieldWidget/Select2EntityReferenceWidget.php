@@ -5,11 +5,9 @@ namespace Drupal\select2\Plugin\Field\FieldWidget;
 use Drupal\Core\Entity\EntityReferenceSelection\SelectionWithAutocreateInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
-use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\OptGroup;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\select2\Select2Trait;
 use Drupal\user\EntityOwnerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -26,7 +24,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   multiple_values = TRUE
  * )
  */
-class Select2EntityReferenceWidget extends Select2Widget implements ContainerFactoryPluginInterface {
+class Select2EntityReferenceWidget extends Select2Widget {
 
   use Select2Trait;
 
@@ -40,16 +38,20 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
   /**
    * {@inheritdoc}
    */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, EntityTypeManagerInterface $entity_type_manager) {
-    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
-    $this->entityTypeManager = $entity_type_manager;
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    $widget = parent::create($container, $configuration, $plugin_id, $plugin_definition);
+    $widget->setEntityTypeManager($container->get('entity_type.manager'));
+    return $widget;
   }
 
   /**
-   * {@inheritdoc}
+   * Set the entity type manager service.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager service.
    */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static($plugin_id, $plugin_definition, $configuration['field_definition'], $configuration['settings'], $configuration['third_party_settings'], $container->get('entity_type.manager'));
+  protected function setEntityTypeManager(EntityTypeManagerInterface $entityTypeManager) {
+    $this->entityTypeManager = $entityTypeManager;
   }
 
   /**
@@ -59,6 +61,7 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
     return [
       'autocomplete' => FALSE,
       'match_operator' => 'CONTAINS',
+      'match_limit' => 10,
     ] + parent::defaultSettings();
   }
 
@@ -79,6 +82,18 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
       '#default_value' => $this->getSetting('match_operator'),
       '#options' => $this->getMatchOperatorOptions(),
       '#description' => $this->t('Select the method used to collect autocomplete suggestions. Note that <em>Contains</em> can cause performance issues on sites with thousands of entities.'),
+      '#states' => [
+        'visible' => [
+          ':input[name$="[settings_edit_form][settings][autocomplete]"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+    $element['match_limit'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Number of results'),
+      '#default_value' => $this->getSetting('match_limit'),
+      '#min' => 0,
+      '#description' => $this->t('The number of suggestions that will be listed. Use <em>0</em> to remove the limit.'),
       '#states' => [
         'visible' => [
           ':input[name$="[settings_edit_form][settings][autocomplete]"]' => ['checked' => TRUE],
@@ -127,6 +142,8 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
     $summary[] = $this->t('Autocomplete: @autocomplete', ['@autocomplete' => $autocomplete ? $this->t('On') : $this->t('Off')]);
     if ($autocomplete) {
       $summary[] = $this->t('Autocomplete matching: @match_operator', ['@match_operator' => $operators[$this->getSetting('match_operator')]]);
+      $size = $this->getSetting('match_limit') ?: $this->t('unlimited');
+      $summary[] = $this->t('Autocomplete suggestion list size: @size', ['@size' => $size]);
     }
     return $summary;
   }
@@ -182,6 +199,7 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
     $label_field = $this->entityTypeManager->getDefinition($this->getFieldSetting('target_type'))->getKey('label') ?: '_none';
     return [
       'match_operator' => $this->getSetting('match_operator'),
+      'match_limit' => $this->getSetting('match_limit'),
       'sort' => ['field' => $label_field],
     ] + $this->getFieldSetting('handler_settings');
   }
@@ -201,7 +219,7 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
     /** @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface $handler */
     $handler = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($handler_settings);
 
-    $options = static::getValidReferenceableEntities(array_keys(OptGroup::flattenOptions($element['#options'])), $handler_settings);
+    $options = empty($element['#options']) ? [] : static::getValidReferenceableEntities(array_keys(OptGroup::flattenOptions($element['#options'])), $handler_settings);
     $items = [];
     foreach ($values as $value) {
       if (isset($options[$value])) {
@@ -224,6 +242,8 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
   /**
    * Returns the name of the bundle which will be used for autocreated entities.
    *
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   *
    * @uses \Drupal\Core\Field\Plugin\Field\FieldWidget\EntityReferenceAutocompleteWidget::getAutocreateBundle().
    *   This is copied from core.
    *
@@ -232,13 +252,23 @@ class Select2EntityReferenceWidget extends Select2Widget implements ContainerFac
    */
   protected function getAutocreateBundle() {
     $bundle = NULL;
-    if ($this->getSelectionHandlerSetting('auto_create') && $target_bundles = $this->getSelectionHandlerSetting('target_bundles')) {
+    if ($this->getSelectionHandlerSetting('auto_create')) {
+      // If a bundle is explicitly defined, use it.
+      if ($bundle = $this->getSelectionHandlerSetting('auto_create_bundle')) {
+        return $bundle;
+      }
+
+      $target_bundles = $this->getSelectionHandlerSetting('target_bundles');
+      // If there's no target bundle at all, use the target_type. It's the
+      // default for bundleless entity types.
+      if (empty($target_bundles)) {
+        $bundle = $this->getFieldSetting('target_type');
+      }
       // If there's only one target bundle, use it.
-      if (count($target_bundles) == 1) {
+      elseif (count($target_bundles) == 1) {
         $bundle = reset($target_bundles);
       }
-      // Otherwise use the target bundle stored in selection handler settings.
-      elseif (!$bundle = $this->getSelectionHandlerSetting('auto_create_bundle')) {
+      else {
         // If no bundle has been set as auto create target means that there is
         // an inconsistency in entity reference field settings.
         trigger_error(sprintf(

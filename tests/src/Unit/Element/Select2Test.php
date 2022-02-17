@@ -196,7 +196,7 @@ class Select2Test extends UnitTestCase {
    *
    * @dataProvider providerTestPlaceholderPropertyRendering
    */
-  public function testPlaceholderPropertyRendering(bool $required, string $empty_option, string $empty_value, string $placeholder, array $expected): void {
+  public function testPlaceholderPropertyRendering(bool $required, string|TranslatableMarkup|NULL $empty_option, string|TranslatableMarkup|NULL $empty_value, string|TranslatableMarkup|NULL $placeholder, array $expected): void {
     $element = [
       '#name' => 'field_foo',
       '#options' => [],

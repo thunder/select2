@@ -25,7 +25,7 @@ class ElementTest extends WebDriverTestBase {
   /**
    * Tests select2 optgroups.
    */
-  public function testOptgroups() {
+  public function testOptgroups(): void {
     $page = $this->getSession()->getPage();
     $this->drupalGet('/select2-optgroup-form');
 
@@ -39,14 +39,14 @@ class ElementTest extends WebDriverTestBase {
     $page->find('css', '.select2-search__field')->setValue('Nana');
     $page->find('css', '.select2-results__option--highlighted')->click();
     $page->pressButton('Submit');
-    $json = json_decode($this->getSession()->getPage()->getText(), TRUE);
+    $json = json_decode($this->getSession()->getPage()->getText(), TRUE, 512, JSON_THROW_ON_ERROR);
     $this->assertEquals(3, $json['select2_optgroups']);
   }
 
   /**
    * Test that in-between ajax calls are not creating new entities.
    */
-  public function testAjaxCallbacksInBetween() {
+  public function testAjaxCallbacksInBetween(): void {
 
     $page = $this->getSession()->getPage();
     $this->drupalGet('/select2-ajax-form');
@@ -64,7 +64,7 @@ class ElementTest extends WebDriverTestBase {
   /**
    * Test loading of seven theme style.
    */
-  public function testSevenTheme() {
+  public function testSevenTheme(): void {
     $this->container->get('theme_installer')->install(['seven']);
     $this->config('system.theme')
       ->set('default', 'seven')
@@ -84,7 +84,7 @@ class ElementTest extends WebDriverTestBase {
   /**
    * Tests select2 autocomplete.
    */
-  public function testAutocomplete() {
+  public function testAutocomplete(): void {
     EntityTestMulRevPub::create(['name' => 'foo'])->save();
     EntityTestMulRevPub::create(['name' => 'bar'])->save();
     EntityTestMulRevPub::create(['name' => 'gaga'])->save();
@@ -101,7 +101,7 @@ class ElementTest extends WebDriverTestBase {
     $page->find('css', '.select2-results__option--highlighted')->click();
 
     $page->pressButton('Submit');
-    $json = json_decode($this->getSession()->getPage()->getText(), TRUE);
+    $json = json_decode($this->getSession()->getPage()->getText(), TRUE, 512, JSON_THROW_ON_ERROR);
     $this->assertEquals([['target_id' => 3]], $json['select2_autocomplete']);
   }
 

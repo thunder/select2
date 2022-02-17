@@ -11,6 +11,7 @@ use Drupal\facets\FacetInterface;
 use Drupal\facets\Widget\WidgetPluginBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Drupal\Core\Url;
 
 /**
  * The select2 widget.
@@ -49,7 +50,7 @@ class Select2Widget extends WidgetPluginBase implements ContainerFactoryPluginIn
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition): self {
     return new static(
       $configuration,
       $plugin_id,
@@ -62,7 +63,7 @@ class Select2Widget extends WidgetPluginBase implements ContainerFactoryPluginIn
   /**
    * {@inheritdoc}
    */
-  public function defaultConfiguration() {
+  public function defaultConfiguration(): array {
     return [
       'autocomplete' => FALSE,
       'match_operator' => 'CONTAINS',
@@ -73,13 +74,13 @@ class Select2Widget extends WidgetPluginBase implements ContainerFactoryPluginIn
   /**
    * {@inheritdoc}
    */
-  public function build(FacetInterface $facet) {
+  public function build(FacetInterface $facet): array {
     $this->facet = $facet;
 
     $items = [];
     $active_items = [];
     foreach ($facet->getResults() as $result) {
-      if (empty($result->getUrl())) {
+      if (!($result->getUrl() instanceof Url)) {
         continue;
       }
 
@@ -132,7 +133,7 @@ class Select2Widget extends WidgetPluginBase implements ContainerFactoryPluginIn
   /**
    * {@inheritdoc}
    */
-  public function buildConfigurationForm(array $form, FormStateInterface $form_state, FacetInterface $facet) {
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state, FacetInterface $facet): array {
     $form = parent::buildConfigurationForm($form, $form_state, $facet);
     $form['width'] = [
       '#type' => 'textfield',
@@ -171,7 +172,7 @@ class Select2Widget extends WidgetPluginBase implements ContainerFactoryPluginIn
    * @return array
    *   List of options.
    */
-  protected function getMatchOperatorOptions() {
+  protected function getMatchOperatorOptions(): array {
     return [
       'STARTS_WITH' => $this->t('Starts with'),
       'CONTAINS' => $this->t('Contains'),
@@ -187,7 +188,7 @@ class Select2Widget extends WidgetPluginBase implements ContainerFactoryPluginIn
    * @return array
    *   The render element with autocomplete settings.
    */
-  public function processFacetAutocomplete(array &$element) {
+  public function processFacetAutocomplete(array &$element): array {
     $selection_settings = [
       'path' => $this->request->getUri(),
       'match_operator' => $this->getConfiguration()['match_operator'],

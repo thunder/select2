@@ -16,7 +16,7 @@ class Select2WidgetTest extends Select2JavascriptTestBase {
    *
    * @group select2
    */
-  public function testEmptyField() {
+  public function testEmptyField(): void {
     $this->createField('select2', 'node', 'test', 'list_string', [], [], 'select2', []);
 
     $this->drupalGet('/node/add/test');
@@ -34,7 +34,7 @@ class Select2WidgetTest extends Select2JavascriptTestBase {
    *
    * @group select2
    */
-  public function testSingleSelect() {
+  public function testSingleSelect(): void {
     $this->createField('select2', 'node', 'test', 'list_string', [
       'allowed_values' => [
         'foo' => 'Foo',
@@ -71,7 +71,7 @@ class Select2WidgetTest extends Select2JavascriptTestBase {
   /**
    * Test single field selection.
    */
-  public function testSingleSelectRequired() {
+  public function testSingleSelectRequired(): void {
     $this->createField('select2', 'node', 'test', 'list_string', [
       'allowed_values' => [
         'foo' => 'Foo',
@@ -101,7 +101,7 @@ class Select2WidgetTest extends Select2JavascriptTestBase {
   /**
    * Test multiple field selection with unlimited items.
    */
-  public function testMultipleSelect() {
+  public function testMultipleSelect(): void {
     $this->createField('select2', 'node', 'test', 'list_string', [
       'allowed_values' => [
         'foo' => 'Foo',
@@ -139,7 +139,7 @@ class Select2WidgetTest extends Select2JavascriptTestBase {
   /**
    * Test multiple field selection with 2 items.
    */
-  public function testLimitedCount() {
+  public function testLimitedCount(): void {
     $this->createField('select2', 'node', 'test', 'list_string', [
       'allowed_values' => [
         'foo' => 'Foo',

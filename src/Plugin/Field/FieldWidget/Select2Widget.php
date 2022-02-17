@@ -35,6 +35,7 @@ class Select2Widget extends OptionsSelectWidget {
    * {@inheritdoc}
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
+    $element = [];
     $element['width'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Field width'),
@@ -73,12 +74,14 @@ class Select2Widget extends OptionsSelectWidget {
   /**
    * {@inheritdoc}
    */
-  protected function getEmptyLabel() {}
+  protected function getEmptyLabel(): string {
+    return '';
+  }
 
   /**
    * {@inheritdoc}
    */
-  public static function validateElement(array $element, FormStateInterface $form_state) {
+  public static function validateElement(array $element, FormStateInterface $form_state): void {
     if ($element['#required'] && $element['#value'] == '') {
       $form_state->setError($element, t('@name field is required.', ['@name' => $element['#title']]));
     }

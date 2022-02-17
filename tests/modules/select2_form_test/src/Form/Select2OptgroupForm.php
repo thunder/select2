@@ -16,14 +16,14 @@ class Select2OptgroupForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function getFormId() {
+  public function getFormId(): string {
     return 'form_test_select2_optgroup';
   }
 
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $customize = FALSE) {
+  public function buildForm(array $form, FormStateInterface $form_state, bool $customize = FALSE): array {
 
     $form['select2_optgroups'] = [
       '#type' => 'select2',
@@ -46,7 +46,7 @@ class Select2OptgroupForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
     $form_state->setResponse(new JsonResponse($form_state->getValues()));
   }
 

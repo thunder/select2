@@ -25,6 +25,8 @@ class EntityAutocompleteController extends ControllerBase {
 
   /**
    * {@inheritdoc}
+   *
+   * @phpstan-ignore-next-line
    */
   public static function create(ContainerInterface $container) {
     $controller = parent::create($container);
@@ -38,7 +40,7 @@ class EntityAutocompleteController extends ControllerBase {
    * @param \Drupal\select2\EntityAutocompleteMatcher $matcher
    *   The autocomplete matcher for entity references.
    */
-  protected function setMatcher(EntityAutocompleteMatcher $matcher) {
+  protected function setMatcher(EntityAutocompleteMatcher $matcher): void {
     $this->matcher = $matcher;
   }
 
@@ -62,7 +64,8 @@ class EntityAutocompleteController extends ControllerBase {
    *   Thrown if the selection settings key is not found in the key/value store
    *   or if it does not match the stored data.
    */
-  public function handleAutocomplete(Request $request, $target_type, $selection_handler, $selection_settings_key) {
+  public function handleAutocomplete(Request $request, string $target_type, string $selection_handler, string $selection_settings_key): JsonResponse {
+    $matches = [];
     $matches['results'] = [];
     // Get the typed string from the URL, if it exists.
     $input = $request->query->get('q');

@@ -28,7 +28,7 @@ abstract class Select2JavascriptTestBase extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $this->drupalCreateContentType(['type' => 'test']);
@@ -50,7 +50,7 @@ abstract class Select2JavascriptTestBase extends WebDriverTestBase {
    * @param array $keys
    *   Values for the field.
    */
-  protected function selectOption($field, array $keys) {
+  protected function selectOption(string $field, array $keys): void {
     $this->getSession()->executeScript("jQuery('#$field').val(['" . implode("', '", $keys) . "'])");
     $this->getSession()->executeScript("jQuery('#$field').trigger('change')");
   }
@@ -61,7 +61,7 @@ abstract class Select2JavascriptTestBase extends WebDriverTestBase {
    * @param string $cssSelector
    *   CSS Selector for element that should be centralized.
    */
-  protected function scrollElementInView($cssSelector) {
+  protected function scrollElementInView(string $cssSelector): void {
     $this->getSession()
       ->executeScript('
         var viewPortHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
@@ -82,7 +82,7 @@ abstract class Select2JavascriptTestBase extends WebDriverTestBase {
    * @param int $offsetY
    *   Horizontal offset for element drag in pixels.
    */
-  protected function dragDropElement(NodeElement $element, $offsetX, $offsetY) {
+  protected function dragDropElement(NodeElement $element, int $offsetX, int $offsetY): void {
     $this->assertSession()->assertWaitOnAjaxRequest();
 
     $elemXpath = addslashes($element->getXpath());

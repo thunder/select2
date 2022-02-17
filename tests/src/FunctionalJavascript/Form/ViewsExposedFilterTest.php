@@ -27,7 +27,7 @@ class ViewsExposedFilterTest extends WebDriverTestBase {
   /**
    * Tests select2 optgroups.
    */
-  public function testContentListWithSelect2Filter() {
+  public function testContentListWithSelect2Filter(): void {
     $page = $this->getSession()->getPage();
 
     $admin = $this->createUser([

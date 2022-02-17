@@ -32,7 +32,7 @@ trait Select2TestTrait {
    *
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  protected function createField($name, $entity_type, $bundle, $field_type, array $storage_settings = [], array $field_settings = [], $widget_type = 'string', array $widget_settings = []) {
+  protected function createField(string $name, string $entity_type, string $bundle, string $field_type, array $storage_settings = [], array $field_settings = [], string $widget_type = 'string', array $widget_settings = []): void {
     $field_storage = FieldStorageConfig::create([
       'entity_type' => $entity_type,
       'field_name' => $name,

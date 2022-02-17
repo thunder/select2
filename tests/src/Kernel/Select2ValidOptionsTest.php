@@ -15,7 +15,7 @@ class Select2ValidOptionsTest extends Select2KernelTestBase {
   /**
    * Tests that available options are set according to values.
    */
-  public function testAvailableOptions() {
+  public function testAvailableOptions(): void {
 
     $name = 'test_select2';
 
@@ -39,7 +39,7 @@ class Select2ValidOptionsTest extends Select2KernelTestBase {
     $ref2->save();
 
     // Create a new revision to trigger problem.
-    $ref1->setName('Drupal')->setNewRevision();
+    $ref1->setName(\Drupal::class)->setNewRevision();
     $ref1->save();
 
     $entity->$name->setValue([

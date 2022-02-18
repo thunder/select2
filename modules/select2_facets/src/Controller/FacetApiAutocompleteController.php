@@ -64,6 +64,8 @@ class FacetApiAutocompleteController extends ControllerBase {
 
   /**
    * {@inheritdoc}
+   *
+   * @phpstan-ignore-next-line
    */
   public static function create(ContainerInterface $container) {
     $controller = parent::create($container);
@@ -82,7 +84,7 @@ class FacetApiAutocompleteController extends ControllerBase {
    * @param \Drupal\facets\FacetManager\DefaultFacetManager $facetManager
    *   The facet manager.
    */
-  protected function setFacetManager(DefaultFacetManager $facetManager) {
+  protected function setFacetManager(DefaultFacetManager $facetManager): void {
     $this->facetManager = $facetManager;
   }
 
@@ -92,7 +94,7 @@ class FacetApiAutocompleteController extends ControllerBase {
    * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
    *   The request stack object.
    */
-  protected function setRequestStack(RequestStack $requestStack) {
+  protected function setRequestStack(RequestStack $requestStack): void {
     $this->requestStack = $requestStack;
   }
 
@@ -102,7 +104,7 @@ class FacetApiAutocompleteController extends ControllerBase {
    * @param \Drupal\Core\Path\CurrentPathStack $currentPathStack
    *   Current path stack object.
    */
-  protected function setCurrentPathStack(CurrentPathStack $currentPathStack) {
+  protected function setCurrentPathStack(CurrentPathStack $currentPathStack): void {
     $this->currentPathStack = $currentPathStack;
   }
 
@@ -112,7 +114,7 @@ class FacetApiAutocompleteController extends ControllerBase {
    * @param \Drupal\Core\Routing\AccessAwareRouterInterface $router
    *   The router object.
    */
-  protected function setRouter(AccessAwareRouterInterface $router) {
+  protected function setRouter(AccessAwareRouterInterface $router): void {
     $this->router = $router;
   }
 
@@ -122,7 +124,7 @@ class FacetApiAutocompleteController extends ControllerBase {
    * @param \Drupal\Core\PathProcessor\InboundPathProcessorInterface $pathProcessor
    *   The path processor service object.
    */
-  protected function setPathProcessor(InboundPathProcessorInterface $pathProcessor) {
+  protected function setPathProcessor(InboundPathProcessorInterface $pathProcessor): void {
     $this->pathProcessor = $pathProcessor;
   }
 
@@ -145,11 +147,12 @@ class FacetApiAutocompleteController extends ControllerBase {
    * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
    *   Thrown if the selection settings key is not found in the key/value store
    *   or if it does not match the stored data.
-   *
    * @throws \Drupal\facets\Exception\InvalidProcessorException
    */
-  public function handleAutocomplete(Request $request, $facetsource_id, $facet_id, $selection_settings_key) {
-    $matches['results'] = [];
+  public function handleAutocomplete(Request $request, string $facetsource_id, string $facet_id, string $selection_settings_key): JsonResponse {
+    $matches = [
+      'results' => [],
+    ];
     // Get the typed string from the URL, if it exists.
     if ($input = $request->query->get('q')) {
       $typed_string = mb_strtolower($input);
@@ -205,7 +208,7 @@ class FacetApiAutocompleteController extends ControllerBase {
    * @return \Symfony\Component\HttpFoundation\Request
    *   A new request object.
    */
-  protected function createRequestFromPath($path) {
+  protected function createRequestFromPath(string $path): Request {
     $new_request = Request::create($path);
     $processed = $this->pathProcessor->processInbound($path, $new_request);
     $this->currentPathStack->setPath($processed);
@@ -219,7 +222,7 @@ class FacetApiAutocompleteController extends ControllerBase {
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The one and only request.
    */
-  protected function overwriteRequestStack(Request $request) {
+  protected function overwriteRequestStack(Request $request): void {
     while ($this->requestStack->getCurrentRequest()) {
       $this->storedRequests[] = $this->requestStack->pop();
     }
@@ -229,7 +232,7 @@ class FacetApiAutocompleteController extends ControllerBase {
   /**
    * Restore all saved requests on the stack.
    */
-  protected function restoreRequestStack() {
+  protected function restoreRequestStack(): void {
     $this->requestStack->pop();
     foreach ($this->storedRequests as $request) {
       $this->requestStack->push($request);

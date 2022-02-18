@@ -22,7 +22,7 @@ class PublishTest extends Select2JavascriptTestBase {
   /**
    * Test autocomplete in a single value field.
    */
-  public function testMultipleSelection() {
+  public function testMultipleSelection(): void {
     $this->createField('select2', 'node', 'test', 'entity_reference', [
       'target_type' => 'entity_test_mulrevpub',
       'cardinality' => -1,
@@ -59,7 +59,7 @@ class PublishTest extends Select2JavascriptTestBase {
   /**
    * Tests that the autocomplete.
    */
-  public function testAutocomplete() {
+  public function testAutocomplete(): void {
     $this->createField('select2', 'node', 'test', 'entity_reference', [
       'target_type' => 'entity_test_mulrevpub',
     ], [

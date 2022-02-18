@@ -38,7 +38,7 @@ class Select2EntityReferenceWidget extends Select2Widget {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition): self {
     $widget = parent::create($container, $configuration, $plugin_id, $plugin_definition);
     $widget->setEntityTypeManager($container->get('entity_type.manager'));
     return $widget;
@@ -50,14 +50,14 @@ class Select2EntityReferenceWidget extends Select2Widget {
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   The entity type manager service.
    */
-  protected function setEntityTypeManager(EntityTypeManagerInterface $entityTypeManager) {
+  protected function setEntityTypeManager(EntityTypeManagerInterface $entityTypeManager): void {
     $this->entityTypeManager = $entityTypeManager;
   }
 
   /**
    * {@inheritdoc}
    */
-  public static function defaultSettings() {
+  public static function defaultSettings(): array {
     return [
       'autocomplete' => FALSE,
       'match_operator' => 'CONTAINS',
@@ -68,7 +68,7 @@ class Select2EntityReferenceWidget extends Select2Widget {
   /**
    * {@inheritdoc}
    */
-  public function settingsForm(array $form, FormStateInterface $form_state) {
+  public function settingsForm(array $form, FormStateInterface $form_state): array {
     $element = parent::settingsForm($form, $form_state);
     $element['autocomplete'] = [
       '#type' => 'checkbox',
@@ -135,7 +135,7 @@ class Select2EntityReferenceWidget extends Select2Widget {
   /**
    * {@inheritdoc}
    */
-  public function settingsSummary() {
+  public function settingsSummary(): array {
     $summary = parent::settingsSummary();
     $autocomplete = $this->getSetting('autocomplete');
     $operators = $this->getMatchOperatorOptions();
@@ -151,7 +151,7 @@ class Select2EntityReferenceWidget extends Select2Widget {
   /**
    * {@inheritdoc}
    */
-  public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
+  public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state): array {
     $element = parent::formElement($items, $delta, $element, $form, $form_state);
 
     $element['#target_type'] = $this->getFieldSetting('target_type');
@@ -168,7 +168,7 @@ class Select2EntityReferenceWidget extends Select2Widget {
     }
     // Do not display a 'multiple' select box if there is only one option. But
     // with 'autocreate' or 'autocomplete' we want to ignore that.
-    $element['#multiple'] = $this->multiple && (count($this->options) > 1 || isset($element['#autocreate']) || $element['#autocomplete']);
+    $element['#multiple'] = $this->multiple && ((is_countable($this->options) ? count($this->options) : 0) > 1 || isset($element['#autocreate']) || $element['#autocomplete']);
 
     if ($element['#autocomplete'] && $element['#multiple']) {
       $entity_definition = $this->entityTypeManager->getDefinition($element['#target_type']);
@@ -195,7 +195,7 @@ class Select2EntityReferenceWidget extends Select2Widget {
    *
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  protected function getSelectionSettings() {
+  protected function getSelectionSettings(): array {
     $label_field = $this->entityTypeManager->getDefinition($this->getFieldSetting('target_type'))->getKey('label') ?: '_none';
     return [
       'match_operator' => $this->getSetting('match_operator'),
@@ -207,7 +207,7 @@ class Select2EntityReferenceWidget extends Select2Widget {
   /**
    * {@inheritdoc}
    */
-  protected static function prepareFieldValues(array $values, array $element) {
+  protected static function prepareFieldValues(array $values, array $element): array {
     if (empty($element['#autocreate'])) {
       return parent::prepareFieldValues($values, $element);
     }
@@ -250,7 +250,7 @@ class Select2EntityReferenceWidget extends Select2Widget {
    * @return string
    *   The bundle name.
    */
-  protected function getAutocreateBundle() {
+  protected function getAutocreateBundle(): string {
     $bundle = NULL;
     if ($this->getSelectionHandlerSetting('auto_create')) {
       // If a bundle is explicitly defined, use it.
@@ -265,7 +265,7 @@ class Select2EntityReferenceWidget extends Select2Widget {
         $bundle = $this->getFieldSetting('target_type');
       }
       // If there's only one target bundle, use it.
-      elseif (count($target_bundles) == 1) {
+      elseif ((is_countable($target_bundles) ? count($target_bundles) : 0) == 1) {
         $bundle = reset($target_bundles);
       }
       else {
@@ -294,9 +294,9 @@ class Select2EntityReferenceWidget extends Select2Widget {
    * @return mixed
    *   The setting value.
    */
-  protected function getSelectionHandlerSetting($setting_name) {
+  protected function getSelectionHandlerSetting(string $setting_name) {
     $settings = $this->getFieldSetting('handler_settings');
-    return isset($settings[$setting_name]) ? $settings[$setting_name] : NULL;
+    return $settings[$setting_name] ?? NULL;
   }
 
   /**
@@ -305,7 +305,7 @@ class Select2EntityReferenceWidget extends Select2Widget {
    * @return array
    *   List of options.
    */
-  protected function getMatchOperatorOptions() {
+  protected function getMatchOperatorOptions(): array {
     return [
       'STARTS_WITH' => $this->t('Starts with'),
       'CONTAINS' => $this->t('Contains'),

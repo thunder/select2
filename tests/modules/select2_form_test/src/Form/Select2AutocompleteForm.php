@@ -16,14 +16,14 @@ class Select2AutocompleteForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function getFormId() {
+  public function getFormId(): string {
     return 'form_test_select2_autocomplete';
   }
 
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $customize = FALSE) {
+  public function buildForm(array $form, FormStateInterface $form_state, bool $customize = FALSE): array {
 
     $form['select2_autocomplete'] = [
       '#type' => 'select2',
@@ -40,7 +40,7 @@ class Select2AutocompleteForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
     $form_state->setResponse(new JsonResponse($form_state->getValues()));
   }
 

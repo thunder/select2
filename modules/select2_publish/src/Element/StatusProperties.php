@@ -13,7 +13,7 @@ class StatusProperties implements TrustedCallbackInterface {
   /**
    * {@inheritdoc}
    */
-  public static function trustedCallbacks() {
+  public static function trustedCallbacks(): array {
     return ['preRender'];
   }
 
@@ -23,13 +23,13 @@ class StatusProperties implements TrustedCallbackInterface {
    * @param array $element
    *   The select2 render element.
    *
-   * @return mixed
+   * @return array
    *   The select2 render element.
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public static function preRender(array $element) {
+  public static function preRender(array $element): array {
     if ($element['#target_type']) {
       $entity_manager = \Drupal::entityTypeManager();
       $entity_definition = $entity_manager->getDefinition($element['#target_type']);

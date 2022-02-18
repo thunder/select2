@@ -2,6 +2,12 @@
 
 namespace Drupal\Tests\select2\Unit\Element;
 
+use Drupal\Core\Language\LanguageInterface;
+use Drupal\Core\Language\LanguageManagerInterface;
+use Drupal\Core\Theme\ActiveTheme;
+use Drupal\Core\Theme\ThemeManagerInterface;
+use Drupal\Core\Asset\LibraryDiscoveryInterface;
+use Drupal\Core\StringTranslation\TranslationManager;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
@@ -17,37 +23,37 @@ class Select2Test extends UnitTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
-    $language = $this->createMock('Drupal\Core\Language\LanguageInterface');
+    $language = $this->createMock(LanguageInterface::class);
     $language->expects($this->any())
       ->method('getDirection')
       ->will($this->returnValue('rtl'));
     $language->method('getId')
       ->will($this->returnValue('en'));
 
-    $language_manager = $this->createMock('Drupal\Core\Language\LanguageManagerInterface');
+    $language_manager = $this->createMock(LanguageManagerInterface::class);
     $language_manager->expects($this->any())
       ->method('getCurrentLanguage')
       ->will($this->returnValue($language));
 
-    $theme = $this->createMock('Drupal\Core\Theme\ActiveTheme');
+    $theme = $this->createMock(ActiveTheme::class);
     $theme->expects($this->any())
       ->method('getName')
       ->will($this->returnValue('seven'));
 
-    $theme_manager = $this->createMock('Drupal\Core\Theme\ThemeManagerInterface');
+    $theme_manager = $this->createMock(ThemeManagerInterface::class);
     $theme_manager->expects($this->any())
       ->method('getActiveTheme')
       ->will($this->returnValue($theme));
 
-    $library_discovery = $this->createMock('Drupal\Core\Asset\LibraryDiscoveryInterface');
+    $library_discovery = $this->createMock(LibraryDiscoveryInterface::class);
     $library_discovery->expects($this->any())
       ->method('getLibraryByName')
       ->will($this->returnValue(TRUE));
 
-    $string_translation = $this->createMock('Drupal\Core\StringTranslation\TranslationManager');
+    $string_translation = $this->createMock(TranslationManager::class);
 
     $container = new ContainerBuilder();
     $container->set('language_manager', $language_manager);
@@ -63,7 +69,7 @@ class Select2Test extends UnitTestCase {
    *
    * @dataProvider providerTestPreRenderSelect
    */
-  public function testPreRenderSelect($multiple, $required, $settings, $expected) {
+  public function testPreRenderSelect(bool $multiple, bool $required, array $settings, array $expected): void {
     $element = [
       '#name' => 'field_foo',
       '#options' => [],
@@ -86,7 +92,7 @@ class Select2Test extends UnitTestCase {
   /**
    * Data provider for testPreRenderSelect().
    */
-  public function providerTestPreRenderSelect() {
+  public function providerTestPreRenderSelect(): array {
     $data = [];
     $data[] = [TRUE, TRUE, [],
       [
@@ -190,7 +196,7 @@ class Select2Test extends UnitTestCase {
    *
    * @dataProvider providerTestPlaceholderPropertyRendering
    */
-  public function testPlaceholderPropertyRendering($required, $empty_option, $empty_value, $placeholder, $expected) {
+  public function testPlaceholderPropertyRendering(bool $required, string|TranslatableMarkup|NULL $empty_option, string|TranslatableMarkup|NULL $empty_value, string|TranslatableMarkup|NULL $placeholder, array $expected): void {
     $element = [
       '#name' => 'field_foo',
       '#options' => [],
@@ -217,7 +223,7 @@ class Select2Test extends UnitTestCase {
   /**
    * Data provider for testPlaceholderPropertyRendering().
    */
-  public function providerTestPlaceholderPropertyRendering() {
+  public function providerTestPlaceholderPropertyRendering(): array {
     $data = [];
     $data[] = [TRUE, '', '', '',
       ['id' => '', 'text' => '- Select -'],

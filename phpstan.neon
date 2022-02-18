@@ -1,14 +1,18 @@
 parameters:
   customRulesetUsed: true
-  reportUnmatchedIgnoredErrors: false
-  # Ignore phpstan-drupal extension's rules.
+  checkGenericClassInNonGenericObjectType: false
+  checkMissingIterableValueType: false
+  reportUnmatchedIgnoredErrors: true
+  level: 6
   ignoreErrors:
     - '#\Drupal calls should be avoided in classes, use dependency injection instead#'
-    - '#Plugin definitions cannot be altered.#'
-    - '#Missing cache backend declaration for performance.#'
-    - '#Plugin manager has cache backend specified but does not declare cache tags.#'
-    #TODO: Remove when https://www.drupal.org/project/drupal/issues/2367933 is fixed.
-    - '#If the entity form display is available in configuration use#'
+    - '#\Call to an undefined method Drupal\\Tests\\WebAssert::#'
+    - "#^Unsafe usage of new static\\(\\)\\.$#"
+    - "#https:\/\/www.drupal.org\/node\/3083055#"
+    - "#Function drupal_phpunit_find_extension_directories not found.#"
+    # Drupal allows object property access to custom fields, so we cannot fix
+    # that.
+    - "#^Access to an undefined property Drupal\\\\#"
 includes:
   - ./vendor/mglaman/phpstan-drupal/extension.neon
   - ./vendor/phpstan/phpstan-deprecation-rules/rules.neon

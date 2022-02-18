@@ -25,7 +25,9 @@ trait Select2Trait {
    */
   protected static function getValidReferenceableEntities(array $ids, array $handler_settings) {
     $options = [];
-    $valid_ids = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($handler_settings)->validateReferenceableEntities($ids);
+    /** @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface $selection_handler */
+    $selection_handler = \Drupal::service('plugin.manager.entity_reference_selection')->getInstance($handler_settings);
+    $valid_ids = $selection_handler->validateReferenceableEntities($ids);
     $entities = \Drupal::entityTypeManager()->getStorage($handler_settings['target_type'])->loadMultiple($valid_ids);
     foreach ($entities as $entity_id => $entity) {
       $options[$entity_id] = Html::decodeEntities(\Drupal::service('entity.repository')->getTranslationFromContext($entity)->label());

@@ -20,7 +20,7 @@ class Select2Test extends KernelTestBase {
    * @covers ::preRenderSelect
    * @covers ::preRenderAutocomplete
    */
-  public function testSelect2Theming() {
+  public function testSelect2Theming(): void {
     $select = [
       '#type' => 'select2',
       '#options' => [],
@@ -30,15 +30,15 @@ class Select2Test extends KernelTestBase {
 
     $this->render($select);
     $select2_js = $this->xpath("//script[contains(@src, 'select2/js/select2.js')]");
-    $this->assertEquals(1, count($select2_js));
+    $this->assertCount(1, $select2_js);
     $select2_js = $this->xpath("//script[contains(@src, 'select2/dist/js/select2.min.js')]");
-    $this->assertEquals(1, count($select2_js));
+    $this->assertCount(1, $select2_js);
   }
 
   /**
    * Tests that an empty option is added or not.
    */
-  public function testEmptyOption() {
+  public function testEmptyOption(): void {
     $select = [
       '#type' => 'select2',
       '#options' => [],
@@ -64,7 +64,7 @@ class Select2Test extends KernelTestBase {
   /**
    * Tests that in autocomplete are only the default options rendered.
    */
-  public function testAutocompleteOptions() {
+  public function testAutocompleteOptions(): void {
     $select = [
       '#type' => 'select2',
       '#options' => ['foo' => 'Foo', 'bar' => 'Bar', 'foo_bar' => 'FooBar'],
@@ -89,9 +89,9 @@ class Select2Test extends KernelTestBase {
    * @param string $value
    *   The value of the option.
    */
-  protected function assertOptionExists($selector, $value) {
+  protected function assertOptionExists(string $selector, string $value): void {
     $select = $this->xpath('//select[@data-drupal-selector="' . $selector . '"]/option[@value="' . $value . '"]');
-    $this->assertEquals(1, count($select));
+    $this->assertCount(1, $select);
   }
 
   /**
@@ -102,9 +102,9 @@ class Select2Test extends KernelTestBase {
    * @param string $value
    *   The value of the option.
    */
-  protected function assertOptionNotExists($selector, $value) {
+  protected function assertOptionNotExists(string $selector, string $value): void {
     $select = $this->xpath('//select[@data-drupal-selector="' . $selector . '"]/option[@value="' . $value . '"]');
-    $this->assertEquals(0, count($select));
+    $this->assertCount(0, $select);
   }
 
 }

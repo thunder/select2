@@ -30,7 +30,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
    *
    * @dataProvider providerTestSingleValueWidget
    */
-  public function testSingleValueWidget($autocomplete, $match_operator, $count, $autocreate) {
+  public function testSingleValueWidget(bool $autocomplete, ?string $match_operator, int $count, bool $autocreate): void {
     $this->createField('select2', 'node', 'test', 'entity_reference', [
       'target_type' => 'entity_test_mulrevpub',
     ], [
@@ -101,7 +101,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
    * @return array
    *   The data.
    */
-  public function providerTestSingleValueWidget() {
+  public function providerTestSingleValueWidget(): array {
     return [
       [TRUE, 'STARTS_WITH', 2, TRUE],
       [FALSE, NULL, 3, TRUE],
@@ -116,7 +116,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
    *
    * @dataProvider providerTestMultiValueWidget
    */
-  public function testMultipleValueWidget($autocomplete, $autocreate) {
+  public function testMultipleValueWidget(bool $autocomplete, bool $autocreate): void {
     $this->createField('select2', 'node', 'test', 'entity_reference', [
       'target_type' => 'entity_test_mulrevpub',
       'cardinality' => -1,
@@ -196,7 +196,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
    * @return array
    *   The data.
    */
-  public function providerTestMultiValueWidget() {
+  public function providerTestMultiValueWidget(): array {
     return [
       [TRUE, TRUE],
       [TRUE, FALSE],
@@ -208,7 +208,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
   /**
    * Test autocreation for a multi value field.
    */
-  public function testMultipleAutocreation() {
+  public function testMultipleAutocreation(): void {
     EntityTestBundle::create([
       'id' => 'test1',
       'label' => 'Test1 label',
@@ -256,6 +256,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
     $this->assertNotEmpty($entity);
     $this->assertSame('test2', $entity->bundle());
 
+    /** @var \Drupal\Core\Field\FieldConfigInterface $field */
     $field = FieldConfig::loadByName('node', 'test', 'select2');
     $field->setSetting('handler_settings', [
       'target_bundles' => ['test1' => 'test1', 'test2' => 'test2'],
@@ -280,7 +281,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
   /**
    * Test selecting options of different bundles.
    */
-  public function testMultipleBundleSelection() {
+  public function testMultipleBundleSelection(): void {
 
     EntityTestBundle::create([
       'id' => 'test1',
@@ -331,7 +332,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
   /**
    * Test that in-between ajax calls are not creating new entities.
    */
-  public function testAjaxCallbacksInBetween() {
+  public function testAjaxCallbacksInBetween(): void {
 
     $this->container->get('module_installer')->install(['file']);
 
@@ -353,6 +354,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
     $this->drupalGet('/node/add/test');
     $page->fillField('title[0][value]', 'Test node');
 
+    /** @var \StdClass $test_file */
     $test_file = current($this->getTestFiles('text'));
     $page->attachFileToField("files[file_0]", \Drupal::service('file_system')->realpath($test_file->uri));
 
@@ -366,7 +368,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
   /**
    * Tests that the autocomplete ordering is alphabetically.
    */
-  public function testAutocompleteOrdering() {
+  public function testAutocompleteOrdering(): void {
     $this->createField('select2', 'node', 'test', 'entity_reference', [
       'target_type' => 'entity_test_mulrevpub',
     ], [
@@ -403,7 +405,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
   /**
    * Tests that the autocomplete ordering is alphabetically.
    */
-  public function testAutocompleteMatchLimit() {
+  public function testAutocompleteMatchLimit(): void {
     $this->createField('select2', 'node', 'test', 'entity_reference', [
       'target_type' => 'entity_test_mulrevpub',
     ], [
@@ -437,11 +439,12 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
   /**
    * Tests the autocomplete drag n drop.
    */
-  public function testAutocompleteDragnDrop() {
+  public function testAutocompleteDragnDrop(): void {
     $this->markTestSkipped(
       'Testing drag and drop is currently not possible due to a bug in chromedriver. See https://www.drupal.org/node/3084730.'
     );
 
+    // @phpstan-ignore-next-line
     $this->createField('select2', 'node', 'test', 'entity_reference', [
       'target_type' => 'entity_test_mulrevpub',
       'cardinality' => -1,

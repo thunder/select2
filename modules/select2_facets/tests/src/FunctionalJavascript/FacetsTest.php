@@ -27,7 +27,7 @@ class FacetsTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $reference1 = EntityTestMulRevPub::create(['name' => 'Reference 1']);
@@ -59,7 +59,7 @@ class FacetsTest extends WebDriverTestBase {
    *
    * @dataProvider providerTestBasicFunctionality
    */
-  public function testBasicFunctionality($config, $expected_settings) {
+  public function testBasicFunctionality(array $config, array $expected_settings): void {
 
     $facet = Facet::load('referenced');
     $facet->setWidget('select2', $config);
@@ -101,7 +101,7 @@ class FacetsTest extends WebDriverTestBase {
    * @return array
    *   The data.
    */
-  public function providerTestBasicFunctionality() {
+  public function providerTestBasicFunctionality(): array {
     return [
       [[], ['tags' => FALSE]],
       [['autocomplete' => TRUE], ['ajax' => [], 'tags' => FALSE]],

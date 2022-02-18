@@ -61,16 +61,17 @@ class EntityAutocompleteMatcher {
    *
    * @see \Drupal\system\Controller\EntityAutocompleteController
    */
-  public function getMatches($target_type, $selection_handler, array $selection_settings, $string = '', array $selected = []) {
+  public function getMatches(string $target_type, string $selection_handler, array $selection_settings, string $string = '', array $selected = []): array {
     $matches = [];
 
     $options = $selection_settings + [
       'target_type' => $target_type,
       'handler' => $selection_handler,
     ];
+    /** @var \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface $handler */
     $handler = $this->selectionManager->getInstance($options);
 
-    if (isset($string)) {
+    if ($string) {
       // Get an array of matching entities.
       $match_operator = !empty($selection_settings['match_operator']) ? $selection_settings['match_operator'] : 'CONTAINS';
       $match_limit = isset($selection_settings['match_limit']) ? (int) $selection_settings['match_limit'] : 10;

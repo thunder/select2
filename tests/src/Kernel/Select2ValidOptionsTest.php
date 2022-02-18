@@ -15,7 +15,7 @@ class Select2ValidOptionsTest extends Select2KernelTestBase {
   /**
    * Tests that available options are set according to values.
    */
-  public function testAvailableOptions() {
+  public function testAvailableOptions(): void {
 
     $name = 'test_select2';
 

@@ -11,7 +11,7 @@ use Drupal\select2_publish\Element\StatusProperties;
 /**
  * Implements hook_element_info_alter().
  */
-function select2_publish_element_info_alter(array &$info) {
+function select2_publish_element_info_alter(array &$info): void {
   if (!empty($info['select2'])) {
     $info['select2']['#pre_render'][] = [StatusProperties::class, 'preRender'];
   }
@@ -20,7 +20,7 @@ function select2_publish_element_info_alter(array &$info) {
 /**
  * Implements hook_select2_autocomplete_matches_alter().
  */
-function select2_publish_select2_autocomplete_matches_alter(array &$matches, array $options) {
+function select2_publish_select2_autocomplete_matches_alter(array &$matches, array $options): void {
   $entity_manager = \Drupal::entityTypeManager();
   $entity_definition = $entity_manager->getDefinition($options['target_type']);
 

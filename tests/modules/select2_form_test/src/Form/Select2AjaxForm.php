@@ -16,14 +16,14 @@ class Select2AjaxForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function getFormId() {
+  public function getFormId(): string {
     return 'form_test_select2_ajax';
   }
 
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $customize = FALSE) {
+  public function buildForm(array $form, FormStateInterface $form_state, bool $customize = FALSE): array {
     $form['container'] = [
       '#type'       => 'container',
       '#attributes' => ['id' => 'my-container'],
@@ -65,19 +65,19 @@ class Select2AjaxForm extends FormBase {
   /**
    * Dummy ajax call.
    */
-  public function callAjax() {}
+  public function callAjax(): void {}
 
   /**
    * Dummy ajax callback.
    */
-  public function ajaxCallback($form, $form_state) {
+  public function ajaxCallback(array $form, FormStateInterface $form_state): array {
     return $form['container'];
   }
 
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
     $form_state->setResponse(new JsonResponse($form_state->getValues()));
   }
 

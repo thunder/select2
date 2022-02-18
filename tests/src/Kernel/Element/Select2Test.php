@@ -91,7 +91,7 @@ class Select2Test extends KernelTestBase {
    */
   protected function assertOptionExists(string $selector, string $value): void {
     $select = $this->xpath('//select[@data-drupal-selector="' . $selector . '"]/option[@value="' . $value . '"]');
-    $this->assertEquals(1, is_countable($select) ? count($select) : 0);
+    $this->assertCount(1, $select);
   }
 
   /**
@@ -104,7 +104,7 @@ class Select2Test extends KernelTestBase {
    */
   protected function assertOptionNotExists(string $selector, string $value): void {
     $select = $this->xpath('//select[@data-drupal-selector="' . $selector . '"]/option[@value="' . $value . '"]');
-    $this->assertEquals(0, is_countable($select) ? count($select) : 0);
+    $this->assertCount(0, $select);
   }
 
 }

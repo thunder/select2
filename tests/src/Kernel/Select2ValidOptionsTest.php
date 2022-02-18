@@ -39,7 +39,7 @@ class Select2ValidOptionsTest extends Select2KernelTestBase {
     $ref2->save();
 
     // Create a new revision to trigger problem.
-    $ref1->setName(\Drupal::class)->setNewRevision();
+    $ref1->setName('Drupal')->setNewRevision();
     $ref1->save();
 
     $entity->$name->setValue([

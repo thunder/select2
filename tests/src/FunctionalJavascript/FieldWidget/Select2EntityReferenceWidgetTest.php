@@ -489,7 +489,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
     $page->pressButton('Save');
 
     $node = $this->getNodeByTitle('Test node', TRUE);
-    static::assertEquals([
+    $this->assertEquals([
       ['target_id' => 3],
       ['target_id' => 2],
       ['target_id' => 1],

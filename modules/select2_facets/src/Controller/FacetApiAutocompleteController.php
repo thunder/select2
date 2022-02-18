@@ -150,8 +150,9 @@ class FacetApiAutocompleteController extends ControllerBase {
    * @throws \Drupal\facets\Exception\InvalidProcessorException
    */
   public function handleAutocomplete(Request $request, string $facetsource_id, string $facet_id, string $selection_settings_key): JsonResponse {
-    $matches = [];
-    $matches['results'] = [];
+    $matches = [
+      'results' => [],
+    ];
     // Get the typed string from the URL, if it exists.
     if ($input = $request->query->get('q')) {
       $typed_string = mb_strtolower($input);

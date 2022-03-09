@@ -10,7 +10,7 @@
         }
     ],
     "require-dev": {
-        "drupal/facets": "^2.0"
-         "drupal/form_options_attributes": "dev-2.x",
+        "drupal/facets": "^2.0",
+        "drupal/form_options_attributes": "dev-2.x"
     }
 }

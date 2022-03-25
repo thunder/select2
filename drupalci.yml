@@ -31,9 +31,9 @@ build:
         commands:
           - 'cd /var/www/html/'
           - 'mkdir libraries'
-          - 'curl -L https://github.com/dropzone/dropzone/archive/refs/tags/v5.9.3.tar.gz -o file.tar.gz'
-          - 'tar -zxf file.tar.gz'
-          - 'mv dropzone-5.9.3 libraries/dropzone'
+          - 'curl -L https://registry.npmjs.org/dropzone/-/dropzone-5.9.3.tgz -o file.tgz'
+          - 'tar -zxf file.tgz'
+          - 'mv package libraries/dropzone'
           - 'cd -'
         halt-on-fail: false
       run_tests.standard:

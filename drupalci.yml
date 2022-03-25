@@ -1,45 +1,90 @@
-build:
-  environment:
-    startcontainers:
-      runcontainers:
-    create_db:
-      dbcreate:
-  codebase:
-    assemble_codebase:
-      checkout_core:
-      checkout.contrib:
-      fetch:
-      patch:
-      composer.core_install:
-      gather_dependencies:
-      update_build:
-      yarn_install:
-      start_phantomjs:
-  assessment:
-    validate_codebase:
-      phplint:
-      container_composer:
-      host_command:
-      csslint:
-        halt-on-fail: true
-      eslint:
-        halt-on-fail: false
-      phpcs:
-        halt-on-fail: true
-    testing:
-      container_command:
-        commands:
-          - 'cd /var/www/html/'
-          - 'mkdir libraries'
-          - 'curl -L https://registry.npmjs.org/dropzone/-/dropzone-5.9.3.tgz -o file.tgz'
-          - 'tar -zxf file.tgz'
-          - 'mv package libraries/dropzone'
-          - 'cd -'
-        halt-on-fail: false
-      run_tests.standard:
-        types: 'PHPUnit-Unit,PHPUnit-Kernel,PHPUnit-Functional'
-      run_tests.js:
-        concurrency: 15
-        types: 'PHPUnit-FunctionalJavascript'
-      # There are no nightwatch tests yet.
-      # nightwatchjs:
+
+  Skip to main content
+    Drupal Code Search
+    color_field-8.x-2.x-dev/drupalci.yml
+    drupalci.yml
+    color_field
+    1
+    2
+    3
+    4
+    5
+    6
+    7
+    8
+    9
+    10
+    11
+    12
+    13
+    14
+    15
+    16
+    17
+    18
+    19
+    20
+    21
+    22
+    23
+    24
+    25
+    26
+    27
+    28
+    29
+    30
+    31
+    32
+    33
+    34
+    35
+    36
+    37
+    38
+    39
+    40
+
+  build:
+    environment:
+      startcontainers:
+        runcontainers:
+      create_db:
+        dbcreate:
+    codebase:
+      assemble_codebase:
+        checkout_core:
+        checkout.contrib:
+        fetch:
+        patch:
+        composer.core_install:
+        gather_dependencies:
+        update_build:
+        yarn_install:
+        start_phantomjs:
+    assessment:
+      validate_codebase:
+        phplint:
+        container_composer:
+        csslint:
+        eslint:
+        phpcs:
+      testing:
+        container_command:
+          commands:
+            - cd ${SOURCE_DIR}
+            - sudo -u www-data composer config repositories.asset {"composer","https://asset-packagist.org"}
+            - sudo -u www-data composer config extra.installer-types.0 "npm-asset"
+            - sudo -u www-data composer config extra.installer-paths.libraries\/\{\$name\} "[type:npm-asset]"
+            - sudo -u www-data sed -i 's/"\[type:npm-asset\]"/\["type:npm-asset"\]/' composer.json
+            - sudo -u www-data composer require "oomphinc/composer-installers-extender:^2.0" "npm-asset/select2"^4.0.7",
+        run_tests.standard:
+          types: 'Simpletest,PHPUnit-Unit,PHPUnit-Kernel,PHPUnit-Functional'
+        run_tests.js:
+          concurrency: 1
+          types: 'PHPUnit-FunctionalJavascript'
+        nightwatchjs:
+
+    Главная | Обратная связь
+
+    drupal hosting | друпал хостинг | it patrol .inc

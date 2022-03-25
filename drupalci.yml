@@ -1,0 +1,42 @@
+build:
+  environment:
+    startcontainers:
+      runcontainers:
+    create_db:
+      dbcreate:
+  codebase:
+    assemble_codebase:
+      checkout_core:
+      checkout.contrib:
+      fetch:
+      patch:
+      composer.core_install:
+      gather_dependencies:
+      update_build:
+      yarn_install:
+      start_phantomjs:
+  assessment:
+    validate_codebase:
+      phplint:
+      container_composer:
+      host_command:
+      csslint:
+        halt-on-fail: true
+      eslint:
+        halt-on-fail: false
+      phpcs:
+        halt-on-fail: true
+    testing:
+      container_command:
+        commands:
+          - 'cd ../../../../libraries'
+          - 'wget https://github.com/dropzone/dropzone/releases/download/v5.9.3/dist.zip'
+          - 'unzip dist.zip -d dropzone'
+        halt-on-fail: false
+      run_tests.standard:
+        types: 'PHPUnit-Unit,PHPUnit-Kernel,PHPUnit-Functional'
+      run_tests.js:
+        concurrency: 15
+        types: 'PHPUnit-FunctionalJavascript'
+      # There are no nightwatch tests yet.
+      # nightwatchjs:

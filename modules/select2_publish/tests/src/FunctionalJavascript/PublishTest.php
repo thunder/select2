@@ -3,7 +3,6 @@
 namespace Drupal\Tests\select2_publish\FunctionalJavascript;
 
 use Drupal\Component\Serialization\Json;
-use Drupal\Core\Url;
 use Drupal\entity_test\Entity\EntityTestMulRevPub;
 use Drupal\Tests\select2\FunctionalJavascript\Select2JavascriptTestBase;
 
@@ -81,11 +80,8 @@ class PublishTest extends Select2JavascriptTestBase {
     $this->drupalGet('/node/add/test');
     $settings = Json::decode($this->getSession()->getPage()->findField('select2')->getAttribute('data-select2-config'));
 
-    $url = Url::fromUserInput($settings['ajax']['url']);
-    $url->setAbsolute(TRUE);
-    $url->setRouteParameter('q', 'f');
-
-    $response = \Drupal::httpClient()->get($url->toString());
+    $target_url = $this->getAbsoluteUrl($settings['ajax']['url']);
+    $response = \Drupal::httpClient()->get($target_url, ['query' => ['q' => 'f']]);
 
     $results = Json::decode($response->getBody()->getContents())['results'];
 

@@ -1,76 +1,44 @@
 build:
+  environment:
+    startcontainers:
+      runcontainers:
+    create_db:
+      dbcreate:
+  codebase:
+    assemble_codebase:
+      checkout_core:
+      checkout.contrib:
+      fetch:
+      patch:
+      composer.core_install:
+      gather_dependencies:
+      update_build:
+      yarn_install:
+      start_phantomjs:
   assessment:
     validate_codebase:
-      container_composer:
-        - 'config repositories.asset composer https://asset-packagist.org'
-        - 'require oomphinc/composer-installers-extender:~1.0'
-        - 'require cweagans/composer-patches:~1.0'
-        - 'require drupal/drupal-library-installer-plugin:^0.3'
-      container_command:
-        commands:
-          - 'cd ${SOURCE_DIR}'
-          - 'sudo -u www-data composer config extra.enable-patching true'
-          - 'sudo -u www-data composer config extra.composer-exit-on-patch-failure true'
-          - 'sudo -u www-data composer config extra.installer-types.0 "npm-asset"'
-          - 'sudo -u www-data composer config extra.installer-types.1 "bower-asset"'
-          - 'sudo -u www-data composer config extra.installer-paths.web\/libraries\/\{\$name\} [DOUBLE_QUOTATIONtype:drupal-libraryDOUBLE_QUOTATION,DOUBLE_QUOTATIONtype:bower-assetDOUBLE_QUOTATION,DOUBLE_QUOTATIONtype:npm-assetDOUBLE_QUOTATION]'
-          - 'sudo -u www-data composer config extra.installer-paths.web\/libraries\/select2 [DOUBLE_QUOTATIONnpm-asset/select2DOUBLE_QUOTATION]'
-          - 'sudo -u www-data composer config extra.libraries "[{DOUBLE_QUOTATIONnameDOUBLE_QUOTATION: DOUBLE_QUOTATIONselect2DOUBLE_QUOTATION, DOUBLE_QUOTATIONpackageDOUBLE_QUOTATION: DOUBLE_QUOTATIONnpm-asset/select2DOUBLE_QUOTATION}]"'
-          - sed -i 's/DOUBLE_QUOTATION/"/g' composer.json
-          - sed -i 's/\"\[\"/["/g' composer.json
-          - sed -i 's/\"\]\"/"]/g' composer.json
-          - sed -i 's/\"{\"/{"/g' composer.json
-          - sed -i 's/\"}\"]\"/"}/g' composer.json
-          - sed -i 's/\"\[{\"/[{"/g' composer.json
-          - sed -i 's/\"}\]\"/"}]/g' composer.json
-          - 'sudo -u www-data composer require npm-asset/select2:^4.0.7'
-          - 'dir libraries'
       phplint:
+      container_composer:
+      host_command:
       csslint:
-        halt-on-fail: false
+        halt-on-fail: true
       eslint:
-        # A test must pass eslinting standards check in order to continue processing.
         halt-on-fail: false
       phpcs:
-        # phpcs will use core's specified version of Coder.
-        sniff-all-files: false
-        halt-on-fail: false
+        halt-on-fail: true
     testing:
-      # run_tests task is executed several times in order of performance speeds.
-      # halt-on-fail can be set on the run_tests tasks in order to fail fast.
-      # suppress-deprecations is false in order to be alerted to usages of
-      # deprecated code.
-      run_tests.phpunit:
-        types: 'PHPUnit-Unit'
-        testgroups: '--all'
-        suppress-deprecations: false
+      container_command:
+        commands:
+          - "cd ${SOURCE_DIR}"
+          - "sudo -u www-data mkdir libraries"
+          - "sudo -u www-data curl -L https://github.com/select2/select2/archive/refs/tags/4.0.13.tar.gz --o select2.tar.gz --silent"
+          - "sudo -u www-data tar xzf select2.tar.gz"
+          - "sudo -u www-data mv select2-4.0.13 libraries/dropzone"
         halt-on-fail: false
-      run_tests.kernel:
-        types: 'PHPUnit-Kernel'
-        testgroups: '--all'
-        suppress-deprecations: false
-        halt-on-fail: false
-      run_tests.simpletest:
-        types: 'Simpletest'
-        testgroups: '--all'
-        suppress-deprecations: false
-        halt-on-fail: false
-      run_tests.build:
-        types: 'PHPUnit-Build'
-        testgroups: '--all'
-        suppress-deprecations: false
-        halt-on-fail: false
-      run_tests.functional:
-        types: 'PHPUnit-Functional'
-        testgroups: '--all'
-        suppress-deprecations: false
-        halt-on-fail: false
-      run_tests.javascript:
+      run_tests.standard:
+        types: 'PHPUnit-Unit,PHPUnit-Kernel,PHPUnit-Functional'
+      run_tests.js:
         concurrency: 15
         types: 'PHPUnit-FunctionalJavascript'
-        testgroups: '--all'
-        suppress-deprecations: false
-        halt-on-fail: false
-      # Run nightwatch testing.
-      # @see https://www.drupal.org/project/drupal/issues/2869825
-      nightwatchjs:
+      # There are no nightwatch tests yet.
+      # nightwatchjs:

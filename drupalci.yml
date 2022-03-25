@@ -33,7 +33,7 @@ build:
           - "sudo -u www-data mkdir libraries"
           - "sudo -u www-data curl -L https://github.com/select2/select2/archive/refs/tags/4.0.13.tar.gz -o select2.tar.gz"
           - "sudo -u www-data tar xzf select2.tar.gz"
-          - "sudo -u www-data mv select2-4.0.13 libraries/dropzone"
+          - "sudo -u www-data mv select2-4.0.13 libraries/select2"
         halt-on-fail: false
       run_tests.standard:
         types: 'PHPUnit-Unit,PHPUnit-Kernel,PHPUnit-Functional'

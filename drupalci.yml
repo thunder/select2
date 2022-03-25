@@ -30,10 +30,10 @@ build:
       container_command:
         commands:
           - 'cd /var/www/html/'
-          - 'ls -al'
+          - 'mkdir libraries'
           - 'curl -L https://github.com/dropzone/dropzone/archive/refs/tags/v5.9.3.tar.gz -o file.tar.gz'
           - 'tar -zxf file.tar.gz'
-          - 'mv dropzone-5.9.3 dropzone'
+          - 'mv dropzone-5.9.3 libraries/dropzone'
           - 'cd -'
         halt-on-fail: false
       run_tests.standard:

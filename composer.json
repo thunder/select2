@@ -13,5 +13,12 @@
         "drupal/facets": "2.0.x-dev",
         "drupal/search_api": "^1.28",
         "drupal/form_options_attributes": "^2.0"
+    },
+    "extra": {
+        "patches": {
+            "drupal/facets": {
+                "InvalidArgumentException: Expected a scalar value as a 2nd argument to \"Symfony\\Component\\HttpFoundation\\InputBag::get()\", \"array\" given": "https://www.drupal.org/files/issues/2022-11-17/3310536-2.x-6.patch"
+            }
+        }
     }
 }

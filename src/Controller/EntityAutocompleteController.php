@@ -86,7 +86,7 @@ class EntityAutocompleteController extends ControllerBase {
         // key/value store.
         throw new AccessDeniedHttpException();
       }
-      $matches['results'] = $this->matcher->getMatches($target_type, $selection_handler, $selection_settings, mb_strtolower($input), $request->query->get('selected', []));
+      $matches['results'] = $this->matcher->getMatches($target_type, $selection_handler, $selection_settings, mb_strtolower($input), $request->query->has('selected') ? $request->query->all('selected') : []);
     }
 
     return new JsonResponse($matches);

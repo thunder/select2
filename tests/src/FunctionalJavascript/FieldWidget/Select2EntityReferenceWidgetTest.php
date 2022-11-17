@@ -391,7 +391,7 @@ class Select2EntityReferenceWidgetTest extends Select2JavascriptTestBase {
     $settings = Json::decode($this->getSession()->getPage()->findField('select2')->getAttribute('data-select2-config'));
 
     $url = Url::fromUserInput($settings['ajax']['url']);
-    $url->setAbsolute(TRUE);
+    $url->setAbsolute();
     $url->setRouteParameter('q', 'f');
 
     $response = \Drupal::httpClient()->get($url->toString());

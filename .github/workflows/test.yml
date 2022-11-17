@@ -65,7 +65,9 @@ jobs:
         restore-keys: ${{ runner.os }}-npm-cache
 
     - name: Get build environment
-      run: composer global require thunder/drupal-testing
+      run: |
+        composer global config allow-plugins.dealerdirect/phpcodesniffer-composer-installer true --no-plugins
+        composer global require thunder/drupal-testing
 
     - name: Prepare the build
       run: test-drupal-project prepare_build

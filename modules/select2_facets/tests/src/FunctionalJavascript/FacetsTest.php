@@ -106,7 +106,7 @@ class FacetsTest extends WebDriverTestBase {
   public function providerTestBasicFunctionality(): array {
     return [
       [[], ['tags' => FALSE]],
-  //    [['autocomplete' => TRUE], ['ajax' => [], 'tags' => FALSE]],
+      [['autocomplete' => TRUE], ['ajax' => [], 'tags' => FALSE]],
     ];
   }
 

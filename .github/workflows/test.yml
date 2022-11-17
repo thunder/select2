@@ -17,6 +17,7 @@ env:
    DRUPAL_TESTING_DATABASE_ENGINE: mysql
    DRUPAL_TESTING_HTTP_PORT: 8888
    DRUPAL_TESTING_PARALLEL_TESTING: true
+   DRUPAL_TESTING_SELENIUM_CHROME_VERSION: 105.0
 
 jobs:
   build:
@@ -47,7 +48,7 @@ jobs:
       with:
         coverage: none
         php-version: ${{ matrix.PHP_VERSION }}
-        extensions: Imagick, gd, pdo_mysql
+        extensions: :sodium, Imagick, gd, PDO, mysql, pdo_mysql, mbstring, xmlwriter, pdo, date, dom, filter, hash, json, pcre, session, SimpleXML, SPL, tokenizer, xml, curl
 
     - name: Cache composer dependencies
       uses: actions/cache@v1

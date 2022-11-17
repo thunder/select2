@@ -17,5 +17,6 @@ select2.min:
     component:
       /libraries/select2/dist/css/select2.min.css: {}
   dependencies:
-    - core/once
     - core/drupal
+    - core/jquery
+    - core/once

@@ -38,6 +38,7 @@ use Drupal\select2\Select2Trait;
  *       '3' => $this->t('Three'),
  *     ],
  *   ];
+ * @endcode
  *
  * If you want to prevent the rendering of all options and fetch the options via
  * ajax instead, you can use the '#autocomplete' property. It's also needed to
@@ -60,6 +61,7 @@ use Drupal\select2\Select2Trait;
  *       'target_bundles' => ['article', 'page'],
  *     ],
  *   ];
+ * @endcode
  *
  * If you want to allow an input of an entity label that does not exist yet but
  * can be created "on the fly" on form submission, the '#autocreate' property
@@ -78,6 +80,7 @@ use Drupal\select2\Select2Trait;
  *       'uid' => <a valid user ID>,
  *     ],
  *   ];
+ * @endcode
  *
  * The render element sets a bunch of default values to configure the select2
  * element. Nevertheless all select2 config values can be overwritten with the
@@ -89,6 +92,7 @@ use Drupal\select2\Select2Trait;
  *       'allowClear' => TRUE,
  *     ],
  *   ];
+ * @endcode
  *
  * @see https://select2.org/configuration/options-api
  *

@@ -62,18 +62,18 @@ class ElementTest extends WebDriverTestBase {
   }
 
   /**
-   * Test loading of seven theme style.
+   * Test loading of claro theme style.
    */
-  public function testSevenTheme(): void {
-    $this->container->get('theme_installer')->install(['seven']);
+  public function testClaroTheme(): void {
+    $this->container->get('theme_installer')->install(['claro']);
     $this->config('system.theme')
-      ->set('default', 'seven')
-      ->set('admin', 'seven')
+      ->set('default', 'claro')
+      ->set('admin', 'claro')
       ->save();
 
     $this->drupalGet('/select2-optgroup-form');
 
-    $this->assertSession()->elementExists('css', '.select2-container--seven');
+    $this->assertSession()->elementExists('css', '.select2-container--claro');
 
     $select2_js = $this->xpath("//script[contains(@src, 'select2/js/select2.js')]");
     $this->assertEquals(1, count($select2_js));

@@ -17,6 +17,7 @@ env:
    DRUPAL_TESTING_DATABASE_ENGINE: mysql
    DRUPAL_TESTING_HTTP_PORT: 8888
    DRUPAL_TESTING_PARALLEL_TESTING: true
+   DRUPAL_TESTING_SELENIUM_CHROME_VERSION: "105.0"
 
 jobs:
   build:
@@ -33,8 +34,8 @@ jobs:
 
     strategy:
       matrix:
-        DRUPAL_TESTING_DRUPAL_VERSION: ['~9.2.0']
-        PHP_VERSION: [ '8.0' ]
+        DRUPAL_TESTING_DRUPAL_VERSION: ['~10.0.0']
+        PHP_VERSION: [ '8.1' ]
 
     steps:
     - uses: actions/checkout@v2
@@ -47,7 +48,7 @@ jobs:
       with:
         coverage: none
         php-version: ${{ matrix.PHP_VERSION }}
-        extensions: Imagick, gd, pdo_mysql
+        extensions: :sodium, Imagick, gd, PDO, mysql, pdo_mysql, mbstring, xmlwriter, pdo, date, dom, filter, hash, json, pcre, session, SimpleXML, SPL, tokenizer, xml, curl
 
     - name: Cache composer dependencies
       uses: actions/cache@v1
@@ -65,7 +66,9 @@ jobs:
         restore-keys: ${{ runner.os }}-npm-cache
 
     - name: Get build environment
-      run: composer global require thunder/drupal-testing
+      run: |
+        composer global config allow-plugins.dealerdirect/phpcodesniffer-composer-installer true --no-plugins
+        composer global require thunder/drupal-testing
 
     - name: Prepare the build
       run: test-drupal-project prepare_build

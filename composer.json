@@ -10,7 +10,7 @@
         }
     ],
     "require-dev": {
-        "drupal/facets": "^2.0",
+        "drupal/facets": "2.0.x-dev",
         "drupal/search_api": "^1.28",
         "drupal/form_options_attributes": "^2.0"
     }

@@ -3,7 +3,7 @@
  * Init select2 widget.
  */
 
-(function ($, Drupal) {
+(function ($, Drupal, once) {
 
   'use strict';
 
@@ -13,8 +13,7 @@
    * Add event handler to all select2 widgets.
    */
   Drupal.facets.initSelect2 = function () {
-    $('.js-facets-select2.js-facets-widget')
-      .once('js-facets-select2-widget-on-selection-change')
+    $(once('js-facets-select2-widget-on-selection-change', '.js-facets-select2.js-facets-widget'))
       .each(function () {
         var $select2_widget = $(this);
 
@@ -37,4 +36,4 @@
     }
   };
 
-})(jQuery, Drupal);
+})(jQuery, Drupal, once);
